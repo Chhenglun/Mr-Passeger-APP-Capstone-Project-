@@ -1,0 +1,11 @@
+framework module firebase_app_installations {
+  umbrella header "firebase_app_installations-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module firebase_app_installations.Swift {
+  header "firebase_app_installations-Swift.h"
+  requires objc
+}

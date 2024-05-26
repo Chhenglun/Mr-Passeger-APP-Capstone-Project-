@@ -108,7 +108,7 @@ class _AppScreenState extends State<AppScreen> {
           NavigationDestination(
             icon: FaIcon(Icons.person_pin, color: Colors.white, size: 20,),
             selectedIcon: FaIcon(Icons.person_pin, color: Colors.white, size: 33),
-            label: 'Profile'.tr,
+            label: 'Account'.tr,
           ),
         ],
       ),

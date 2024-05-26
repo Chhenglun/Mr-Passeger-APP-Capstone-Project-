@@ -160,23 +160,6 @@ class _CurrentLocationState extends State<CurrentLocation> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                //     Row(
-                //   children: [
-                //     Expanded(
-                //       child: TextField(
-                //         controller: _searchController,
-                //         decoration: InputDecoration(
-                //           hintText: 'ស្វែងរកទីតាំង',
-                //           border: OutlineInputBorder(),
-                //         ),
-                //       ),
-                //     ),
-                //     IconButton(
-                //       icon: Icon(Icons.search),
-                //       onPressed: searchLocation,
-                //     ),
-                //   ],
-                // ),
                 Expanded(
                   child: Stack(
                     children: [
@@ -202,30 +185,45 @@ class _CurrentLocationState extends State<CurrentLocation> {
                       Positioned(
                         top: 20,
                         left: 10,
-                        child: Container(
-                          // decoration: BoxDecoration(
-                          //     color: Colors.black,
-                          //     borderRadius: BorderRadius.circular(25)),
-                          child: ElevatedButton(
-                              style: const ButtonStyle(
-                                backgroundColor:
-                                    MaterialStatePropertyAll(Colors.red),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Colors.white,
+                        child: Column(
+                          children: [
+                            Container(
+                              // decoration: BoxDecoration(
+                              //     color: Colors.black,
+                              //     borderRadius: BorderRadius.circular(25)),
+                              child: ElevatedButton(
+                                  style: const ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStatePropertyAll(Colors.red),
                                   ),
-                                  Text(
-                                    'ត្រឡប់ក្រោយ',
-                                    style: TextStyle(color: Colors.white),
-                                  )
-                                ],
-                              )),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_back_ios,
+                                        color: Colors.white,
+                                      ),
+                                      Text(
+                                        'ត្រឡប់ក្រោយ',
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    ],
+                                  )),
+                            ),
+                            // TextField(
+                            //   controller: _searchController,
+                            //   decoration: InputDecoration(
+                            //     hintText: 'ស្វែងរកទីតាំង',
+                            //     border: OutlineInputBorder(),
+                            //   ),
+                            // ),
+                    // IconButton(
+                    //   icon: Icon(Icons.search),
+                    //   onPressed: searchLocation,
+                    // ),
+                          ],
                         ),
                       ),
                     ],
@@ -301,7 +299,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                         'បញ្ជាក់ការកក់',
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 14,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold),
                       ),
                     )),

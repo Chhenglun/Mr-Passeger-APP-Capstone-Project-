@@ -1,5 +1,11 @@
 import 'package:scholarar/data/model/response/language_model.dart';
 
+//location
+  late double latCur;
+  late double longCur;
+  late double latDir;
+  late double longDir;
+
 class AppConstants {
   static const String theme = "authenticator_theme";
   static const String appName = "Authenticator";
@@ -10,7 +16,7 @@ class AppConstants {
   static const String login = "/api/v1/login";
 
   static const String token = "token";
-  static const String logo = "assets/images/logo.png";
+  static const String logo = "assets/images/logo.jpg";
   static const String languageCode = "language_code";
   static const String countryCode = "country_code";
   static const String isSelectNumber = "isSelectNumber";
@@ -25,6 +31,7 @@ class AppConstants {
   static const String getSubscription = "api/subscription";
 
   // auth
+  static const String google_key_api = "AIzaSyCfWphfkrgQBU7YszmrV28pg-cLqwmit5M";
   static const String phoneSignIn = "";
   static const String sendVerificationSMS = "";
   static const String verificationCode = "";
@@ -49,6 +56,8 @@ class AppConstants {
 
   // country
   static const String getCountry = "/api/countries";
+
+  
 
   // Setting
   static const String checkVersionApp = "";

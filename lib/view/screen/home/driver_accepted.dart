@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -6,21 +7,20 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scholarar/view/screen/home/waiting.dart';
 
-class CurrentLocation extends StatefulWidget {
-  const CurrentLocation({super.key});
+class DriverAccepted extends StatefulWidget {
+  const DriverAccepted({super.key});
 
   @override
-  State<CurrentLocation> createState() => _CurrentLocationState();
+  State<DriverAccepted> createState() => _DriverAcceptedState();
 }
 
-class _CurrentLocationState extends State<CurrentLocation> {
+class _DriverAcceptedState extends State<DriverAccepted> {
   bool isLoading = false;
   late GoogleMapController googleMapController;
   final TextEditingController _searchController = TextEditingController();
 
   static const CameraPosition initialCameraPosition = CameraPosition(
       target: LatLng(11.672144885466007, 105.0565917044878), zoom: 15);
-  //target: LatLng(37.42796133580664, -122.085749655962), zoom: 14);
 
   Set<Marker> markers = {};
   LatLng selectedLatLng = LatLng(0, 0);
@@ -63,31 +63,6 @@ class _CurrentLocationState extends State<CurrentLocation> {
     // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-  }
-
-  void searchLocation() async {
-    try {
-      List<Location> locations =
-          await locationFromAddress(_searchController.text);
-      if (locations.isNotEmpty) {
-        LatLng searchedLatLng =
-            LatLng(locations[0].latitude, locations[0].longitude);
-
-        markers.clear();
-        markers.add(Marker(
-            markerId: MarkerId('searchedLocation'), position: searchedLatLng));
-
-        googleMapController
-            .animateCamera(CameraUpdate.newLatLng(searchedLatLng));
-
-        setState(() {
-          selectedLatLng = searchedLatLng;
-          getAddressFromLatLng(searchedLatLng);
-        });
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
   }
 
   Future getCurrentLocation() async {
@@ -137,23 +112,6 @@ class _CurrentLocationState extends State<CurrentLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   leading: TextButton(
-        //             onPressed: () {
-        //               Navigator.pop(context);
-        //             },
-        //             child: Row(
-        //               children: [Icon(Icons.arrow_back_ios), Text('ត្រឡប់ក្រោយ')],
-        //             )),
-        //   title: const Text("ជ្រើសរើសទីតាំងចាប់ផ្ដើម", style: TextStyle(fontSize: 12),),
-        //   centerTitle: true,
-        // ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            await getCurrentLocation();
-          },
-          child: Icon(Icons.my_location),
-        ),
         body: SafeArea(
           child: Stack(
             children: [
@@ -172,16 +130,6 @@ class _CurrentLocationState extends State<CurrentLocation> {
                           onMapCreated: (GoogleMapController controller) {
                             googleMapController = controller;
                           },
-                          onTap: (LatLng latLng) {
-                            markers.clear();
-                            markers.add(Marker(
-                                markerId: MarkerId('selectedLocation'),
-                                position: latLng));
-                            setState(() {
-                              selectedLatLng = latLng;
-                              getAddressFromLatLng(latLng);
-                            });
-                          },
                         ),
                         Positioned(
                           top: 10,
@@ -189,9 +137,6 @@ class _CurrentLocationState extends State<CurrentLocation> {
                           child: Column(
                             children: [
                               Container(
-                                // decoration: BoxDecoration(
-                                //     color: Colors.black,
-                                //     borderRadius: BorderRadius.circular(25)),
                                 child: ElevatedButton(
                                     style: const ButtonStyle(
                                       backgroundColor:
@@ -213,34 +158,13 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                       ],
                                     )),
                               ),
-                              // TextField(
-                              //   controller: _searchController,
-                              //   decoration: InputDecoration(
-                              //     hintText: 'ស្វែងរកទីតាំង',
-                              //     border: OutlineInputBorder(),
-                              //   ),
-                              // ),
-                      // IconButton(
-                      //   icon: Icon(Icons.search),
-                      //   onPressed: searchLocation,
-                      // ),
+                              
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                  //   child: Column(
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       Text("Latitude: ${selectedLatLng.latitude}"),
-                  //       Text("Longitude: ${selectedLatLng.longitude}"),
-                  //     ],
-                  //   ),
-                  // ),
                 ],
               ),
               if (isLoading == true)
@@ -250,64 +174,108 @@ class _CurrentLocationState extends State<CurrentLocation> {
                   child: Text('Loading...'),
                 ),
               ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                            height: MediaQuery.sizeOf(context).height * 3 /  10,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(topLeft:Radius.circular(20), topRight: Radius.circular(20))
+                            ),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text('អ្នកបើកបរនឹងមកដល់កំឡុងពេល ១៥​ នាទីទៀត'),
+                                    ],
+                                  ),
+                                ),
+                                Divider(),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                                      child: Container(
+                                        width: MediaQuery.sizeOf(context).width * 1 / 5,
+                                        height: MediaQuery.sizeOf(context).height * 1 / 10,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(50),
+                                          image: DecorationImage(
+                                            image: CachedNetworkImageProvider('https://th.bing.com/th/id/OIP.OgRB0U7cw81ZoY9UyZVWvAHaHa?rs=1&pid=ImgDetMain'), fit: BoxFit.cover,
+                                          )
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 20,),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text('NARAK RK', style: TextStyle(fontWeight: FontWeight.bold),),
+                                            SizedBox(width: 25,),
+                                            Icon(Icons.call),
+                                            SizedBox(width: 10,),
+                                            Icon(Icons.chat_bubble_outline),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text('កំពុងធ្វើដំណើរ ៤ គីឡូមែត្រ . . .'),
+                                            Icon(Icons.location_on, color: Colors.red,)
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('តម្លៃ ៩៩០០ រ', style: TextStyle(fontSize: 17),),
+                                      Icon(Icons.qr_code_scanner)
+                                    ],
+                                  ),
+                                ),
+                              //   Padding(
+                              //     padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
+                              //     child: Row(
+                              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //       children: [
+                              //         Icon(Icons.call),
+                              //         Icon(Icons.chat_bubble_outline),
+                              //         Container(
+                              //   child: ElevatedButton(
+                              //       style: const ButtonStyle(
+                              //         backgroundColor:
+                              //             MaterialStatePropertyAll(Colors.red),
+                              //       ),
+                              //       onPressed: () {
+                              //         Navigator.pop(context);
+                              //       },
+                              //       child: Text(
+                              //         'លុបចោលការកក់',
+                              //         style: TextStyle(color: Colors.white),
+                              //       )),
+                              // ),
+                              
+                              //       ],
+                              //     ),
+                              //   )
+                              ],
+                            )
+                          ),
+              ),
             ],
           ),
         ),
-        bottomNavigationBar: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-                width: MediaQuery.sizeOf(context).width * 7 / 12,
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Text(
-                    selectedAddress.isNotEmpty
-                        ? selectedAddress
-                        : 'សូមជ្រើសរើសទីតាំងគោលដៅលើផែនទី ឬអាចចុចប៊ូតុងដើម្បីកំណត់យកទីតាំងបច្ចុប្បន្ន',
-                    style: TextStyle(color: Colors.grey.shade500),
-                  ),
-                )),
-            Container(
-              width: MediaQuery.sizeOf(context).width * 5 /  12,
-              child: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        latDir = selectedLatLng.latitude;
-                        longDir = selectedLatLng.longitude;
-                        print(latDir);
-                        print(longDir);
-                        isLoading = true;
-                      });
-                      await Future.delayed(Duration(seconds: 3), () {
-                        setState(() {
-                          isLoading = false;
-                        });
-                      });
-                      //await postAddress();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => const Waiting(),
-                          ));
-                    },
-                    style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(Colors.red),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 2, right: 2),
-                      child: Text(
-                        'បញ្ជាក់ការកក់',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    )),
-              ),
-            ),
-          ],
-        ));
+        );
   }
 }

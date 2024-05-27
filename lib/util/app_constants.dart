@@ -1,10 +1,10 @@
 import 'package:scholarar/data/model/response/language_model.dart';
 
 //location
-  late String latCur;
-  late String longCur;
-  late String latDir;
-  late String longDir;
+  late double latCur;
+  late double longCur;
+  late double latDir;
+  late double longDir;
 
 class AppConstants {
   static const String theme = "authenticator_theme";

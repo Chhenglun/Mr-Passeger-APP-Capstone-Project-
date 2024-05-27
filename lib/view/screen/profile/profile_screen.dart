@@ -24,7 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Container(
-          height: MediaQuery.sizeOf(context).height * 1 / 5,
+          height: MediaQuery.sizeOf(context).height * 6 / 50,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Colors.red)

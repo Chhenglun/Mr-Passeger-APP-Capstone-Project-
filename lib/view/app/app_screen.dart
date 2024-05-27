@@ -89,26 +89,26 @@ class _AppScreenState extends State<AppScreen> {
         //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         destinations: [
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
-            selectedIcon: FaIcon(FontAwesomeIcons.house, color: Colors.white),
+            icon: FaIcon(Icons.home, color: Colors.white, size: 20,),
+            selectedIcon: FaIcon(Icons.home, color: Colors.white, size: 33),
             label: 'Home'.tr,
           ),
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.graduationCap, color: Colors.white),
+            icon: FaIcon(FontAwesomeIcons.car, color: Colors.white, size: 17,),
             selectedIcon:
-                FaIcon(FontAwesomeIcons.graduationCap, color: Colors.white),
+                FaIcon(FontAwesomeIcons.car, color: Colors.white, size: 29),
             label: 'Booking'.tr,
           ),
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.circlePlay, color: Colors.white),
+            icon: FaIcon(FontAwesomeIcons.message, color: Colors.white, size: 17,),
             selectedIcon:
-                FaIcon(FontAwesomeIcons.circlePlay, color: Colors.white),
+                FaIcon(FontAwesomeIcons.message, color: Colors.white, size: 29),
             label: 'Chat'.tr,
           ),
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.store, color: Colors.white),
-            selectedIcon: FaIcon(FontAwesomeIcons.store, color: Colors.white),
-            label: 'Profile'.tr,
+            icon: FaIcon(Icons.person_pin, color: Colors.white, size: 20,),
+            selectedIcon: FaIcon(Icons.person_pin, color: Colors.white, size: 33),
+            label: 'Account'.tr,
           ),
         ],
       ),

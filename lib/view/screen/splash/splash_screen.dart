@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scholarar/controller/auth_controller.dart';
@@ -18,7 +20,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   SharedPreferences? sharedPreferences;
   AuthController authController = Get.find<AuthController>();
   SplashController splashController = Get.find<SplashController>();
@@ -26,12 +27,12 @@ class _SplashScreenState extends State<SplashScreen> {
   afterSplash() async {
     sharedPreferences = await SharedPreferences.getInstance();
     splashController.changeIndex(0);
-    if(mounted) {
+    if (mounted) {
       try {
         String token = sharedPreferences!.getString(AppConstants.token)!;
         if (token.isNotEmpty) {
           print("First Check Token $token");
-          await authController.getUserInfo().then((_){
+          await authController.getUserInfo().then((_) {
             nextScreenReplace(Get.context, AppScreen());
           });
         } else {
@@ -39,7 +40,11 @@ class _SplashScreenState extends State<SplashScreen> {
           nextScreenReplace(context, AppScreen());
         }
       } catch (e) {
-        nextScreenReplace(Get.context, AppScreen());
+        print('else');
+        Timer(Duration(seconds: 5), () {
+          nextScreenReplace(Get.context, AppScreen());
+        });
+        
       }
     }
   }
@@ -53,15 +58,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorResources.blueColor,
-      body: Center(
-        child: Image(
-          width: 110,
-          height: 110,
+        backgroundColor: ColorResources.whiteColor,
+        body: Center(
+            child: Image(
+          width: 300,
+          height: 300,
           image: AssetImage(AppConstants.logo),
           fit: BoxFit.contain,
-        )
-      )
-    );
+        )));
   }
 }

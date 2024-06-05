@@ -525,15 +525,15 @@
     },
     {
       "name": "google_maps_flutter_ios",
-      "rootUri": "file:///Users/macbook/.pub-cache/hosted/pub.dev/google_maps_flutter_ios-2.6.1",
+      "rootUri": "file:///Users/macbook/.pub-cache/hosted/pub.dev/google_maps_flutter_ios-2.6.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "google_maps_flutter_platform_interface",
-      "rootUri": "file:///Users/macbook/.pub-cache/hosted/pub.dev/google_maps_flutter_platform_interface-2.7.1",
+      "rootUri": "file:///Users/macbook/.pub-cache/hosted/pub.dev/google_maps_flutter_platform_interface-2.6.0",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.1"
     },
     {
       "name": "google_maps_flutter_web",
@@ -1214,7 +1214,8 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-06-05T15:45:49.550621Z",
+
+  "generated": "2024-05-29T17:14:07.514632Z",
   "generator": "pub",
   "generatorVersion": "3.4.1",
   "flutterRoot": "file:///Users/macbook/flutter",

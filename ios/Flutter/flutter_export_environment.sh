@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/macbook/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/macbook/Developer/Flutter_Project/Mr-Passeger-APP-Capstone-Project-"
+export "FLUTTER_ROOT=/Users/boutaiy/Documents/flutter 2"
+export "FLUTTER_APPLICATION_PATH=/Users/boutaiy/Desktop/Capstone Pessenger/Mr-Passeger-APP-Capstone-Project-"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=/Users/macbook/Developer/Flutter_Project/Mr-Passeger-APP-Capstone-Project-/lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"

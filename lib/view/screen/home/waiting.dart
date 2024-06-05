@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scholarar/view/screen/booking/booking_screen.dart';
 import 'dart:async';
 
 import 'package:scholarar/view/screen/home/driver_accepted.dart';
@@ -27,7 +28,7 @@ class _WaitingState extends State<Waiting> {
           _timer.cancel(); // Stop the timer when countdown reaches 0
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => DriverAccepted()),
+            MaterialPageRoute(builder: (context) => BookingScreen()),
           );
         }
       });

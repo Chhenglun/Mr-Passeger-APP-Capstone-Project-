@@ -314,6 +314,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "flutter_inappwebview",
+      "rootUri": "file:///Users/boutaiy/.pub-cache/hosted/pub.dev/flutter_inappwebview-5.8.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
       "name": "flutter_lints",
       "rootUri": "file:///Users/boutaiy/.pub-cache/hosted/pub.dev/flutter_lints-3.0.2",
       "packageUri": "lib/",
@@ -324,6 +330,12 @@
       "rootUri": "file:///Users/boutaiy/Documents/flutter%202/packages/flutter_localizations",
       "packageUri": "lib/",
       "languageVersion": "3.2"
+    },
+    {
+      "name": "flutter_paypal_payment",
+      "rootUri": "file:///Users/boutaiy/.pub-cache/hosted/pub.dev/flutter_paypal_payment-1.0.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
     },
     {
       "name": "flutter_plugin_android_lifecycle",
@@ -1202,7 +1214,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-05-31T17:16:54.664585Z",
+  "generated": "2024-06-03T06:08:52.938712Z",
   "generator": "pub",
   "generatorVersion": "3.4.0-282.3.beta",
   "flutterRoot": "file:///Users/boutaiy/Documents/flutter%202",

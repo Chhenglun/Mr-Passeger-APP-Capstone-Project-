@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:scholarar/view/screen/booking/booking_screen.dart';
+import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
@@ -42,32 +42,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               backgroundColor: MaterialStatePropertyAll(Colors.red),
                             ),
                 onPressed: (){
-                  Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) => const CurrentLocation(),
-                                  )
-                                );
+                  nextScreen(context, CurrentLocation());
                 },
                 child: Text('Booking', style: TextStyle(color: Colors.white),),
                 )
               ),
-            Center(
-                child: ElevatedButton(
-                  style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(Colors.red),
-                  ),
-                  onPressed: (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => const BookingScreen(),
-                        )
-                    );
-                  },
-                  child: Text('Tracking', style: TextStyle(color: Colors.white),),
-                )
-            ),
           ],
         ),
         ),

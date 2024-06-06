@@ -2,10 +2,19 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
+import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/app/app_screen.dart';
+import 'package:scholarar/view/screen/booking/message.dart';
+import 'package:scholarar/view/screen/booking/profile_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../chat/chat_screen.dart';
+import '../profile/profile_screen.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -23,6 +32,13 @@ class _BookingScreenState extends State<BookingScreen> {
   StreamSubscription<Position>? positionStreamSubscription;
   String url = "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
   Timer? driverTimer;
+  Uri dialnumber = Uri(scheme: 'tel', path: '012345678');
+  callNumber () async{
+    await launchUrl(dialnumber);
+  }
+  directCall() async{
+    await FlutterPhoneDirectCaller.callNumber('012345678');
+  }
 
   @override
   void initState() {
@@ -148,11 +164,6 @@ class _BookingScreenState extends State<BookingScreen> {
             },
             markers: {
               Marker(
-                markerId: MarkerId("driver"),
-                position: driverPosition,
-                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-              ),
-              Marker(
                 markerId: MarkerId("user"),
                 position: currentPosition,
                 icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
@@ -186,7 +197,9 @@ class _BookingScreenState extends State<BookingScreen> {
                       ),
                       Divider(),
                       GestureDetector(
-                        onTap: (){},
+                        onTap: (){
+                          nextScreen(context, DriverProfileScreen());
+                        },
                         child: Row(
                           children: [
                             Padding(
@@ -238,8 +251,10 @@ class _BookingScreenState extends State<BookingScreen> {
                               ),
                               child: Stack(
                                   children:[
-                                    IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.phone_fill,color: Colors.white,)),
-                                  ]
+                                    IconButton(
+                                        onPressed: callNumber,
+                                  icon: Icon(CupertinoIcons.phone_fill,color: Colors.white,)),
+                                  ],
                               ),
                             ),
                             SizedBox(width: 20,),
@@ -250,7 +265,9 @@ class _BookingScreenState extends State<BookingScreen> {
                               ),
                               child: Stack(
                                   children:[
-                                    IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.chat_bubble_fill,color: Colors.white,)),
+                                    IconButton(onPressed: (){
+                                      nextScreen(context, MessageScreen());
+                                    }, icon: Icon(CupertinoIcons.chat_bubble_fill,color: Colors.white,)),
                                   ]
                               ),
                             ),
@@ -260,7 +277,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                 backgroundColor: Colors.red[400],
                                 padding: EdgeInsets.symmetric(horizontal: 40,vertical: 10)
                               ),
-                              onPressed: (){},
+                              onPressed: (){
+                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> AppScreen()), (Route<dynamic> route) => false,);
+                              },
                                 child: Text("លុបចោលការកក់",style: TextStyle(color: Colors.white,fontSize: 20),),
                             )
                           ],
@@ -273,7 +292,6 @@ class _BookingScreenState extends State<BookingScreen> {
           ),
         ]
       ),
-
     );
   }
 }

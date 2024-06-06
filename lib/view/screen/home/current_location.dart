@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:geocoding/geocoding.dart';
@@ -16,7 +17,8 @@ class CurrentLocation extends StatefulWidget {
 class _CurrentLocationState extends State<CurrentLocation> {
   bool isLoading = false;
   late GoogleMapController googleMapController;
-  final TextEditingController _searchController = TextEditingController();
+  TextEditingController _searchFromController = TextEditingController(text: selectedFromAddress);
+  TextEditingController _searchToController = TextEditingController(text: selectedToAddress);
 
   static const CameraPosition initialCameraPosition = CameraPosition(
       target: LatLng(11.672144885466007, 105.0565917044878), zoom: 15);
@@ -24,7 +26,6 @@ class _CurrentLocationState extends State<CurrentLocation> {
 
   Set<Marker> markers = {};
   LatLng selectedLatLng = LatLng(0, 0);
-  String selectedAddress = '';
 
   Future<Position> _getGeoLocationPosition() async {
     bool serviceEnabled;
@@ -65,10 +66,35 @@ class _CurrentLocationState extends State<CurrentLocation> {
         desiredAccuracy: LocationAccuracy.high);
   }
 
-  void searchLocation() async {
+  void searchFromLocation() async {
     try {
       List<Location> locations =
-          await locationFromAddress(_searchController.text);
+          await locationFromAddress(_searchToController.text);
+      if (locations.isNotEmpty) {
+        LatLng searchedLatLng =
+            LatLng(locations[0].latitude, locations[0].longitude);
+
+        markers.clear();
+        markers.add(Marker(
+            markerId: MarkerId('searchedLocation'), position: searchedLatLng));
+
+        googleMapController
+            .animateCamera(CameraUpdate.newLatLng(searchedLatLng));
+
+        setState(() {
+          selectedLatLng = searchedLatLng;
+          getAddressFromLatLng(searchedLatLng);
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  void searchToLocation() async {
+    try {
+      List<Location> locations =
+          await locationFromAddress(_searchToController.text);
       if (locations.isNotEmpty) {
         LatLng searchedLatLng =
             LatLng(locations[0].latitude, locations[0].longitude);
@@ -107,12 +133,56 @@ class _CurrentLocationState extends State<CurrentLocation> {
     });
   }
 
+  Future getCurrentFromLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
+
+    markers.clear();
+    markers.add(
+        Marker(markerId: MarkerId('currentLocation'), position: currentLatLng));
+
+    googleMapController.animateCamera(CameraUpdate.newLatLng(currentLatLng));
+
+    setState(() {
+      selectedLatLng = currentLatLng;
+      getAddressFromLatLng(currentLatLng);
+    });
+  }
+
+  Future getCurrentToLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
+
+    markers.clear();
+    markers.add(
+        Marker(markerId: MarkerId('currentLocation'), position: currentLatLng));
+
+    googleMapController.animateCamera(CameraUpdate.newLatLng(currentLatLng));
+
+    setState(() {
+      selectedLatLng = currentLatLng;
+      getAddressFromLatLng(currentLatLng);
+    });
+  }
+
   void getAddressFromLatLng(LatLng latLng) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
     Placemark place = placemarks[0];
     setState(() {
-      selectedAddress =
+      selectedFromAddress =
+          "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
+    });
+  }
+
+  void getAddressToLatLng(LatLng latLng) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+    Placemark place = placemarks[0];
+    setState(() {
+      selectedToAddress =
           "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
     });
   }
@@ -121,6 +191,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
     await _getGeoLocationPosition();
     await getCurrentLocation();
     setState(() {
+      //_searchFromController = selectedAddress;
       latCur = selectedLatLng.latitude;
       longCur = selectedLatLng.longitude;
       print(latCur);
@@ -148,12 +219,12 @@ class _CurrentLocationState extends State<CurrentLocation> {
         //   title: const Text("ជ្រើសរើសទីតាំងចាប់ផ្ដើម", style: TextStyle(fontSize: 12),),
         //   centerTitle: true,
         // ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            await getCurrentLocation();
-          },
-          child: Icon(Icons.my_location),
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     await getCurrentLocation();
+        //   },
+        //   child: Icon(Icons.my_location),
+        // ),
         body: SafeArea(
           child: Stack(
             children: [
@@ -186,12 +257,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                         Positioned(
                           top: 10,
                           left: 10,
-                          child: Column(
-                            children: [
-                              Container(
-                                // decoration: BoxDecoration(
-                                //     color: Colors.black,
-                                //     borderRadius: BorderRadius.circular(25)),
+                          child: Container(
                                 child: ElevatedButton(
                                     style: const ButtonStyle(
                                       backgroundColor:
@@ -213,23 +279,168 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                       ],
                                     )),
                               ),
-                              // TextField(
-                              //   controller: _searchController,
-                              //   decoration: InputDecoration(
-                              //     hintText: 'ស្វែងរកទីតាំង',
-                              //     border: OutlineInputBorder(),
-                              //   ),
-                              // ),
-                      // IconButton(
-                      //   icon: Icon(Icons.search),
-                      //   onPressed: searchLocation,
-                      // ),
-                            ],
+                        ),
+                        Positioned(
+                          bottom: 10,
+                          right: 10,
+                          child: FloatingActionButton(
+                            onPressed: () async {
+                              await getCurrentLocation();
+                            },
+                            child: Icon(Icons.my_location),
                           ),
                         ),
                       ],
                     ),
                   ),
+                  Container(
+                      padding: EdgeInsets.fromLTRB(5, 5, 10, 5),
+                      child: Expanded(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.sizeOf(context).width * 3 / 24,
+                                  child: Text(
+                                    'From',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.red),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: Row(
+                                        children: [
+                                          selectedFromAddress.isNotEmpty
+                                          ? Container()
+                                          : InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  5, 8, 5, 8),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.red,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: Text(
+                                                'CURRENT',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 5),
+                                              child: TextField(
+                                                controller:
+                                                    _searchFromController,
+                                                decoration: InputDecoration(
+                                                    suffixIcon: IconButton(
+                                                      onPressed: () {},
+                                                      icon: Icon(Icons.search,
+                                                          color: Colors.black),
+                                                    ),
+                                                    hintText: selectedFromAddress.isNotEmpty
+                        ? selectedFromAddress
+                        :'Search...',
+                                                    border: InputBorder.none),
+                                                onSubmitted: (query) =>
+                                                    searchFromLocation(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                TextButton(onPressed: () {}, child: Text('OK'))
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.sizeOf(context).width * 3 / 24,
+                                  child: Text(
+                                    'To',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.red),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: Row(
+                                        children: [
+                                          selectedToAddress.isNotEmpty
+                                          ? Container()
+                                          : InkWell(
+                                            child: Container(
+                                              padding:
+                                                  EdgeInsets.fromLTRB(5, 8, 5, 8),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.red,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10)),
+                                              child: Text(
+                                                'CURRENT',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 5),
+                                              child: TextField(
+                                                controller: _searchToController,
+                                                decoration: InputDecoration(
+                                                    suffixIcon: IconButton(
+                                                      onPressed: () {},
+                                                      icon: Icon(Icons.search,
+                                                          color: Colors.black),
+                                                    ),
+                                                    hintText: 'Search...',
+                                                    border: InputBorder.none),
+                                                onSubmitted: (query) =>
+                                                    searchFromLocation(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                TextButton(onPressed: () {}, child: Text('OK'))
+                              ],
+                            ),
+                          ],
+                        ),
+                      )),
                   // Padding(
                   //   padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                   //   child: Column(
@@ -244,31 +455,32 @@ class _CurrentLocationState extends State<CurrentLocation> {
                 ],
               ),
               if (isLoading == true)
-              Container(
-                color: Colors.white.withOpacity(0.8),
-                child: Center(
-                  child: Text('Loading...'),
+                Container(
+                  color: Colors.white.withOpacity(0.8),
+                  child: Center(
+                    child: Text('Loading...'),
+                  ),
                 ),
-              ),
             ],
           ),
         ),
         bottomNavigationBar: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // Container(
+            //     width: MediaQuery.sizeOf(context).width * 7 / 12,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(3.0),
+            //       child: Text(
+            //         selectedAddress.isNotEmpty
+            //             ? selectedAddress
+            //             : 'សូមជ្រើសរើសទីតាំងគោលដៅលើផែនទី ឬអាចចុចប៊ូតុងដើម្បីកំណត់យកទីតាំងបច្ចុប្បន្ន',
+            //         style: TextStyle(color: Colors.grey.shade500),
+            //       ),
+            //     )),
             Container(
-                width: MediaQuery.sizeOf(context).width * 7 / 12,
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Text(
-                    selectedAddress.isNotEmpty
-                        ? selectedAddress
-                        : 'សូមជ្រើសរើសទីតាំងគោលដៅលើផែនទី ឬអាចចុចប៊ូតុងដើម្បីកំណត់យកទីតាំងបច្ចុប្បន្ន',
-                    style: TextStyle(color: Colors.grey.shade500),
-                  ),
-                )),
-            Container(
-              width: MediaQuery.sizeOf(context).width * 5 /  12,
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              width: MediaQuery.sizeOf(context).width * 12 / 12,
               child: Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: ElevatedButton(
@@ -295,15 +507,12 @@ class _CurrentLocationState extends State<CurrentLocation> {
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(Colors.red),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 2, right: 2),
-                      child: Text(
-                        'បញ្ជាក់ការកក់',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
-                      ),
+                    child: Text(
+                      'បញ្ជាក់ការកក់',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
                     )),
               ),
             ),

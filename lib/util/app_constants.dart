@@ -6,6 +6,9 @@ import 'package:scholarar/data/model/response/language_model.dart';
   late double latDir;
   late double longDir;
 
+  String selectedFromAddress = '';
+  String selectedToAddress = '';
+
 class AppConstants {
   static const String theme = "authenticator_theme";
   static const String appName = "Authenticator";

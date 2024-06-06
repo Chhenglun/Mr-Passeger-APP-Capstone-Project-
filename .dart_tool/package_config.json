@@ -338,6 +338,12 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "flutter_phone_direct_caller",
+      "rootUri": "file:///Users/boutaiy/.pub-cache/hosted/pub.dev/flutter_phone_direct_caller-2.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///Users/boutaiy/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.19",
       "packageUri": "lib/",
@@ -504,6 +510,12 @@
       "rootUri": "file:///Users/boutaiy/.pub-cache/hosted/pub.dev/get_it-7.7.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "google_fonts",
+      "rootUri": "file:///Users/boutaiy/.pub-cache/hosted/pub.dev/google_fonts-6.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
     },
     {
       "name": "google_maps",
@@ -1214,7 +1226,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-06-03T06:08:52.938712Z",
+  "generated": "2024-06-06T18:55:52.955561Z",
   "generator": "pub",
   "generatorVersion": "3.4.0-282.3.beta",
   "flutterRoot": "file:///Users/boutaiy/Documents/flutter%202",

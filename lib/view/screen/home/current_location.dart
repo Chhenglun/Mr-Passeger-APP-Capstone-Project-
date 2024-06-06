@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -15,10 +17,18 @@ class CurrentLocation extends StatefulWidget {
 }
 
 class _CurrentLocationState extends State<CurrentLocation> {
+  bool fromSelected = false;
+  bool ToSelected = false;
   bool isLoading = false;
   late GoogleMapController googleMapController;
-  TextEditingController _searchFromController = TextEditingController(text: selectedFromAddress);
-  TextEditingController _searchToController = TextEditingController(text: selectedToAddress);
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyEachFrom = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyEachTo = GlobalKey<FormState>();
+  TextEditingController _searchController = TextEditingController();
+  TextEditingController _searchFromController =
+      TextEditingController(text: selectedFromAddress);
+  TextEditingController _searchToController =
+      TextEditingController(text: selectedToAddress);
 
   static const CameraPosition initialCameraPosition = CameraPosition(
       target: LatLng(11.672144885466007, 105.0565917044878), zoom: 15);
@@ -66,10 +76,10 @@ class _CurrentLocationState extends State<CurrentLocation> {
         desiredAccuracy: LocationAccuracy.high);
   }
 
-  void searchFromLocation() async {
+  void searchLocation() async {
     try {
       List<Location> locations =
-          await locationFromAddress(_searchToController.text);
+          await locationFromAddress(_searchController.text);
       if (locations.isNotEmpty) {
         LatLng searchedLatLng =
             LatLng(locations[0].latitude, locations[0].longitude);
@@ -83,32 +93,9 @@ class _CurrentLocationState extends State<CurrentLocation> {
 
         setState(() {
           selectedLatLng = searchedLatLng;
-          getAddressFromLatLng(searchedLatLng);
-        });
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
-  void searchToLocation() async {
-    try {
-      List<Location> locations =
-          await locationFromAddress(_searchToController.text);
-      if (locations.isNotEmpty) {
-        LatLng searchedLatLng =
-            LatLng(locations[0].latitude, locations[0].longitude);
-
-        markers.clear();
-        markers.add(Marker(
-            markerId: MarkerId('searchedLocation'), position: searchedLatLng));
-
-        googleMapController
-            .animateCamera(CameraUpdate.newLatLng(searchedLatLng));
-
-        setState(() {
-          selectedLatLng = searchedLatLng;
-          getAddressFromLatLng(searchedLatLng);
+          fromSelected == false
+              ? getAddressFromLatLng(searchedLatLng)
+              : getAddressToLatLng(searchedLatLng);
         });
       }
     } catch (e) {
@@ -129,41 +116,9 @@ class _CurrentLocationState extends State<CurrentLocation> {
 
     setState(() {
       selectedLatLng = currentLatLng;
-      getAddressFromLatLng(currentLatLng);
-    });
-  }
-
-  Future getCurrentFromLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
-
-    markers.clear();
-    markers.add(
-        Marker(markerId: MarkerId('currentLocation'), position: currentLatLng));
-
-    googleMapController.animateCamera(CameraUpdate.newLatLng(currentLatLng));
-
-    setState(() {
-      selectedLatLng = currentLatLng;
-      getAddressFromLatLng(currentLatLng);
-    });
-  }
-
-  Future getCurrentToLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    LatLng currentLatLng = LatLng(position.latitude, position.longitude);
-
-    markers.clear();
-    markers.add(
-        Marker(markerId: MarkerId('currentLocation'), position: currentLatLng));
-
-    googleMapController.animateCamera(CameraUpdate.newLatLng(currentLatLng));
-
-    setState(() {
-      selectedLatLng = currentLatLng;
-      getAddressFromLatLng(currentLatLng);
+      fromSelected == false
+          ? getAddressFromLatLng(currentLatLng)
+          : getAddressToLatLng(currentLatLng);
     });
   }
 
@@ -174,6 +129,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
     setState(() {
       selectedFromAddress =
           "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
+      _searchFromController.text = selectedFromAddress;
     });
   }
 
@@ -184,6 +140,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
     setState(() {
       selectedToAddress =
           "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
+      _searchToController.text = selectedToAddress;
     });
   }
 
@@ -192,10 +149,10 @@ class _CurrentLocationState extends State<CurrentLocation> {
     await getCurrentLocation();
     setState(() {
       //_searchFromController = selectedAddress;
-      latCur = selectedLatLng.latitude;
-      longCur = selectedLatLng.longitude;
-      print(latCur);
-      print(longCur);
+      // latCur = selectedLatLng.latitude;
+      // longCur = selectedLatLng.longitude;
+      // print(latCur);
+      // print(longCur);
     });
   }
 
@@ -236,209 +193,360 @@ class _CurrentLocationState extends State<CurrentLocation> {
                     child: Stack(
                       children: [
                         GoogleMap(
-                          initialCameraPosition: initialCameraPosition,
-                          markers: markers,
-                          zoomControlsEnabled: false,
-                          mapType: MapType.normal,
-                          onMapCreated: (GoogleMapController controller) {
-                            googleMapController = controller;
-                          },
-                          onTap: (LatLng latLng) {
-                            markers.clear();
-                            markers.add(Marker(
-                                markerId: MarkerId('selectedLocation'),
-                                position: latLng));
-                            setState(() {
-                              selectedLatLng = latLng;
-                              getAddressFromLatLng(latLng);
-                            });
-                          },
-                        ),
+                            initialCameraPosition: initialCameraPosition,
+                            markers: markers,
+                            zoomControlsEnabled: false,
+                            mapType: MapType.normal,
+                            onMapCreated: (GoogleMapController controller) {
+                              googleMapController = controller;
+                            },
+                            onTap: ToSelected == false
+                                ? (LatLng latLng) {
+                                    markers.clear();
+                                    markers.add(Marker(
+                                        markerId: MarkerId('selectedLocation'),
+                                        position: latLng));
+                                    setState(() {
+                                      selectedLatLng = latLng;
+                                      fromSelected == false
+                                          ? getAddressFromLatLng(latLng)
+                                          : getAddressToLatLng(latLng);
+                                    });
+                                  }
+                                : null),
                         Positioned(
                           top: 10,
                           left: 10,
-                          child: Container(
-                                child: ElevatedButton(
-                                    style: const ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStatePropertyAll(Colors.red),
+                          child: Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.arrow_back_ios,
                                     ),
+                                    color: Colors.white,
                                     onPressed: () {
+                                      setState(() {
+                                        selectedFromAddress = '';
+                                        selectedToAddress = '';
+                                      });
                                       Navigator.pop(context);
                                     },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.arrow_back_ios,
-                                          color: Colors.white,
-                                        ),
-                                        Text(
-                                          'ត្រឡប់ក្រោយ',
-                                          style: TextStyle(color: Colors.white),
-                                        )
-                                      ],
-                                    )),
+                                  ),
+                                ),
                               ),
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: FloatingActionButton(
-                            onPressed: () async {
-                              await getCurrentLocation();
-                            },
-                            child: Icon(Icons.my_location),
+                              SizedBox(
+                                width:
+                                    MediaQuery.sizeOf(context).width * 1 / 24,
+                              ),
+                              Container(
+                                width:
+                                    MediaQuery.sizeOf(context).width * 17 / 24,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(25),
+                                  border:
+                                      Border.all(color: Colors.white, width: 2),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 6),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      IconButton(
+                                        color: Colors.black,
+                                        icon: Icon(
+                                          Icons.search,
+                                        ),
+                                        onPressed: () {
+                                          searchLocation();
+                                        },
+                                      ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.5 /
+                                                24,
+                                      ),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _searchController,
+                                          decoration: InputDecoration(
+                                            hintText: "Search",
+                                            hintStyle:
+                                                TextStyle(color: Colors.grey),
+                                            border: InputBorder.none,
+                                          ),
+                                          onSubmitted: (query) =>
+                                              searchLocation(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                        ToSelected == false
+                            ? Positioned(
+                                bottom: 65,
+                                right: 10,
+                                child: FloatingActionButton(
+                                  onPressed: () async {
+                                    await getCurrentLocation();
+                                  },
+                                  child: Icon(Icons.my_location),
+                                ),
+                              )
+                            : Container()
                       ],
                     ),
                   ),
                   Container(
                       padding: EdgeInsets.fromLTRB(5, 5, 10, 5),
                       child: Expanded(
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.sizeOf(context).width * 3 / 24,
-                                  child: Text(
-                                    'From',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.sizeOf(context).width *
+                                        3 /
+                                        24,
+                                    child: Text(
+                                      'From',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.red),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 5),
-                                      child: Row(
-                                        children: [
-                                          selectedFromAddress.isNotEmpty
-                                          ? Container()
-                                          : InkWell(
-                                            onTap: () {},
-                                            child: Container(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  5, 8, 5, 8),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.red,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Text(
-                                                'CURRENT',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                    color: Colors.white),
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.red),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 5),
+                                        child: Row(
+                                          children: [
+                                            // selectedFromAddress.isNotEmpty
+                                            //     ? Container()
+                                            //     : InkWell(
+                                            //         onTap: () {},
+                                            //         child: Container(
+                                            //           padding:
+                                            //               EdgeInsets.fromLTRB(
+                                            //                   5, 8, 5, 8),
+                                            //           decoration: BoxDecoration(
+                                            //               color: Colors.red,
+                                            //               borderRadius:
+                                            //                   BorderRadius
+                                            //                       .circular(10)),
+                                            //           child: Text(
+                                            //             'CURRENT',
+                                            //             style: TextStyle(
+                                            //                 fontSize: 12,
+                                            //                 color: Colors.white),
+                                            //           ),
+                                            //         ),
+                                            //       ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 5, right: 5),
+                                                child: Form(
+                                                  key: _formKeyEachFrom,
+                                                  child: TextFormField(
+                                                    controller:
+                                                        _searchFromController,
+                                                    validator: (un_value) {
+                                                      if (un_value == null ||
+                                                          un_value.isEmpty) {
+                                                        return 'Please choose FROM location';
+                                                      }
+                                                      return null;
+                                                    },
+                                                    enabled:
+                                                        false, //!fromSelected,
+                                                    decoration: InputDecoration(
+                                                        // suffixIcon: fromSelected ==
+                                                        //         false
+                                                        //     ? IconButton(
+                                                        //         onPressed: () {},
+                                                        //         icon: Icon(
+                                                        //             Icons.search,
+                                                        //             color: Colors
+                                                        //                 .black),
+                                                        //       )
+                                                        //     : null,
+                                                        // hintText: selectedFromAddress
+                                                        //         .isNotEmpty
+                                                        //     ? selectedFromAddress
+                                                        //     : 'Select location...',
+                                                        labelText:
+                                                            'Select location',
+                                                        border:
+                                                            InputBorder.none),
+                                                    // onSubmitted: (query) =>
+                                                    //     searchFromLocation(),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5),
-                                              child: TextField(
-                                                controller:
-                                                    _searchFromController,
-                                                decoration: InputDecoration(
-                                                    suffixIcon: IconButton(
-                                                      onPressed: () {},
-                                                      icon: Icon(Icons.search,
-                                                          color: Colors.black),
-                                                    ),
-                                                    hintText: selectedFromAddress.isNotEmpty
-                        ? selectedFromAddress
-                        :'Search...',
-                                                    border: InputBorder.none),
-                                                onSubmitted: (query) =>
-                                                    searchFromLocation(),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                TextButton(onPressed: () {}, child: Text('OK'))
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.sizeOf(context).width * 3 / 24,
-                                  child: Text(
-                                    'To',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                  fromSelected == false
+                                      ? TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              if (_formKeyEachFrom.currentState
+                                                      ?.validate() ??
+                                                  false) {
+                                                fromSelected = true;
+                                                latCur =
+                                                    selectedLatLng.latitude;
+                                                longCur =
+                                                    selectedLatLng.longitude;
+                                                print(latCur);
+                                                print(longCur);
+                                              }
+                                            });
+                                          },
+                                          child: Text('OK',
+                                              style:
+                                                  TextStyle(color: Colors.red)))
+                                      : Container()
+                                  // : TextButton(
+                                  //     onPressed: () {},
+                                  //     child: Text('  ',))
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.sizeOf(context).width *
+                                        3 /
+                                        24,
+                                    child: Text(
+                                      'To',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.red),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 5),
-                                      child: Row(
-                                        children: [
-                                          selectedToAddress.isNotEmpty
-                                          ? Container()
-                                          : InkWell(
-                                            child: Container(
-                                              padding:
-                                                  EdgeInsets.fromLTRB(5, 8, 5, 8),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.red,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10)),
-                                              child: Text(
-                                                'CURRENT',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                    color: Colors.white),
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.red),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 5, right: 5),
+                                        child: Row(
+                                          children: [
+                                            // selectedToAddress.isNotEmpty
+                                            //     ? Container()
+                                            //     : InkWell(
+                                            //         child: Container(
+                                            //           padding:
+                                            //               EdgeInsets.fromLTRB(
+                                            //                   5, 8, 5, 8),
+                                            //           decoration: BoxDecoration(
+                                            //               color: Colors.red,
+                                            //               borderRadius:
+                                            //                   BorderRadius
+                                            //                       .circular(10)),
+                                            //           child: Text(
+                                            //             'CURRENT',
+                                            //             style: TextStyle(
+                                            //                 fontSize: 12,
+                                            //                 color: Colors.white),
+                                            //           ),
+                                            //         ),
+                                            //       ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 5),
+                                                child: Form(
+                                                  key: _formKeyEachTo,
+                                                  child: TextFormField(
+                                                    controller:
+                                                        _searchToController,
+                                                    validator: (un_value) {
+                                                      if (un_value == null ||
+                                                          un_value.isEmpty) {
+                                                        return 'Please choose To location';
+                                                      }
+                                                      return null;
+                                                    },
+                                                    enabled:
+                                                        false, //!ToSelected,
+                                                    decoration: InputDecoration(
+                                                        // suffixIcon: ToSelected ==
+                                                        //         false
+                                                        //     ? IconButton(
+                                                        //         onPressed: () {},
+                                                        //         icon: Icon(
+                                                        //             Icons.search,
+                                                        //             color: Colors
+                                                        //                 .black),
+                                                        //       )
+                                                        //     : null,
+                                                        // hintText: selectedToAddress
+                                                        //         .isNotEmpty
+                                                        //     ? selectedToAddress
+                                                        //     : 'Select location',
+                                                        labelText:
+                                                            'Select location',
+                                                        border:
+                                                            InputBorder.none),
+                                                    // onSubmitted: (query) =>
+                                                    //     searchToLocation(),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5),
-                                              child: TextField(
-                                                controller: _searchToController,
-                                                decoration: InputDecoration(
-                                                    suffixIcon: IconButton(
-                                                      onPressed: () {},
-                                                      icon: Icon(Icons.search,
-                                                          color: Colors.black),
-                                                    ),
-                                                    hintText: 'Search...',
-                                                    border: InputBorder.none),
-                                                onSubmitted: (query) =>
-                                                    searchFromLocation(),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                TextButton(onPressed: () {}, child: Text('OK'))
-                              ],
-                            ),
-                          ],
+                                  ToSelected == false
+                                      ? TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              if (_formKeyEachTo.currentState
+                                                      ?.validate() ??
+                                                  false) {
+                                                ToSelected = true;
+                                              }
+                                            });
+                                          },
+                                          child: Text(
+                                            'OK',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        )
+                                      : Container()
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       )),
                   // Padding(
@@ -492,17 +600,27 @@ class _CurrentLocationState extends State<CurrentLocation> {
                         print(longDir);
                         isLoading = true;
                       });
+                      if (_formKeyEachFrom.currentState!.validate() &&
+                              _formKeyEachTo.currentState!.validate() ??
+                          false) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const Waiting(),
+                            ));
+                      }
                       await Future.delayed(Duration(seconds: 3), () {
                         setState(() {
                           isLoading = false;
                         });
                       });
                       //await postAddress();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => const Waiting(),
-                          ));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (BuildContext context) => const Waiting(),
+                      //     ));
                     },
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(Colors.red),

@@ -148,11 +148,6 @@ class _BookingScreenState extends State<BookingScreen> {
             },
             markers: {
               Marker(
-                markerId: MarkerId("driver"),
-                position: driverPosition,
-                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-              ),
-              Marker(
                 markerId: MarkerId("user"),
                 position: currentPosition,
                 icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),

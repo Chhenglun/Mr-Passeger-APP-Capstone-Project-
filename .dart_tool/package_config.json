@@ -23,11 +23,7 @@
     },
     {
       "name": "args",
-<<<<<<< HEAD
-      "rootUri": "file:///Users/boutaiy/.pub-cache/hosted/pub.dev/args-2.5.0",
-=======
-      "rootUri": "file:///C:/Users/kunva/AppData/Local/Pub/Cache/hosted/pub.dev/args-2.5.0",
->>>>>>> develop_test
+      "rootUri": "file:///Users/macbook/.pub-cache/hosted/pub.dev/args-2.5.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },

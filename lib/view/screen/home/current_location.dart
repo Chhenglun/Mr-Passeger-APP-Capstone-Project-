@@ -3,11 +3,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scholarar/view/screen/home/waiting.dart';
+import 'package:curved_drawer_fork/curved_drawer_fork.dart';
 
 class CurrentLocation extends StatefulWidget {
   const CurrentLocation({super.key});
@@ -156,6 +158,13 @@ class _CurrentLocationState extends State<CurrentLocation> {
     });
   }
 
+  final _pageController = PageController();
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+  }
+
   @override
   void initState() {
     before();
@@ -182,6 +191,28 @@ class _CurrentLocationState extends State<CurrentLocation> {
         //   },
         //   child: Icon(Icons.my_location),
         // ),
+        drawer: CurvedDrawer(
+          color: const Color.fromARGB(255, 255, 240, 219),
+          buttonBackgroundColor: Colors.lightGreenAccent,
+          labelColor: Colors.red,
+          backgroundColor: Colors.transparent,
+          width: 75.0,
+          items: const <DrawerItem>[
+            DrawerItem(icon: Icon(Icons.home), label: "Home"),
+            DrawerItem(icon: Icon(FontAwesomeIcons.car), label: "Booking"),
+            DrawerItem(icon: Icon(Icons.person), label: "Profile"),
+            //Optional Label Text
+            //DrawerItem(icon: Icon(Icons.phone), label: "Contact")
+          ],
+          onTap: (index) {
+            print('Button Pressed');
+
+            _pageController.animateToPage(index,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut);
+          },
+        ),
+        //drawer: Drawer(),
         body: SafeArea(
           child: Stack(
             children: [
@@ -225,19 +256,32 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.arrow_back_ios,
-                                    ),
-                                    color: Colors.white,
-                                    onPressed: () {
-                                      setState(() {
-                                        selectedFromAddress = '';
-                                        selectedToAddress = '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  ),
+                                  child: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu),
+              color: Colors.white,
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+                                  // child: IconButton(
+                                  //     icon: Icon(
+                                  //       Icons.menu, //Icons.arrow_back_ios,
+                                  //     ),
+                                  //     color: Colors.white,
+                                  //     // onPressed: () {
+                                  //     //   setState(() {
+                                  //     //     selectedFromAddress = '';
+                                  //     //     selectedToAddress = '';
+                                  //     //   });
+                                  //     //   Navigator.pop(context);
+                                  //     // },
+                                  //     onPressed: () {
+                                  //       Scaffold.of(context).openDrawer();
+                                  //     }),
                                 ),
                               ),
                               SizedBox(

@@ -64,6 +64,7 @@ dependencies:
   flutter_paypal_payment: ^1.0.6
   flutter_phone_direct_caller: ^2.1.1
   google_fonts: ^6.2.1
+  curved_drawer_fork: ^0.0.1+1
 
 dependency_overrides:
   modal_bottom_sheet:

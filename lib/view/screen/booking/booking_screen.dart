@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,6 +13,7 @@ import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/screen/booking/message.dart';
 import 'package:scholarar/view/screen/booking/profile_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 import '../chat/chat_screen.dart';
 import '../profile/profile_screen.dart';
@@ -196,39 +198,45 @@ class _BookingScreenState extends State<BookingScreen> {
                         ),
                       ),
                       Divider(),
-                      GestureDetector(
-                        onTap: (){
-                          nextScreen(context, DriverProfileScreen());
-                        },
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
-                              child: Container(
-                                width: MediaQuery.sizeOf(context).width * 1 / 5,
-                                height: MediaQuery.sizeOf(context).height * 1 / 10,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                  image: DecorationImage(image: NetworkImage(url))
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 20,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              nextScreen(context, DriverProfileScreen());
+                            },
+                            child: Row(
                               children: [
-                                Text('លាង ម៉េងហាំង', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-                                Row(
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                                  child: Container(
+                                    width: MediaQuery.sizeOf(context).width * 1 / 5,
+                                    height: MediaQuery.sizeOf(context).height * 1 / 10,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                      image: DecorationImage(image: NetworkImage(url))
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 20,),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text('កំពុងធ្វើដំណើរ800មែត្រ . . .',style: TextStyle(fontSize: 12),),
-                                    Icon(Icons.location_on, color: Colors.red,size: 16,)
+                                    Text('លាង ម៉េងហាំង', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                                    Row(
+                                      children: [
+                                        Text('កំពុងធ្វើដំណើរ800មែត្រ . . .',style: TextStyle(fontSize: 12),),
+                                        Icon(Icons.location_on, color: Colors.red,size: 16,)
+                                      ],
+                                    )
                                   ],
-                                )
+                                ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                          Spacer(),
+                          _buildPayPalButton(context),
+                        ],
                       ),
                       Divider(),
                       Padding(
@@ -294,4 +302,81 @@ class _BookingScreenState extends State<BookingScreen> {
       ),
     );
   }
+  Widget _buildPayPalButton(BuildContext context) {
+    return Container(
+      alignment: Alignment.centerRight,
+      width: 80,
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      child: ElevatedButton(
+        onPressed: (){_startPayPalPayment(context);},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue, // Button background color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // Rounded corners
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15), // Button padding
+        ),
+        child: Icon(Icons.payment, color: Colors.white),
+      ),
+    );
+  }
+
+  void _startPayPalPayment(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => PaypalCheckoutView(
+          sandboxMode: true,
+          clientId: "your-client-id",
+          secretKey: "your-secret-key",
+          transactions: [
+            {
+              "amount": {
+                "total": '10.12',
+                "currency": "USD",
+                "details": {
+                  "subtotal": '10.12',
+                  "shipping": '0',
+                  "shipping_discount": 0
+                }
+              },
+              "description": "The payment transaction description.",
+              "item_list": {
+                "items": [
+                  {
+                    "name": "Item name",
+                    "quantity": 1,
+                    "price": '10.12',
+                    "currency": "USD"
+                  }
+                ],
+                "shipping_address": {
+                  "recipient_name": "Jane Foster",
+                  "line1": "Travis County",
+                  "line2": "",
+                  "city": "Austin",
+                  "country_code": "US",
+                  "postal_code": "73301",
+                  "phone": "+00000000",
+                  "state": "Texas"
+                },
+              }
+            }
+          ],
+          note: "Contact us for any questions on your order.",
+          onSuccess: (Map params) async {
+            print("onSuccess: $params");
+          },
+          onError: (error) {
+            print("onError: $error");
+          },
+          onCancel: (params) {
+            print('cancelled: $params');
+          },
+        ),
+      ),
+    );
+  }
+
+
 }

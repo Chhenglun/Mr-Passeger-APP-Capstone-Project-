@@ -66,6 +66,7 @@ dependencies:
   google_fonts: ^6.2.1
   curved_drawer_fork: ^0.0.1+1
 
+
 dependency_overrides:
   modal_bottom_sheet:
     git:

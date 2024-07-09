@@ -59,6 +59,13 @@ dependencies:
   geocoding: ^3.0.0
   geolocator: ^12.0.0
   animated_text_kit: ^4.2.2
+  flutter_svg: ^2.0.10
+  flutter_polyline_points: ^2.0.0
+  flutter_paypal_payment: ^1.0.6
+  flutter_phone_direct_caller: ^2.1.1
+  google_fonts: ^6.2.1
+  curved_drawer_fork: ^0.0.1+1
+
 
 dependency_overrides:
   modal_bottom_sheet:

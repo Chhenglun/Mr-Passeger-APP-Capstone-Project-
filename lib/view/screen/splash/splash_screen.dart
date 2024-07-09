@@ -10,6 +10,7 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
+import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -33,16 +34,16 @@ class _SplashScreenState extends State<SplashScreen> {
         if (token.isNotEmpty) {
           print("First Check Token $token");
           await authController.getUserInfo().then((_) {
-            nextScreenReplace(Get.context, AppScreen());
+            nextScreenReplace(Get.context, CurrentLocation());
           });
         } else {
           print("Logout Token: ");
-          nextScreenReplace(context, AppScreen());
+          nextScreenReplace(context, CurrentLocation());
         }
       } catch (e) {
         print('else');
         Timer(Duration(seconds: 5), () {
-          nextScreenReplace(Get.context, AppScreen());
+          nextScreenReplace(Get.context, CurrentLocation());
         });
         
       }

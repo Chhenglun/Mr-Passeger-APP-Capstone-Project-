@@ -6,13 +6,19 @@ import 'package:scholarar/data/model/response/language_model.dart';
   late double latDir;
   late double longDir;
 
+  String selectedFromAddress = '';
+  String selectedToAddress = '';
+
 class AppConstants {
+  //login in booking screen
+  static const String t = "";
+
   static const String theme = "authenticator_theme";
   static const String appName = "Authenticator";
-  static const String baseURL = "https://scholarar-dev.seksa.today";
+  static const String baseURL = "";
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";
-  static const String register = "/api/v1/register";
+  static const String register = "/api/users/register-passenger";
   static const String login = "/api/v1/login";
 
   static const String token = "token";
@@ -31,6 +37,7 @@ class AppConstants {
   static const String getSubscription = "api/subscription";
 
   // auth
+  static const String google_key_api = "AIzaSyCfWphfkrgQBU7YszmrV28pg-cLqwmit5M";
   static const String phoneSignIn = "";
   static const String sendVerificationSMS = "";
   static const String verificationCode = "";

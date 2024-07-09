@@ -25,17 +25,42 @@ class AuthRepository {
     return sharedPreferences.containsKey(AppConstants.token);
   }
 
-  Future<Response> register (String name, String gender,String email, String password,String confirmPassword) async {
+  // Future<Response> register (String name, String gender,String email, String password,String confirmPassword) async {
+  //   Map<String, String> body = {
+  //     'name' : name,
+  //     "gender": gender,
+  //     // "phone": phoneNumber,
+  //     // "phone_code": "855",
+  //     "email": email,
+  //     "otp_verify_code": "123456",
+  //     "password": password,
+  //     "password_confirmation": confirmPassword,
+  //     "accepted_terms_conditions": "1",
+  //   };
+  //   try {
+  //     Response response = await dioClient.postData(
+  //       AppConstants.register, body,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       }
+  //     );
+  //     return response;
+  //   } catch (e) {
+  //     throw e.toString();
+  //   }
+  // }
+
+  //Capstone
+  Future<Response> registerBooking (String name, String gender,String email, String password, String phoneNumber) async {
     Map<String, String> body = {
-      'name' : name,
+      "role": "passenger",
+      "first_name": name,
+      "last_name": name,
       "gender": gender,
-      // "phone": phoneNumber,
-      // "phone_code": "855",
-      "email": email,
-      "otp_verify_code": "123456",
+      "phone_number": phoneNumber,
+      "date_of_birth": name,
+      "email": name,
       "password": password,
-      "password_confirmation": confirmPassword,
-      "accepted_terms_conditions": "1",
     };
     try {
       Response response = await dioClient.postData(

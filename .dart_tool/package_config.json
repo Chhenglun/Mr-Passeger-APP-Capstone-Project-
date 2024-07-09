@@ -1232,10 +1232,10 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-06-09T09:58:35.665574Z",
+  "generated": "2024-07-09T17:49:27.442831Z",
   "generator": "pub",
-  "generatorVersion": "3.4.1",
+  "generatorVersion": "3.4.3",
   "flutterRoot": "file:///Users/macbook/flutter",
-  "flutterVersion": "3.22.1",
+  "flutterVersion": "3.22.2",
   "pubCache": "file:///Users/macbook/.pub-cache"
 }

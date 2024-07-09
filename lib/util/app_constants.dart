@@ -10,12 +10,15 @@ import 'package:scholarar/data/model/response/language_model.dart';
   String selectedToAddress = '';
 
 class AppConstants {
+  //login in booking screen
+  static const String t = "";
+
   static const String theme = "authenticator_theme";
   static const String appName = "Authenticator";
   static const String baseURL = "";
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";
-  static const String register = "/api/v1/register";
+  static const String register = "/api/users/register-passenger";
   static const String login = "/api/v1/login";
 
   static const String token = "token";

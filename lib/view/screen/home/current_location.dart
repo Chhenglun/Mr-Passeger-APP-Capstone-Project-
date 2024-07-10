@@ -1,15 +1,26 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scholarar/controller/auth_controller.dart';
+import 'package:scholarar/helper/get_di.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
+import 'package:scholarar/view/screen/booking/booking_screen.dart';
 import 'package:scholarar/view/screen/home/waiting.dart';
 import 'package:curved_drawer_fork/curved_drawer_fork.dart';
+import 'package:scholarar/view/screen/profile/profile_screen.dart';
+import 'package:scholarar/view/screen/profile/settings_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrentLocation extends StatefulWidget {
   const CurrentLocation({super.key});
@@ -19,6 +30,8 @@ class CurrentLocation extends StatefulWidget {
 }
 
 class _CurrentLocationState extends State<CurrentLocation> {
+  SharedPreferences? sharedPreferences;
+  AuthController authController = Get.find<AuthController>();
   bool fromSelected = false;
   bool ToSelected = false;
   bool isLoading = false;
@@ -34,6 +47,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
 
   static const CameraPosition initialCameraPosition = CameraPosition(
       target: LatLng(11.672144885466007, 105.0565917044878), zoom: 15);
+
   //target: LatLng(37.42796133580664, -122.085749655962), zoom: 14);
 
   Set<Marker> markers = {};
@@ -164,11 +178,17 @@ class _CurrentLocationState extends State<CurrentLocation> {
   void dispose() {
     _pageController.dispose();
   }
+  init() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    authController.getPassengerInfoController();
+    print("User Details: ${authController.userPassengerMap}");
+  }
 
   @override
   void initState() {
     before();
     super.initState();
+    init();
   }
 
   @override
@@ -256,41 +276,28 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: Center(
-                                  child: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              color: Colors.white,
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-                                  // child: IconButton(
-                                  //     icon: Icon(
-                                  //       Icons.menu, //Icons.arrow_back_ios,
-                                  //     ),
-                                  //     color: Colors.white,
-                                  //     // onPressed: () {
-                                  //     //   setState(() {
-                                  //     //     selectedFromAddress = '';
-                                  //     //     selectedToAddress = '';
-                                  //     //   });
-                                  //     //   Navigator.pop(context);
-                                  //     // },
-                                  //     onPressed: () {
-                                  //       Scaffold.of(context).openDrawer();
-                                  //     }),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.person, // Icons.arrow_back_ios,
+                                    ),
+                                    color: Colors.white,
+                                    onPressed: ()  {
+                                      //If this device already has a token then go to profile screen if not go to sign-in scre
+                                      String token = sharedPreferences!.getString(AppConstants.token) ?? "";
+                                      if (token != null && token.isNotEmpty) {
+                                        print("First Check Token $token");
+                                        nextScreenReplace(Get.context, SettingScreen());
+                                      } else {
+                                        print("Logout Token: ");
+                                        nextScreenReplace(context, SignInAccountScreen());
+                                      }
+                                    },
+                                  ),
                                 ),
                               ),
-                              SizedBox(
-                                width:
-                                    MediaQuery.sizeOf(context).width * 1 / 24,
-                              ),
+                              SizedBox(width: MediaQuery.sizeOf(context).width * 1 / 24),
                               Container(
-                                width:
-                                    MediaQuery.sizeOf(context).width * 17 / 24,
+                                width: MediaQuery.sizeOf(context).width * 17 / 24,
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade100,
                                   borderRadius: BorderRadius.circular(25),
@@ -311,12 +318,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                           searchLocation();
                                         },
                                       ),
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.sizeOf(context).width *
-                                                0.5 /
-                                                24,
-                                      ),
+                                      SizedBox(width: MediaQuery.sizeOf(context).width * 0.5 / 24),
                                       Expanded(
                                         child: TextField(
                                           controller: _searchController,
@@ -647,18 +649,13 @@ class _CurrentLocationState extends State<CurrentLocation> {
                       if (_formKeyEachFrom.currentState!.validate() &&
                               _formKeyEachTo.currentState!.validate() ??
                           false) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const Waiting(),
-                            ));
+                       nextScreen(context, BookingScreen());
                       }
-                      await Future.delayed(Duration(seconds: 3), () {
-                        setState(() {
-                          isLoading = false;
-                        });
-                      });
+                      // await Future.delayed(Duration(seconds: 3), () {
+                      //   setState(() {
+                      //     isLoading = false;
+                      //   });
+                      // });
                       //await postAddress();
                       // Navigator.push(
                       //     context,

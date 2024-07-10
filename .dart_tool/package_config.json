@@ -170,6 +170,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "csc_picker",
+      "rootUri": "file:///Users/macbook/.pub-cache/hosted/pub.dev/csc_picker-0.2.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "csslib",
       "rootUri": "file:///Users/macbook/.pub-cache/hosted/pub.dev/csslib-1.0.0",
       "packageUri": "lib/",
@@ -1232,10 +1238,10 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-06-09T09:58:35.665574Z",
+  "generated": "2024-07-10T01:39:08.909605Z",
   "generator": "pub",
-  "generatorVersion": "3.4.1",
+  "generatorVersion": "3.4.3",
   "flutterRoot": "file:///Users/macbook/flutter",
-  "flutterVersion": "3.22.1",
+  "flutterVersion": "3.22.2",
   "pubCache": "file:///Users/macbook/.pub-cache"
 }

@@ -65,6 +65,7 @@ dependencies:
   flutter_phone_direct_caller: ^2.1.1
   google_fonts: ^6.2.1
   curved_drawer_fork: ^0.0.1+1
+  csc_picker: ^0.2.7
 
 
 dependency_overrides:

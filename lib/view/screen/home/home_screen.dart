@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -275,18 +276,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         selectedFromAddress = '';
                                         selectedToAddress = '';
                                       });
-                                      Navigator.pop(context);
+                                     Get.to(() => CurrentLocation());
                                     },
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                width:
-                                    MediaQuery.sizeOf(context).width * 1 / 24,
-                              ),
+                              SizedBox(width: MediaQuery.sizeOf(context).width * 1 / 24),
                               Container(
-                                width:
-                                    MediaQuery.sizeOf(context).width * 17 / 24,
+                                width: MediaQuery.sizeOf(context).width * 17 / 24,
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade100,
                                   borderRadius: BorderRadius.circular(25),

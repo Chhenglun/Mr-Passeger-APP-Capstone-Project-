@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/next_screen.dart';
@@ -178,6 +181,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
               },
             ),
+<<<<<<< HEAD
             Visibility(
               child: Align(
                 alignment: Alignment.bottomCenter,
@@ -325,6 +329,161 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
           ]
         ),
+=======
+            onMapCreated: (GoogleMapController controller){
+              _controller.complete(controller);
+            },
+            polylines: {
+              Polyline(
+                polylineId: PolylineId("route"),
+                points: polyLineCoordinates,
+                color: Colors.green,
+                width: 6,
+              )
+            },
+            markers: {
+              Marker(
+                markerId: MarkerId("user"),
+                position: currentPosition,
+                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+              ),
+              Marker(
+                markerId: MarkerId("destination"),
+                position: destination,
+              ),
+            },
+          ),
+          Visibility(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                  height: MediaQuery.sizeOf(context).height * 3 / 9,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(topLeft:Radius.circular(20), topRight: Radius.circular(20))
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    physics: BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text('អ្នកបើកបរនឹងមកដល់ 3​ នាទីទៀត',style: TextStyle(fontSize: 12),),
+                              ],
+                            ),
+                          ),
+                          Divider(),
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: (){
+                                  nextScreen(context, DriverProfileScreen());
+                                },
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                                      child: Container(
+                                        width: 70,
+                                        height: 70,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(50),
+                                          image: DecorationImage(image: NetworkImage(url))
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 20,),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text('លាង ម៉េងហាំង', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                                        Row(
+                                          children: [
+                                            Text('កំពុងធ្វើដំណើរ800មែត្រ . . .',style: TextStyle(fontSize: 12),),
+                                            Icon(Icons.location_on, color: Colors.red,size: 16,)
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Spacer(),
+                              _buildPayPalButton(context),
+                            ],
+                          ),
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25, right: 10, top: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('តម្លៃ 8800 រៀល', style: TextStyle(fontSize: 17),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 20),
+                            child: Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    shape: BoxShape.circle
+                                  ),
+                                  child: Stack(
+                                      children:[
+                                        IconButton(
+                                            onPressed: callNumber,
+                                      icon: Icon(CupertinoIcons.phone_fill,color: Colors.white,)),
+                                      ],
+                                  ),
+                                ),
+                                SizedBox(width: 20,),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      shape: BoxShape.circle
+                                  ),
+                                  child: Stack(
+                                      children:[
+                                        IconButton(onPressed: (){
+                                          nextScreen(context, MessageScreen());
+                                        }, icon: Icon(CupertinoIcons.chat_bubble_fill,color: Colors.white,)),
+                                      ]
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red[400],
+                                    padding: EdgeInsets.symmetric(horizontal:16 ,vertical: 10)
+                                  ),
+                                  onPressed: (){
+                                    nextScreen(context, CurrentLocation());
+                                  },
+                                    child: Text("លុបចោលការកក់",style: TextStyle(color: Colors.white,fontSize: 16),),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+              ),
+            )
+          ),
+        ]
+>>>>>>> develop_chhenglun
       ),
     );
   }
@@ -332,7 +491,7 @@ class _BookingScreenState extends State<BookingScreen> {
     return Container(
       alignment: Alignment.centerRight,
       width: 80,
-      margin: EdgeInsets.symmetric(horizontal: 20),
+      //margin: EdgeInsets.symmetric(horizontal: ),
       child: ElevatedButton(
         onPressed: (){_startPayPalPayment(context);},
         style: ElevatedButton.styleFrom(

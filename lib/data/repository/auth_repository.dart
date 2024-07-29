@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_final_fields
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:scholarar/data/api/api_client.dart';
 import 'package:scholarar/data/model/body/auth_model.dart';
@@ -74,6 +75,34 @@ class AuthRepository {
       throw e.toString();
     }
   }
+  //Todo: RegisterPassager
+  Future<Response> registerPassager (
+      String firstName , String lastName ,String email ,
+      String password , String phoneNumber ,
+      String gender , String dateOfBirth,
+      )
+  async{
+    Map<String, dynamic> body = {
+      "first_name": firstName,
+      "last_name": lastName,
+      "email": email,
+      "password": password,
+      "phone_number": phoneNumber,
+      "date_of_birth": dateOfBirth,
+      "gender": gender,
+    };
+    try {
+      Response response = await dioClient.postData(
+          AppConstants.registerPassager, body,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+      );
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 
   Future<Response> signInWithPhone(AuthModel authModel) async {
     try {
@@ -94,6 +123,18 @@ class AuthRepository {
       throw e.toString();
     }
   }
+  //Todo: LoinPassager
+  Future<Response> loginPassager(String email , String password, BuildContext context) async {
+    try {
+      Response response = await dioClient.postData(AppConstants.loginPassager, {
+        'email': email,
+        'password': password,
+      });
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
   Future<Response> loginWithEmail (String email, String password , String  ) async {
     try {
       Response response = await dioClient.postData(AppConstants.login, {
@@ -105,6 +146,7 @@ class AuthRepository {
       throw e.toString();
     }
   }
+  //Todo:
 
   Future<Response> changeAvatar(String uuid) async {
     try {
@@ -138,6 +180,15 @@ class AuthRepository {
       String token = sharedPreferences.getString(AppConstants.token)!;
       dioClient.updateHeader(oldToken: token);
       final response = await dioClient.getData(AppConstants.getUserInfo);
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+  //Todo: Repository for getUserInfo
+  Future<Response> getPassengerRepo() async {
+    try {
+      final response = await dioClient.getData(AppConstants.getPassagerInfo);
       return response;
     } catch (e) {
       throw e.toString();

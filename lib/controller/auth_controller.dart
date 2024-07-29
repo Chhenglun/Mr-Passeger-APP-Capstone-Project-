@@ -14,6 +14,7 @@ import 'package:scholarar/helper/token_helper.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/loading_dialog.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/account/login_screen.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
@@ -65,8 +66,9 @@ class AuthController extends GetxController implements GetxService {
   bool get isConfirmPassword => _isConfirmPassword;
   bool get isAgree => _isAgree;
   Map<String, dynamic>? _userInfoMap;
-
+  Map<String, dynamic>? _userPassengerMap;
   //get
+  Map<String, dynamic>? get userPassengerMap => _userPassengerMap;
   bool get isLoading => _isLoading;
   bool get isTypingCompleted => _isTypingCompleted;
   bool get userName => _userName;
@@ -281,6 +283,54 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+  //Todo: LoginPassager
+  Future loginPassager(BuildContext context,
+      {required String email, required String password}) async {
+    loadingDialogs(Get.context!);
+    try {
+      print("LoginPassager : $email, $password");
+      _isLoading = true;
+      update();
+
+      Response apiResponse =
+      await authRepository.loginPassager(email, password, context);
+
+      if (apiResponse.statusCode == 200) {
+        Navigator.pop(Get.context!);
+        Map<String, dynamic> map = apiResponse.body;
+
+        try {
+          token = map["token"];
+          String role = map["role"];
+          if (role == "passenger") {
+            print("${map["role"]} : passenger");
+          } else {
+            print("User");
+          }
+        } catch (e) {
+          print(e.toString());
+          print("Token Error : ${apiResponse.body['message']}");
+        }
+
+        if (token != null && token.isNotEmpty) {
+          await _tokenHelper.saveToken(token: token).then((_) async {
+            customShowSnackBar('successfulLoginAccount'.tr, Get.context!, isError: false);
+            nextScreenNoReturn(Get.context!, SplashScreen());
+          });
+        }
+
+        _isLoading = false;
+        update();
+      } else {
+        Navigator.pop(Get.context!);
+      }
+    } catch (e) {
+      print("Error B");
+      print(e.toString());
+      _isLoading = false;
+      update();
+    }
+  }
 
   //Todo: RegisterController
   Future registerController(BuildContext context,
@@ -336,17 +386,86 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+//Todo: RegisterPassager
+  Future registerPassagerController(BuildContext context, {
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String password,
+    required String phoneNumber,
+    required String gender,
+    required String dateOfBirth,
+
+  }) async {
+    try {
+      _isLoading = true;
+      update();
+      Response apiResponse = await authRepository.registerPassager(
+        firstName,
+        lastName,
+        email,
+        password,
+        phoneNumber,
+        gender,
+        dateOfBirth,
+      );
+      if (apiResponse.body['status'] == 201 && apiResponse.body['status_code'] == "success") {
+        print("status  : ${apiResponse.body['status']}");
+        print("Register Success : ${apiResponse.body['status_code']}");
+        Map<String, dynamic> map = apiResponse.body;
+        String message = "";
+        try {
+          message = map["status_code"];
+          print("Message : $message");
+        } catch (e) {
+          print(e.toString());
+        }
+        try {
+          token = map["token"];
+        } catch (e) {
+          print(e.toString());
+        }
+        if (token != null && token.isNotEmpty) {
+          _tokenHelper.saveToken(token: token);
+        }
+        customShowSnackBar('successfulCreateAccount'.tr, Get.context!, isError: false);
+        await _tokenHelper.saveToken(token: token).then((_) async {
+          nextScreenNoReturn(Get.context!, SplashScreen());
+        });
+      } else {
+        customShowSnackBar('theAccountHasAlreadyBeenTaken'.tr, Get.context!,
+            isError: true);
+        if (apiResponse.hasError is String) {
+          _isLoading = false;
+          update();
+        } else {
+          _isLoading = false;
+          update();
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+      customShowSnackBar('An error occurred. Please try again.', context, isError: true);
+    }
+    _isLoading = false;
+    update();
+  }
 
   // Todo: signOut
   Future signOut(context) async {
     try {
       _isLoading = true;
       update();
+<<<<<<< HEAD
       await _tokenHelper.clearStorage().then((_) {
         _userInfoMap = null;
+=======
+      await _tokenHelper.clearStorage().then((_){
+        _userPassengerMap = null;
+>>>>>>> develop_chhenglun
         update();
         print("Sign Out");
-        print("User Info : $_userInfoMap");
+        print("User Info : $_userPassengerMap");
         nextScreenNoReturn(context, SplashScreen());
       });
       _isLoading = false;
@@ -379,6 +498,29 @@ class AuthController extends GetxController implements GetxService {
       print(e.toString());
       _isLoading = false;
       update();
+    }
+  }
+  //Todo: getPassagerInfo
+  Future getPassengerInfoController() async {
+    try {
+      _isLoading = true;
+      update();
+      Response response = await authRepository.getPassengerRepo();
+      if (response.body["status"] == 200 && response.body["message"] == "User login success") {
+        print(response.body);
+        _userPassengerMap = response.body['userDetails'];
+        print("UserEmail : ${response.body["email"]}");
+        print("Get Passager Info : $_userPassengerMap");
+        _isLoading = false;
+        update();
+      } else {
+        print("getPassengerProfileError");
+        _isLoading = false;
+        update();
+      }
+    } catch (e) {
+      print("getPassengerProfileCatch");
+      throw e.toString();
     }
   }
 

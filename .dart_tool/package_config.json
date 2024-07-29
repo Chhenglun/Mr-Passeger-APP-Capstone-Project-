@@ -1238,11 +1238,7 @@
       "languageVersion": "3.2"
     }
   ],
-<<<<<<< Updated upstream
-  "generated": "2024-07-29T16:06:28.684932Z",
-=======
-  "generated": "2024-07-29T09:16:45.473218Z",
->>>>>>> Stashed changes
+  "generated": "2024-07-29T16:26:56.152940Z",
   "generator": "pub",
   "generatorVersion": "3.4.3",
   "flutterRoot": "file:///Users/macbook/flutter",

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_final_fields
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:scholarar/data/api/api_client.dart';
 import 'package:scholarar/data/model/body/auth_model.dart';
@@ -25,17 +26,42 @@ class AuthRepository {
     return sharedPreferences.containsKey(AppConstants.token);
   }
 
-  Future<Response> register (String name, String gender,String email, String password,String confirmPassword) async {
+  // Future<Response> register (String name, String gender,String email, String password,String confirmPassword) async {
+  //   Map<String, String> body = {
+  //     'name' : name,
+  //     "gender": gender,
+  //     // "phone": phoneNumber,
+  //     // "phone_code": "855",
+  //     "email": email,
+  //     "otp_verify_code": "123456",
+  //     "password": password,
+  //     "password_confirmation": confirmPassword,
+  //     "accepted_terms_conditions": "1",
+  //   };
+  //   try {
+  //     Response response = await dioClient.postData(
+  //       AppConstants.register, body,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       }
+  //     );
+  //     return response;
+  //   } catch (e) {
+  //     throw e.toString();
+  //   }
+  // }
+
+  //Capstone
+  Future<Response> registerBooking (String name, String gender,String email, String password, String phoneNumber) async {
     Map<String, String> body = {
-      'name' : name,
+      "role": "passenger",
+      "first_name": name,
+      "last_name": name,
       "gender": gender,
-      // "phone": phoneNumber,
-      // "phone_code": "855",
-      "email": email,
-      "otp_verify_code": "123456",
+      "phone_number": phoneNumber,
+      "date_of_birth": name,
+      "email": name,
       "password": password,
-      "password_confirmation": confirmPassword,
-      "accepted_terms_conditions": "1",
     };
     try {
       Response response = await dioClient.postData(
@@ -43,6 +69,34 @@ class AuthRepository {
         headers: {
           'Content-Type': 'application/json',
         }
+      );
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+  //Todo: RegisterPassager
+  Future<Response> registerPassager (
+      String firstName , String lastName ,String email ,
+      String password , String phoneNumber ,
+      String gender , String dateOfBirth,
+      )
+  async{
+    Map<String, dynamic> body = {
+      "first_name": firstName,
+      "last_name": lastName,
+      "email": email,
+      "password": password,
+      "phone_number": phoneNumber,
+      "date_of_birth": dateOfBirth,
+      "gender": gender,
+    };
+    try {
+      Response response = await dioClient.postData(
+          AppConstants.registerPassager, body,
+          headers: {
+            'Content-Type': 'application/json',
+          }
       );
       return response;
     } catch (e) {
@@ -69,6 +123,18 @@ class AuthRepository {
       throw e.toString();
     }
   }
+  //Todo: LoinPassager
+  Future<Response> loginPassager(String email , String password, BuildContext context) async {
+    try {
+      Response response = await dioClient.postData(AppConstants.loginPassager, {
+        'email': email,
+        'password': password,
+      });
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
   Future<Response> loginWithEmail (String email, String password , String  ) async {
     try {
       Response response = await dioClient.postData(AppConstants.login, {
@@ -80,6 +146,7 @@ class AuthRepository {
       throw e.toString();
     }
   }
+  //Todo:
 
   Future<Response> changeAvatar(String uuid) async {
     try {
@@ -113,6 +180,15 @@ class AuthRepository {
       String token = sharedPreferences.getString(AppConstants.token)!;
       dioClient.updateHeader(oldToken: token);
       final response = await dioClient.getData(AppConstants.getUserInfo);
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+  //Todo: Repository for getUserInfo
+  Future<Response> getPassengerRepo() async {
+    try {
+      final response = await dioClient.getData(AppConstants.getPassagerInfo);
       return response;
     } catch (e) {
       throw e.toString();

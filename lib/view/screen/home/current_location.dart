@@ -1,15 +1,37 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+<<<<<<< HEAD
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scholarar/controller/auth_controller.dart';
+=======
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scholarar/controller/auth_controller.dart';
+import 'package:scholarar/helper/get_di.dart';
+>>>>>>> develop_chhenglun
 import 'package:scholarar/util/app_constants.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:scholarar/util/next_screen.dart';
+<<<<<<< HEAD
+import 'package:scholarar/view/screen/booking/booking_screen.dart';
+import 'package:scholarar/view/screen/home/alert_content.dart';
+=======
+import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
+import 'package:scholarar/view/screen/booking/booking_screen.dart';
+>>>>>>> develop_chhenglun
 import 'package:scholarar/view/screen/home/waiting.dart';
 import 'package:curved_drawer_fork/curved_drawer_fork.dart';
+import 'package:scholarar/view/screen/profile/profile_screen.dart';
+import 'package:scholarar/view/screen/profile/settings_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrentLocation extends StatefulWidget {
   const CurrentLocation({super.key});
@@ -19,6 +41,11 @@ class CurrentLocation extends StatefulWidget {
 }
 
 class _CurrentLocationState extends State<CurrentLocation> {
+<<<<<<< HEAD
+=======
+  SharedPreferences? sharedPreferences;
+>>>>>>> develop_chhenglun
+  AuthController authController = Get.find<AuthController>();
   bool fromSelected = false;
   bool ToSelected = false;
   bool isLoading = false;
@@ -32,8 +59,15 @@ class _CurrentLocationState extends State<CurrentLocation> {
   TextEditingController _searchToController =
       TextEditingController(text: selectedToAddress);
 
+  //If not yet login
+  final _usernameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _formInfoKey = GlobalKey<FormState>();
+
   static const CameraPosition initialCameraPosition = CameraPosition(
       target: LatLng(11.672144885466007, 105.0565917044878), zoom: 15);
+
   //target: LatLng(37.42796133580664, -122.085749655962), zoom: 14);
 
   Set<Marker> markers = {};
@@ -164,11 +198,17 @@ class _CurrentLocationState extends State<CurrentLocation> {
   void dispose() {
     _pageController.dispose();
   }
+  init() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    authController.getPassengerInfoController();
+    print("User Details: ${authController.userPassengerMap}");
+  }
 
   @override
   void initState() {
     before();
     super.initState();
+    init();
   }
 
   @override
@@ -256,17 +296,18 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: Center(
+<<<<<<< HEAD
                                   child: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              color: Colors.white,
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
+                                    builder: (BuildContext context) {
+                                      return IconButton(
+                                        icon: Icon(Icons.menu),
+                                        color: Colors.white,
+                                        onPressed: () {
+                                          Scaffold.of(context).openDrawer();
+                                        },
+                                      );
+                                    },
+                                  ),
                                   // child: IconButton(
                                   //     icon: Icon(
                                   //       Icons.menu, //Icons.arrow_back_ios,
@@ -288,9 +329,76 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                 width:
                                     MediaQuery.sizeOf(context).width * 1 / 24,
                               ),
+                              ToSelected == false
+                                  ? Container(
+                                      width: MediaQuery.sizeOf(context).width *
+                                          17 /
+                                          24,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(25),
+                                        border: Border.all(
+                                            color: Colors.white, width: 2),
+                                      ),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 6),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            IconButton(
+                                              color: Colors.black,
+                                              icon: Icon(
+                                                Icons.search,
+                                              ),
+                                              onPressed: () {
+                                                searchLocation();
+                                              },
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.sizeOf(context)
+                                                      .width *
+                                                  0.5 /
+                                                  24,
+                                            ),
+                                            Expanded(
+                                              child: TextField(
+                                                controller: _searchController,
+                                                decoration: InputDecoration(
+                                                  hintText: "Search",
+                                                  hintStyle: TextStyle(
+                                                      color: Colors.grey),
+                                                  border: InputBorder.none,
+                                                ),
+                                                onSubmitted: (query) =>
+                                                    searchLocation(),
+                                              ),
+                                            ),
+                                          ],
+=======
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.person, // Icons.arrow_back_ios,
+                                    ),
+                                    color: Colors.white,
+                                    onPressed: ()  {
+                                      //If this device already has a token then go to profile screen if not go to sign-in scre
+                                      String token = sharedPreferences!.getString(AppConstants.token) ?? "";
+                                      if (token != null && token.isNotEmpty) {
+                                        print("First Check Token $token");
+                                        nextScreenReplace(Get.context, SettingScreen());
+                                      } else {
+                                        print("Logout Token: ");
+                                        nextScreenReplace(context, SignInAccountScreen());
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: MediaQuery.sizeOf(context).width * 1 / 24),
                               Container(
-                                width:
-                                    MediaQuery.sizeOf(context).width * 17 / 24,
+                                width: MediaQuery.sizeOf(context).width * 17 / 24,
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade100,
                                   borderRadius: BorderRadius.circular(25),
@@ -306,17 +414,31 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                         color: Colors.black,
                                         icon: Icon(
                                           Icons.search,
+>>>>>>> develop_chhenglun
                                         ),
-                                        onPressed: () {
-                                          searchLocation();
-                                        },
                                       ),
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.sizeOf(context).width *
-                                                0.5 /
-                                                24,
-                                      ),
+<<<<<<< HEAD
+                                    )
+                                  : ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              WidgetStatePropertyAll(
+                                                  Colors.white)),
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedFromAddress = '';
+                                          selectedToAddress = '';
+                                        });
+                                        nextScreenReplace(
+                                            Get.context, CurrentLocation());
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.cancel,
+                                            color: Colors.red,
+=======
+                                      SizedBox(width: MediaQuery.sizeOf(context).width * 0.5 / 24),
                                       Expanded(
                                         child: TextField(
                                           controller: _searchController,
@@ -325,15 +447,17 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                             hintStyle:
                                                 TextStyle(color: Colors.grey),
                                             border: InputBorder.none,
+>>>>>>> develop_chhenglun
                                           ),
-                                          onSubmitted: (query) =>
-                                              searchLocation(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Undo Selected Location',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ],
+                                      ))
                             ],
                           ),
                         ),
@@ -644,21 +768,127 @@ class _CurrentLocationState extends State<CurrentLocation> {
                         print(longDir);
                         isLoading = true;
                       });
-                      if (_formKeyEachFrom.currentState!.validate() &&
-                              _formKeyEachTo.currentState!.validate() ??
-                          false) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const Waiting(),
-                            ));
-                      }
+<<<<<<< HEAD
                       await Future.delayed(Duration(seconds: 3), () {
                         setState(() {
                           isLoading = false;
                         });
                       });
+                      if (_formKeyEachFrom.currentState!.validate() &&
+                          _formKeyEachTo.currentState!.validate()) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                'សូមបំពេញព័ត៍មានផ្ទាល់ខ្លួន',
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.bold),
+                              ),
+                              content: Form(
+                                key: _formInfoKey,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    TextFormField(
+                                      controller: _usernameController,
+                                      decoration: InputDecoration(
+                                        labelText: 'ឈ្មោះ',
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'សូមបំពេញឈ្មោះ';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    TextFormField(
+                                      controller: _phoneNumberController,
+                                      decoration: InputDecoration(
+                                          labelText: 'លេខទូរស័ព្ទ'),
+                                      keyboardType: TextInputType.phone,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'សូមបំពេញលេខទូរស័ព្ទ';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    TextFormField(
+                                      controller: _passwordController,
+                                      decoration: InputDecoration(
+                                          labelText: 'លេខសម្ងាត់'),
+                                      keyboardType: TextInputType.text,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'សូមដាក់លេខសម្ងាត់';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          WidgetStatePropertyAll(Colors.red)),
+                                  child: Text(
+                                    'Submit',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  onPressed: () async {
+                                    if (_formInfoKey.currentState!.validate()) {
+                                      // Handle submission logic here
+                                      await authController
+                                          .registerBoookingController(
+                                        context,
+                                        name: _usernameController.text,
+                                        gender: '',
+                                        phoneNumber:
+                                            _phoneNumberController.text,
+                                        email: '',
+                                        password: _passwordController.text,
+                                      );
+                                      // await Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) =>
+                                      //           BookingScreen()),
+                                      // );
+                                    }
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (BuildContext context) =>
+                        //           const Waiting(),
+                        //     ));
+                      }
+=======
+                      if (_formKeyEachFrom.currentState!.validate() &&
+                              _formKeyEachTo.currentState!.validate() ??
+                          false) {
+                       nextScreen(context, BookingScreen());
+                      }
+                      // await Future.delayed(Duration(seconds: 3), () {
+                      //   setState(() {
+                      //     isLoading = false;
+                      //   });
+                      // });
+>>>>>>> develop_chhenglun
                       //await postAddress();
                       // Navigator.push(
                       //     context,

@@ -456,13 +456,8 @@ class AuthController extends GetxController implements GetxService {
     try {
       _isLoading = true;
       update();
-<<<<<<< HEAD
-      await _tokenHelper.clearStorage().then((_) {
-        _userInfoMap = null;
-=======
       await _tokenHelper.clearStorage().then((_){
         _userPassengerMap = null;
->>>>>>> develop_chhenglun
         update();
         print("Sign Out");
         print("User Info : $_userPassengerMap");

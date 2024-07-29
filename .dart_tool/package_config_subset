@@ -114,10 +114,13 @@ crypto
 2.19
 file:///Users/macbook/.pub-cache/hosted/pub.dev/crypto-3.0.3/
 file:///Users/macbook/.pub-cache/hosted/pub.dev/crypto-3.0.3/lib/
+<<<<<<< Updated upstream
 csc_picker
 2.12
 file:///Users/macbook/.pub-cache/hosted/pub.dev/csc_picker-0.2.7/
 file:///Users/macbook/.pub-cache/hosted/pub.dev/csc_picker-0.2.7/lib/
+=======
+>>>>>>> Stashed changes
 csslib
 2.19
 file:///Users/macbook/.pub-cache/hosted/pub.dev/csslib-1.0.0/

@@ -283,6 +283,7 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+
   //Todo: LoginPassager
   Future loginPassager(BuildContext context,
       {required String email, required String password}) async {
@@ -293,7 +294,7 @@ class AuthController extends GetxController implements GetxService {
       update();
 
       Response apiResponse =
-      await authRepository.loginPassager(email, password, context);
+          await authRepository.loginPassager(email, password, context);
 
       if (apiResponse.statusCode == 200) {
         Navigator.pop(Get.context!);
@@ -314,7 +315,8 @@ class AuthController extends GetxController implements GetxService {
 
         if (token != null && token.isNotEmpty) {
           await _tokenHelper.saveToken(token: token).then((_) async {
-            customShowSnackBar('successfulLoginAccount'.tr, Get.context!, isError: false);
+            customShowSnackBar('successfulLoginAccount'.tr, Get.context!,
+                isError: false);
             nextScreenNoReturn(Get.context!, SplashScreen());
           });
         }
@@ -386,8 +388,10 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+
 //Todo: RegisterPassager
-  Future registerPassagerController(BuildContext context, {
+  Future registerPassagerController(
+    BuildContext context, {
     required String firstName,
     required String lastName,
     required String email,
@@ -395,7 +399,6 @@ class AuthController extends GetxController implements GetxService {
     required String phoneNumber,
     required String gender,
     required String dateOfBirth,
-
   }) async {
     try {
       _isLoading = true;
@@ -409,7 +412,8 @@ class AuthController extends GetxController implements GetxService {
         gender,
         dateOfBirth,
       );
-      if (apiResponse.body['status'] == 201 && apiResponse.body['status_code'] == "success") {
+      if (apiResponse.body['status'] == 201 &&
+          apiResponse.body['status_code'] == "success") {
         print("status  : ${apiResponse.body['status']}");
         print("Register Success : ${apiResponse.body['status_code']}");
         Map<String, dynamic> map = apiResponse.body;
@@ -428,7 +432,8 @@ class AuthController extends GetxController implements GetxService {
         if (token != null && token.isNotEmpty) {
           _tokenHelper.saveToken(token: token);
         }
-        customShowSnackBar('successfulCreateAccount'.tr, Get.context!, isError: false);
+        customShowSnackBar('successfulCreateAccount'.tr, Get.context!,
+            isError: false);
         await _tokenHelper.saveToken(token: token).then((_) async {
           nextScreenNoReturn(Get.context!, SplashScreen());
         });
@@ -445,7 +450,8 @@ class AuthController extends GetxController implements GetxService {
       }
     } catch (e) {
       print(e.toString());
-      customShowSnackBar('An error occurred. Please try again.', context, isError: true);
+      customShowSnackBar('An error occurred. Please try again.', context,
+          isError: true);
     }
     _isLoading = false;
     update();
@@ -456,7 +462,7 @@ class AuthController extends GetxController implements GetxService {
     try {
       _isLoading = true;
       update();
-      await _tokenHelper.clearStorage().then((_){
+      await _tokenHelper.clearStorage().then((_) {
         _userPassengerMap = null;
         update();
         print("Sign Out");
@@ -495,26 +501,29 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+
   //Todo: getPassagerInfo
   Future getPassengerInfoController() async {
+    print('hi');
     try {
       _isLoading = true;
-      update();
+      //update();
       Response response = await authRepository.getPassengerRepo();
-      if (response.body["status"] == 200 && response.body["message"] == "User login success") {
-        print(response.body);
-        _userPassengerMap = response.body['userDetails'];
+      if (response.body["status"] == 200 &&
+          response.body["message"] == "User login success") {
+        print("b sl o ${response.body}");
+        _userPassengerMap = response.body;
         print("UserEmail : ${response.body["email"]}");
         print("Get Passager Info : $_userPassengerMap");
         _isLoading = false;
         update();
       } else {
-        print("getPassengerProfileError");
+        print("getPassengerProfileError1");
         _isLoading = false;
         update();
       }
     } catch (e) {
-      print("getPassengerProfileCatch");
+      print("getPassengerProfileCatch2");
       throw e.toString();
     }
   }

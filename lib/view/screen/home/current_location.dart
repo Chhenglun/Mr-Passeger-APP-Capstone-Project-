@@ -266,68 +266,109 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                     String token = sharedPreferences!.getString(AppConstants.token) ?? "";
                                     if (token.isNotEmpty) {
                                       print("First Check Token $token");
-                                      nextScreenReplace(Get.context, SettingScreen());
+                                      nextScreen(context, SettingScreen());
                                     } else {
-                                      print("Logout Token: ");
-                                      nextScreenReplace(context, SignInAccountScreen());
+                                      print("Logout Token: $token");
+                                      nextScreen(context, SignInAccountScreen());
                                     }
                                   },
                                 ),
                               ),
                             ),
                             SizedBox(width: MediaQuery.sizeOf(context).width * 1 / 24),
-                            Container(
-                              width: MediaQuery.sizeOf(context).width * 17 / 24,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade100,
-                                borderRadius: BorderRadius.circular(25),
-                                border: Border.all(color: Colors.white, width: 2),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 6),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    IconButton(
-                                      color: Colors.black,
-                                      icon: Icon(Icons.search),
-                                      onPressed: () {},
-                                    ),
-                                    SizedBox(width: MediaQuery.sizeOf(context).width * 0.5 / 24),
-                                    Expanded(
-                                      child: TextField(
-                                        controller: _searchController,
-                                        decoration: InputDecoration(
-                                          hintText: "Search",
-                                          hintStyle: TextStyle(color: Colors.grey),
-                                          border: InputBorder.none,
+                            toSelected == false
+                                  ? Container(
+                                      width: MediaQuery.sizeOf(context).width *
+                                          17 /
+                                          24,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(25),
+                                        border: Border.all(
+                                            color: Colors.white, width: 2),
+                                      ),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 6),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            IconButton(
+                                              color: Colors.black,
+                                              icon: Icon(
+                                                Icons.search,
+                                              ),
+                                              onPressed: () {
+                                                searchLocation();
+                                              },
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.sizeOf(context)
+                                                      .width *
+                                                  0.5 /
+                                                  24,
+                                            ),
+                                            Expanded(
+                                              child: TextField(
+                                                controller: _searchController,
+                                                decoration: InputDecoration(
+                                                  hintText: "Search",
+                                                  hintStyle: TextStyle(
+                                                      color: Colors.grey),
+                                                  border: InputBorder.none,
+                                                ),
+                                                onSubmitted: (query) =>
+                                                    searchLocation(),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      'Undo Selected Location',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                                    )
+                                  : ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              WidgetStatePropertyAll(
+                                                  Colors.white)),
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedFromAddress = '';
+                                          selectedToAddress = '';
+                                        });
+                                        nextScreenReplace(
+                                            Get.context, CurrentLocation());
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.cancel,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Undo Selected Location',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ],
+                                      ))
+                            ],
+                          ),
                         ),
-                      ),
-                      toSelected == false
-                          ? Positioned(
-                              bottom: 65,
-                              right: 10,
-                              child: FloatingActionButton(
-                                onPressed: () async {
-                                  await getCurrentLocation();
-                                },
-                                child: Icon(Icons.my_location),
-                              ),
-                            )
-                          : Container()
+                        toSelected == false
+                            ? Positioned(
+                                bottom: 65,
+                                right: 10,
+                                child: FloatingActionButton(
+                                  onPressed: () async {
+                                    await getCurrentLocation();
+                                  },
+                                  child: Icon(Icons.my_location),
+                                ),
+                              )
+                            : Container()
                     ],
                   ),
                 ),
@@ -479,42 +520,151 @@ class _CurrentLocationState extends State<CurrentLocation> {
         ),
       ),
       bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-            width: MediaQuery.sizeOf(context).width,
-            child: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  setState(() {
-                    latDir = selectedLatLng.latitude;
-                    longDir = selectedLatLng.longitude;
-                    print(latDir);
-                    print(longDir);
-                    isLoading = true;
-                  });
-                  if ((_formKeyEachFrom.currentState?.validate() ?? false) &&
-                      (_formKeyEachTo.currentState?.validate() ?? false)) {
-                    nextScreen(context, BookingScreen());
-                  }
-                },
-                style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Colors.red),
-                ),
-                child: Text(
-                  'បញ្ជាក់ការកក់',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Container(
+            //     width: MediaQuery.sizeOf(context).width * 7 / 12,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(3.0),
+            //       child: Text(
+            //         selectedAddress.isNotEmpty
+            //             ? selectedAddress
+            //             : 'សូមជ្រើសរើសទីតាំងគោលដៅលើផែនទី ឬអាចចុចប៊ូតុងដើម្បីកំណត់យកទីតាំងបច្ចុប្បន្ន',
+            //         style: TextStyle(color: Colors.grey.shade500),
+            //       ),
+            //     )),
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              width: MediaQuery.sizeOf(context).width * 12 / 12,
+              child: Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: ElevatedButton(
+                    onPressed: () async {
+                      setState(() {
+                        latDir = selectedLatLng.latitude;
+                        longDir = selectedLatLng.longitude;
+                        print(latDir);
+                        print(longDir);
+                        isLoading = true;
+                      });
+                      await Future.delayed(Duration(seconds: 3), () {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      });
+                      if (_formKeyEachFrom.currentState!.validate() &&
+                          _formKeyEachTo.currentState!.validate()) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                'សូមបំពេញព័ត៍មានអ្នកដំណើរ',
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.bold),
+                              ),
+                              content: Form(
+                                key: _formInfoKey,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    TextFormField(
+                                      controller: _usernameController,
+                                      decoration: InputDecoration(
+                                        labelText: 'ឈ្មោះ',
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'សូមបំពេញឈ្មោះ';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    TextFormField(
+                                      controller: _phoneNumberController,
+                                      decoration: InputDecoration(
+                                          labelText: 'លេខទូរស័ព្ទ'),
+                                      keyboardType: TextInputType.phone,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'សូមបំពេញលេខទូរស័ព្ទ';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          WidgetStatePropertyAll(Colors.red)),
+                                  child: Text(
+                                    'Submit',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  onPressed: () async {
+                                    if (_formInfoKey.currentState!.validate()) {
+                                      // Handle submission logic here
+                                      // await authController
+                                      //     .registerBoookingController(
+                                      //   context,
+                                      //   name: _usernameController.text,
+                                      //   gender: '',
+                                      //   phoneNumber:
+                                      //       _phoneNumberController.text,
+                                      //   email: '',
+                                      //   password: _passwordController.text,
+                                      // );
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                BookingScreen()),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (BuildContext context) =>
+                        //           const Waiting(),
+                        //     ));
+                      }
+                      //await postAddress();
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (BuildContext context) => const Waiting(),
+                      //     ));
+                    },
+                    style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(Colors.red),
+                    ),
+                    child: Text(
+                      'បញ្ជាក់ការកក់',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    )),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        )
     );
   }
 }

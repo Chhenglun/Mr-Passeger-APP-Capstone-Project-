@@ -14,13 +14,16 @@ import 'package:scholarar/util/style.dart';
 import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
 import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:scholarar/view/screen/profile/profile_screen.dart';
+
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
 }
-String urlImagProfile ='https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
+
+String urlImagProfile =
+    'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
 
 class _SettingScreenState extends State<SettingScreen> {
   final ImagePicker _picker = ImagePicker();
@@ -32,8 +35,9 @@ class _SettingScreenState extends State<SettingScreen> {
       _image = selectedImage;
     });
   }
+
   AuthController authController = Get.find<AuthController>();
-  init() async {
+  Future<void> init() async {
     await authController.getPassengerInfoController();
     setState(() {
       isLoading = false;
@@ -42,8 +46,10 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   void initState() {
+    setState(() {
+      init();
+    });
     super.initState();
-    init();
   }
 
   @override
@@ -57,7 +63,7 @@ class _SettingScreenState extends State<SettingScreen> {
               color: ColorResources.primaryColor,
             ),
             onPressed: () {
-              Get.to(() => CurrentLocation());
+              Get.back();
             },
           ),
           backgroundColor: ColorResources.backgroundBannerColor,
@@ -74,6 +80,7 @@ class _SettingScreenState extends State<SettingScreen> {
       );
     });
   }
+
   Widget _buildBody() {
     return SingleChildScrollView(
       child: Stack(
@@ -89,9 +96,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       end: Alignment.bottomCenter,
                       colors: [
                         ColorResources.whiteBackgroundColor,
-
                         ColorResources.whiteBackgroundColor,
-
                       ],
                     ),
                     //color: ColorResources.primaryColor,
@@ -103,7 +108,6 @@ class _SettingScreenState extends State<SettingScreen> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-
                       ColorResources.whiteBackgroundColor,
                       ColorResources.primaryColor.withOpacity(0.1)
                     ],
@@ -113,7 +117,8 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
             ],
           ),
-          Positioned(top: 40, left: 10, right: 10, child: _buildProfile(context)),
+          Positioned(
+              top: 40, left: 10, right: 10, child: _buildProfile(context)),
         ],
       ),
     );
@@ -137,21 +142,22 @@ class _SettingScreenState extends State<SettingScreen> {
               //Todo : Image Profile
               _image == null
                   ? Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(urlImagProfile),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ) : CircleAvatar(
-                backgroundImage: Image.file(
-                  File(_image!.path),
-                ).image,
-                radius: 50,
-              ),
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(urlImagProfile),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : CircleAvatar(
+                      backgroundImage: Image.file(
+                        File(_image!.path),
+                      ).image,
+                      radius: 50,
+                    ),
               //Todo: GetUsername
               // Text(authController.userPassengerMap?['userDetails']['first_name'] ?? "N/A" +
               //     ' ' +
@@ -159,8 +165,10 @@ class _SettingScreenState extends State<SettingScreen> {
               //   style: TextStyle(color: ColorResources.primaryColor, fontSize: 20),
               // ),
               //Todo: GetEmail
-              Text(authController.userPassengerMap?['email'] ?? "Username",
-                style: TextStyle(color: ColorResources.primaryColor, fontSize: 16),
+              Text(
+                authController.userPassengerMap?['email'] ?? "Username",
+                style:
+                    TextStyle(color: ColorResources.primaryColor, fontSize: 16),
               ),
               //Todo: pickImage
               SizedBox(height: 16),
@@ -180,7 +188,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 title: 'Manage Account',
                 icon: Icons.credit_card,
                 onPress: () {},
-
               ),
               CustomListWidget.customListTileSettingScreen(
                 title: 'Ride Preferences',
@@ -218,7 +225,7 @@ class _SettingScreenState extends State<SettingScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -227,27 +234,41 @@ class _SettingScreenState extends State<SettingScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Text("Log Out ", style: textStyleMedium.copyWith(color: ColorResources.blackColor, fontSize: 20),),
+                                  Text(
+                                    "Log Out ",
+                                    style: textStyleMedium.copyWith(
+                                        color: ColorResources.blackColor,
+                                        fontSize: 20),
+                                  ),
                                 ],
                               ),
                               //line
-                              SizedBox(height: 10,),
+                              SizedBox(
+                                height: 10,
+                              ),
                               Container(
                                 height: 1,
                                 color: ColorResources.primaryColor,
                               ),
-                              SizedBox(height: 10,),
-                              Icon(Icons.error_outline, color: ColorResources.redColor, size:60,),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Icon(
+                                Icons.error_outline,
+                                color: ColorResources.redColor,
+                                size: 60,
+                              ),
                               Row(
                                 children: [
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
                                     child: Text(
                                       'Are you sure, you wish to log Out?',
-                                      style: textStyleMedium.copyWith(fontSize: 12),
+                                      style: textStyleMedium.copyWith(
+                                          fontSize: 12),
                                     ),
                                   ),
-
                                 ],
                               ),
                             ],
@@ -267,7 +288,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(16)),
-                                        color: ColorResources.greyColor.withOpacity(0.5),
+                                        color: ColorResources.greyColor
+                                            .withOpacity(0.5),
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -277,7 +299,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                         child: Text(
                                           'Close',
                                           style: TextStyle(
-                                            color: ColorResources.whiteBackgroundColor,
+                                            color: ColorResources
+                                                .whiteBackgroundColor,
                                           ),
                                         ),
                                       )),
@@ -292,7 +315,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(16),
                                       ),
-                                      color: ColorResources.primaryColor.withOpacity(0.5),
+                                      color: ColorResources.primaryColor
+                                          .withOpacity(0.5),
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(

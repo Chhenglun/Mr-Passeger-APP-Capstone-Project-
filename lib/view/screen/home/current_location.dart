@@ -119,7 +119,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
         });
       }
     } catch (e) {
-      print('Error: $e');
+      //print('Error: $e');
     }
   }
 

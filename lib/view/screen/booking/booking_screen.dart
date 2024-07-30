@@ -85,7 +85,7 @@ class _BookingScreenState extends State<BookingScreen> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      print('=====>>>>>>Location services are disabled.');
+      //print('=====>>>>>>Location services are disabled.');
       return;
     }
 
@@ -93,13 +93,13 @@ class _BookingScreenState extends State<BookingScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        print('=====>>>>>>Location permissions are denied');
+        //print('=====>>>>>>Location permissions are denied');
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      print('=====>>>>>>Location permissions are permanently denied.');
+     // print('=====>>>>>>Location permissions are permanently denied.');
       return;
     }
 
@@ -118,7 +118,7 @@ class _BookingScreenState extends State<BookingScreen> {
 
   void listenToPositionStream() {
     positionStreamSubscription = Geolocator.getPositionStream().listen((Position newPosition) {
-      print('=====>>>>>>New position obtained: ${newPosition.latitude}, ${newPosition.longitude}');
+      //print('=====>>>>>>New position obtained: ${newPosition.latitude}, ${newPosition.longitude}');
       setState(() {
         currentPosition = LatLng(newPosition.latitude, newPosition.longitude);
         _animateCameraToPosition(newPosition);
@@ -364,15 +364,15 @@ class _BookingScreenState extends State<BookingScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => PaypalCheckoutView(
           sandboxMode: true,
-          clientId: "your-client-id",
-          secretKey: "your-secret-key",
+          clientId: "AapOPdf1LFi5JhFyhTUGqaa2jnaiqLV0F85Ekos2qWrn58vmrn0fqvzBJ7tAgEdB_SdxwiY5k8hYju4X",
+          secretKey: "ECh47QMoxwLC7tFGEy8wH2L3bF6YUy4QBDCyBFWPXfjAZETt165rJ5uSWbvy3fqytb3Mso28BGbZAm5I",
           transactions: [
             {
               "amount": {
-                "total": '10.12',
+                "total": '2.00',
                 "currency": "USD",
                 "details": {
-                  "subtotal": '10.12',
+                  "subtotal": '2.0',
                   "shipping": '0',
                   "shipping_discount": 0,
                 },
@@ -383,15 +383,15 @@ class _BookingScreenState extends State<BookingScreen> {
                   {
                     "name": "Item name",
                     "quantity": 1,
-                    "price": '10.12',
+                    "price": '2.00',
                     "currency": "USD",
                   },
                 ],
                 "shipping_address": {
-                  "recipient_name": "Jane Foster",
-                  "line1": "Travis County",
+                  "recipient_name": "Bou Taihor",
+                  "line1": "53BT Meanchey",
                   "line2": "",
-                  "city": "Austin",
+                  "city": "Phnom Penh",
                   "country_code": "US",
                   "postal_code": "73301",
                   "phone": "+00000000",

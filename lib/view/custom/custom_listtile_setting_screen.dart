@@ -18,27 +18,35 @@ class CustomListWidget {
     Function(bool)? onChange,
     //required Function onTap,
   }) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: Colors.blueGrey,
-        //size: 22,
+    return Container(
+      height: 60,
+      width: Get.width * 0.9,
+      decoration: BoxDecoration(
+        color: ColorResources.greyColor.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(10),
       ),
-      title: Text(
-        title,
-        style: textStyleMedium.copyWith(
-          fontSize: 18,
-          color: titleColors!=null ? Colors.blueGrey : Colors.black,
-          fontWeight: FontWeight.bold,
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: ColorResources.greyColor,
+          //size: 22,
         ),
+        title: Text(
+          title,
+          style: textStyleMedium.copyWith(
+            fontSize: 18,
+            color:  ColorResources.primaryColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        titleAlignment: ListTileTitleAlignment.center,
+        trailing: FaIcon(FontAwesomeIcons.angleRight, color: ColorResources.primaryColor),
+        // trailing: IconButton(
+        //   icon: FaIcon(FontAwesomeIcons.angleRight, color: Colors.blueGrey),
+        //   onPressed: () => onTap(),
+        // ),
+        onTap: () => onPress(),
       ),
-      titleAlignment: ListTileTitleAlignment.center,
-      trailing: FaIcon(FontAwesomeIcons.angleRight, color: Colors.blueGrey),
-      // trailing: IconButton(
-      //   icon: FaIcon(FontAwesomeIcons.angleRight, color: Colors.blueGrey),
-      //   onPressed: () => onTap(),
-      // ),
-      onTap: () => onPress(),
     );
   }
 
@@ -51,33 +59,30 @@ class CustomListWidget {
     return Container(
       width: Get.width * 0.9,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            ColorResources.backgroundBannerColor,
-            ColorResources.primaryColor.withOpacity(0.4)
-          ],
-        ),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: ListTile(
-        leading: Icon(iconleading, color: Colors.blueGrey,) ,
-        title: Text(
-          title,
-          style: textStyleMedium.copyWith(
-            fontSize: 18,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+      child: Column(
+        children: [
+          ListTile(
+            leading: Icon(iconleading, color: Colors.blueGrey,) ,
+            title: Text(
+              title,
+              style: textStyleMedium.copyWith(
+                fontSize: 18,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            titleAlignment: ListTileTitleAlignment.center,
+            // trailing: IconButton(
+            //   icon: Icon(Icons.edit , color: Colors.blueGrey, size: 30,),
+            //   color: ColorResources.primaryColor,
+            //   onPressed: () => onPress(),
+            // ),
+            onTap: () => onPress(),
           ),
-        ),
-        titleAlignment: ListTileTitleAlignment.center,
-        trailing: IconButton(
-          icon: Icon(Icons.edit , color: Colors.blueGrey, size: 30,),
-          color: ColorResources.primaryColor,
-          onPressed: () => onPress(),
-        ),
-        onTap: () => onPress(),
+          Divider(),
+        ],
       ),
     );
   }

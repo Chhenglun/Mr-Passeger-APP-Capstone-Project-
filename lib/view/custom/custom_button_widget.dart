@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 //import 'package:google_fonts/google_fonts.dart';
 import 'package:scholarar/util/color_resources.dart';
 
@@ -19,7 +20,7 @@ class CustomButtonWidget {
         style: ElevatedButton.styleFrom(
           side: BorderSide(
             width: activeColor ? 0 : 1,
-            color: activeColor ? Colors.transparent : Colors.grey,
+            color: activeColor ? Colors.transparent : Colors.black,
           ),
           backgroundColor: activeColor ? ColorResources.primaryColor : ColorResources.greyColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
@@ -27,11 +28,11 @@ class CustomButtonWidget {
         onPressed: onPress,
         child: Text(
           title,
-          // style: GoogleFonts.montserrat(
-          //   color: activeColor ? ColorResources.whiteColor : ColorResources.whiteColor,
-          //   fontSize: 16,
-          //   fontWeight: textBold ? FontWeight.w500 : FontWeight.normal,
-          // ),
+          style: GoogleFonts.montserrat(
+            color: activeColor ? ColorResources.whiteColor : ColorResources.whiteColor,
+            fontSize: 16,
+            fontWeight: textBold ? FontWeight.w500 : FontWeight.normal,
+          ),
         ),
       ),
     );

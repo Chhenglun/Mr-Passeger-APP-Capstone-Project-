@@ -62,10 +62,20 @@ dependencies:
   flutter_svg: ^2.0.10
   flutter_polyline_points: ^2.0.0
   flutter_paypal_payment: ^1.0.6
+  flutter_inappwebview: ^5.8.0
+#  location: ^6.0.2
   flutter_phone_direct_caller: ^2.1.1
   google_fonts: ^6.2.1
   curved_drawer_fork: ^0.0.1+1
   csc_picker: ^0.2.7
+  #firbase
+  firebase_core: ^2.3.0
+  firebase_analytics: ^10.10.7
+  firebase_crashlytics: ^3.5.7
+  flutter_local_notifications: ^17.2.1
+  #firebase_app_installations: ^0.2.5+7
+  firebase_messaging: ^14.9.4
+
 
 
 dependency_overrides:

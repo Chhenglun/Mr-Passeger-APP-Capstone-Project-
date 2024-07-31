@@ -107,7 +107,9 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
     return GetBuilder<AuthController>(builder: (auth) {
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: Scaffold(body: _buildBody()),
+        child: Scaffold(
+          backgroundColor: ColorResources.whiteColor,
+            body: _buildBody()),
       );
     });
   }
@@ -125,13 +127,10 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                 child: Column(
                   children: [
                     Container(
-                      height: 100,
+                      height: 150,
+                      width: Get.width * 0.5,
                       color: Colors.transparent,
-                      child: CircleAvatar(
-                        radius: 100,
-                        backgroundColor: ColorResources.backgroundBannerColor,
-                        backgroundImage: AssetImage('assets/images/logo.jpg'),
-                      ),
+                      child: Image.asset('assets/images/logo.jpg', fit: BoxFit.cover,),
                     ),
                     SizedBox(height: 16),
                     _buildTextField("នាមខ្លួន", _firstNameController, TextInputType.text, TextInputAction.next, phoneNumberFocusNode, "Please enter your first name"),

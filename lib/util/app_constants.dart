@@ -8,6 +8,7 @@ import 'package:scholarar/data/model/response/language_model.dart';
 
   String selectedFromAddress = '';
   String selectedToAddress = '';
+  String? frmTokenPublic;
 
 class AppConstants {
   //login in booking screen
@@ -18,11 +19,12 @@ class AppConstants {
   static const String baseURL = "http://ec2-54-82-25-173.compute-1.amazonaws.com:8000";
   static const String registerPassager = "/api/users/register-passenger";
   static const String loginPassager = "/api/users/login";
-  static const String getPassagerInfo = "/api/users/profile";
+  static const String getPassengerInfor = "/api/users/profile";
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";
   static const String register = "/api/users/register-passenger";
   static const String login = "/api/v1/login";
+  static const String editePassenger = "/api/users/update-driver/";
 
   static const String token = "token";
   static const String logo = "assets/images/logo.jpg";

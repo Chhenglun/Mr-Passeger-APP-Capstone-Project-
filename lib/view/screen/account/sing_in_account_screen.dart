@@ -29,10 +29,10 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
   void togglePasswordVisibility() {
     obscureText.value = !obscureText.value;
   }
+
   bool isValidEmail(String email) {
-    final RegExp regex = RegExp(
-        r'^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$'
-    );
+    final RegExp regex =
+        RegExp(r'^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
     return regex.hasMatch(email);
   }
 
@@ -48,12 +48,12 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorResources.whiteBackgroundColor,
+      backgroundColor: ColorResources.whiteColor,
       appBar: AppBar(
         backgroundColor: ColorResources.whiteBackgroundColor,
         leading: IconButton(
           onPressed: () {
-            Get.to(() => CurrentLocation());
+            Get.back();
           },
           icon: Icon(Icons.arrow_back),
         ),
@@ -78,15 +78,10 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                     child: Column(
                       children: [
                         Container(
-                          height: 100,
+                          height: 150,
+                          width: Get.width * 0.5,
                           color: Colors.transparent,
-                          child: CircleAvatar(
-                            radius: 100,
-                            backgroundColor:
-                            ColorResources.backgroundBannerColor,
-                            backgroundImage:
-                            AssetImage('assets/images/logo.jpg'),
-                          ),
+                          child: Image.asset('assets/images/logo.jpg', fit: BoxFit.cover,),
                         ),
                         SizedBox(height: 20),
                         //Todo : _buildPhone
@@ -97,7 +92,7 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                             Text(
                               "អ៊ីម៉ែល",
                               style:
-                              TextStyle(color: ColorResources.blackColor),
+                                  TextStyle(color: ColorResources.blackColor),
                             ),
                             SizedBox(height: 8),
                             SizedBox(
@@ -136,11 +131,11 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                             Text(
                               "លេខសម្ងាត់",
                               style:
-                              TextStyle(color: ColorResources.blackColor),
+                                  TextStyle(color: ColorResources.blackColor),
                             ),
                             SizedBox(height: 8),
                             Obx(
-                                  () => SizedBox(
+                              () => SizedBox(
                                 height: 60,
                                 child: TextFormField(
                                   focusNode: passwordForcusNode,
@@ -151,7 +146,7 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                                     prefixIcon: Icon(Icons.lock),
                                     // labelText: 'Password',
                                     labelStyle:
-                                    TextStyle(color: Colors.blueGrey),
+                                        TextStyle(color: Colors.blueGrey),
                                     hintText: 'Enter your password',
 
                                     border: OutlineInputBorder(
@@ -196,20 +191,29 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                             height: 50,
                             width: double.infinity,
                             child: TextButton(
-                              onPressed: () async{
-                                if(_form.currentState!.validate()){
-                                  if(_emailControlle.value.text.isNotEmpty && _passwordController.value.text.isNotEmpty){
-                                    await authController.loginPassager(context, email:_emailControlle.value.text, password:_passwordController.value.text);
-                                  }else{
-                                    Get.snackbar('Error', 'Please enter valid email and password');
+                              onPressed: () async {
+                                if (_form.currentState!.validate()) {
+                                  if (_emailControlle.value.text.isNotEmpty &&
+                                      _passwordController
+                                          .value.text.isNotEmpty) {
+                                    await authController.loginPassager(context,
+                                        email: _emailControlle.value.text,
+                                        password:
+                                            _passwordController.value.text);
+                                  } else {
+                                    Get.snackbar('Error',
+                                        'Please enter valid email and password');
                                   }
                                   // nextScreenNoReturn(context, AppScreen());
                                   // submit();
-                                }},
+                                }
+                              },
                               child: Text(
                                 'ចូលគណនី',
                                 style: TextStyle(
-                                  color: Colors.white, fontSize: 20,),
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
                               ),
                               style: TextButton.styleFrom(
                                 backgroundColor: ColorResources.primaryColor,

@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:scholarar/data/api/api_client.dart';
 import 'package:scholarar/data/model/body/auth_model.dart';
 import 'package:scholarar/util/app_constants.dart';
@@ -103,6 +104,35 @@ class AuthRepository {
       throw e.toString();
     }
   }
+  //Todo: EditePassenger
+  Future<Response> editePassengerRepository (
+      String firstName , String lastName ,
+      String phoneNumber,String gender, String dateOfBirth,String email, String oldPassword, String newPassword
+      )
+  async{
+    Map<String, dynamic> body = {
+      "first_name": firstName,
+      "last_name": lastName,
+      "phone_number": phoneNumber,
+      "gender": gender,
+      "date_of_birth": dateOfBirth,
+      "email": email,
+      "old_password": oldPassword,
+      "new_password": newPassword,
+
+    };
+    try {
+      Response response = await dioClient.postData(
+          AppConstants.editePassenger, body,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+      );
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 
   Future<Response> signInWithPhone(AuthModel authModel) async {
     try {
@@ -123,7 +153,7 @@ class AuthRepository {
       throw e.toString();
     }
   }
-  //Todo: LoinPassager
+  //Todo: LoginPassenger
   Future<Response> loginPassager(String email , String password, BuildContext context) async {
     try {
       Response response = await dioClient.postData(AppConstants.loginPassager, {
@@ -188,7 +218,7 @@ class AuthRepository {
   //Todo: Repository for getUserInfo
   Future<Response> getPassengerRepo() async {
     try {
-      final response = await dioClient.getData(AppConstants.getPassagerInfo);
+      final response = await dioClient.getData(AppConstants.getPassengerInfor);
       return response;
     } catch (e) {
       throw e.toString();

@@ -14,7 +14,6 @@ import 'package:scholarar/helper/token_helper.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/loading_dialog.dart';
 import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/account/login_screen.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
@@ -283,6 +282,7 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+
   //Todo: LoginPassager
   Future loginPassager(BuildContext context,
       {required String email, required String password}) async {
@@ -293,7 +293,7 @@ class AuthController extends GetxController implements GetxService {
       update();
 
       Response apiResponse =
-      await authRepository.loginPassager(email, password, context);
+          await authRepository.loginPassager(email, password, context);
 
       if (apiResponse.statusCode == 200) {
         Navigator.pop(Get.context!);
@@ -314,7 +314,8 @@ class AuthController extends GetxController implements GetxService {
 
         if (token != null && token.isNotEmpty) {
           await _tokenHelper.saveToken(token: token).then((_) async {
-            customShowSnackBar('successfulLoginAccount'.tr, Get.context!, isError: false);
+            customShowSnackBar('successfulLoginAccount'.tr, Get.context!,
+                isError: false);
             nextScreenNoReturn(Get.context!, SplashScreen());
           });
         }
@@ -386,8 +387,10 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+
 //Todo: RegisterPassager
-  Future registerPassagerController(BuildContext context, {
+  Future registerPassagerController(
+    BuildContext context, {
     required String firstName,
     required String lastName,
     required String email,
@@ -395,7 +398,6 @@ class AuthController extends GetxController implements GetxService {
     required String phoneNumber,
     required String gender,
     required String dateOfBirth,
-
   }) async {
     try {
       _isLoading = true;
@@ -409,7 +411,8 @@ class AuthController extends GetxController implements GetxService {
         gender,
         dateOfBirth,
       );
-      if (apiResponse.body['status'] == 201 && apiResponse.body['status_code'] == "success") {
+      if (apiResponse.body['status'] == 201 &&
+          apiResponse.body['status_code'] == "success") {
         print("status  : ${apiResponse.body['status']}");
         print("Register Success : ${apiResponse.body['status_code']}");
         Map<String, dynamic> map = apiResponse.body;
@@ -428,7 +431,8 @@ class AuthController extends GetxController implements GetxService {
         if (token != null && token.isNotEmpty) {
           _tokenHelper.saveToken(token: token);
         }
-        customShowSnackBar('successfulCreateAccount'.tr, Get.context!, isError: false);
+        customShowSnackBar('successfulCreateAccount'.tr, Get.context!,
+            isError: false);
         await _tokenHelper.saveToken(token: token).then((_) async {
           nextScreenNoReturn(Get.context!, SplashScreen());
         });
@@ -445,24 +449,42 @@ class AuthController extends GetxController implements GetxService {
       }
     } catch (e) {
       print(e.toString());
-      customShowSnackBar('An error occurred. Please try again.', context, isError: true);
+      customShowSnackBar('An error occurred. Please try again.', context,
+          isError: true);
     }
     _isLoading = false;
     update();
   }
+//Todo: editePassengerController
+//   Future editePassengerController(
+//     BuildContext context, {
+//     String? firstName,
+//     String? lastName,
+//     String? phoneNumber,
+//     String? dateOfBirth,
+//     String? gender,
+//     String? email,
+//     String? oldPassword,
+//     String? newPassword,
+//   required String userId,
+//   required String token,
+//   }) async {
+//     try {
+//       _isLoading = true;
+//       update();
+//      Response apiResponse = await authRepository.editePassengerRepository(firstName:firstName, lastName:lastName, phoneNumber:, gender, dateOfBirth, email, oldPassword, newPassword)
+//   }catch(e){
+//     print(e.toString());
+//     customShowSnackBar('An error occurred. Please try again.', context, isError: true);
+//     }}
 
   // Todo: signOut
   Future signOut(context) async {
     try {
       _isLoading = true;
       update();
-<<<<<<< HEAD
       await _tokenHelper.clearStorage().then((_) {
-        _userInfoMap = null;
-=======
-      await _tokenHelper.clearStorage().then((_){
         _userPassengerMap = null;
->>>>>>> develop_chhenglun
         update();
         print("Sign Out");
         print("User Info : $_userPassengerMap");
@@ -500,26 +522,29 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+
   //Todo: getPassagerInfo
   Future getPassengerInfoController() async {
+    print('hi');
     try {
       _isLoading = true;
-      update();
+      //update();
       Response response = await authRepository.getPassengerRepo();
-      if (response.body["status"] == 200 && response.body["message"] == "User login success") {
-        print(response.body);
-        _userPassengerMap = response.body['userDetails'];
+      if (response.body["status"] == 200 &&
+          response.body["message"] == "User login success") {
+        print("b sl o ${response.body}");
+        _userPassengerMap = response.body;
         print("UserEmail : ${response.body["email"]}");
         print("Get Passager Info : $_userPassengerMap");
         _isLoading = false;
         update();
       } else {
-        print("getPassengerProfileError");
+        print("getPassengerProfileError1");
         _isLoading = false;
         update();
       }
     } catch (e) {
-      print("getPassengerProfileCatch");
+      print("getPassengerProfileCatch2");
       throw e.toString();
     }
   }

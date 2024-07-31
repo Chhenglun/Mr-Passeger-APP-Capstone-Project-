@@ -8,19 +8,13 @@ import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/screen/booking/message.dart';
 import 'package:scholarar/view/screen/booking/profile_screen.dart';
 import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-
-import '../chat/chat_screen.dart';
-import '../profile/profile_screen.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -39,10 +33,12 @@ class _BookingScreenState extends State<BookingScreen> {
   String url = "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
   Timer? driverTimer;
   Uri dialnumber = Uri(scheme: 'tel', path: '012345678');
-  callNumber () async{
+  
+  Future<void> callNumber() async {
     await launchUrl(dialnumber);
   }
-  directCall() async{
+  
+  Future<void> directCall() async {
     await FlutterPhoneDirectCaller.callNumber('012345678');
   }
 
@@ -59,33 +55,67 @@ class _BookingScreenState extends State<BookingScreen> {
     super.dispose();
   }
 
-  void getPolyPoint() async{
+  // void getPolyPoint() async {
+  //   PolylinePoints polylinePoints = PolylinePoints();
+  //   PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+  //     googleApiKey:  AppConstants.google_key_api,
+  //     PointLatLng(currentPosition.latitude, currentPosition.longitude),
+  //     PointLatLng(destination.latitude, destination.longitude),
+  //   );
+  //   if (result.points.isNotEmpty) {
+  //     polyLineCoordinates.clear();
+  //     result.points.forEach((PointLatLng point) {
+  //       polyLineCoordinates.add(LatLng(point.latitude, point.longitude));
+  //     });
+  //     setState(() {
+  //       print("=====>>>>>>>Polyline coordinates updated");
+  //     });
+  //   } else {
+  //     print('=====>>>>>>No points found or error in fetching points');
+  //   }
+  // }
+
+  void getPolyPoint() async {
     PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        AppConstants.google_key_api,
-        PointLatLng(currentPosition.latitude, currentPosition.longitude),
-        PointLatLng(destination.latitude, destination.longitude),
+
+    // Create a PolylineRequest object with required parameters
+    PolylineRequest request = PolylineRequest(
+      origin: PointLatLng(currentPosition.latitude, currentPosition.longitude),
+      destination: PointLatLng(destination.latitude, destination.longitude),
+      mode: TravelMode.driving, // Set the mode of travel if required
     );
-    if (result.points.isNotEmpty) {
-      polyLineCoordinates.clear();
-      result.points.forEach((PointLatLng point) {
-        polyLineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-      setState(() {
-        print("=====>>>>>>>Polyline coordinates updated");
-      });
-    } else {
-      print('=====>>>>>>No points found or error in fetching points');
+
+    try {
+      // Pass the request object and API key to getRouteBetweenCoordinates
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        request: request,
+        googleApiKey: AppConstants.google_key_api,
+      );
+
+      if (result.points.isNotEmpty) {
+        polyLineCoordinates.clear();
+        result.points.forEach((PointLatLng point) {
+          polyLineCoordinates.add(LatLng(point.latitude, point.longitude));
+        });
+        setState(() {
+          print("=====>>>>>>>Polyline coordinates updated");
+        });
+      } else {
+        print('=====>>>>>>No points found or error in fetching points');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
     }
   }
+
+
   void _checkLocationPermissions() async {
     bool serviceEnabled;
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      print('=====>>>>>>Location services are disabled.');
+      //print('=====>>>>>>Location services are disabled.');
       return;
     }
 
@@ -93,20 +123,20 @@ class _BookingScreenState extends State<BookingScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        print('=====>>>>>>Location permissions are denied');
+        //print('=====>>>>>>Location permissions are denied');
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      print('=====>>>>>>Location permissions are permanently denied.');
+     // print('=====>>>>>>Location permissions are permanently denied.');
       return;
     }
 
     getCurrentLocation();
     listenToPositionStream();
   }
+
   void getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition();
     setState(() {
@@ -115,9 +145,10 @@ class _BookingScreenState extends State<BookingScreen> {
       _simulateDriverMovement();
     });
   }
+
   void listenToPositionStream() {
     positionStreamSubscription = Geolocator.getPositionStream().listen((Position newPosition) {
-      print('=====>>>>>>New position obtained: ${newPosition.latitude}, ${newPosition.longitude}');
+      //print('=====>>>>>>New position obtained: ${newPosition.latitude}, ${newPosition.longitude}');
       setState(() {
         currentPosition = LatLng(newPosition.latitude, newPosition.longitude);
         _animateCameraToPosition(newPosition);
@@ -135,11 +166,9 @@ class _BookingScreenState extends State<BookingScreen> {
     const duration = Duration(seconds: 5);
     driverTimer = Timer.periodic(duration, (timer) {
       setState(() {
-        // Simulate driver movement
         double newLat = driverPosition.latitude + (Random().nextDouble() * 0.001 - 0.0005);
         double newLng = driverPosition.longitude + (Random().nextDouble() * 0.001 - 0.0005);
         driverPosition = LatLng(newLat, newLng);
-
         getPolyPoint();
       });
     });
@@ -150,356 +179,209 @@ class _BookingScreenState extends State<BookingScreen> {
     return SafeArea(
       child: Scaffold(
         body: currentPosition == destination
-        ? Center(child: CircularProgressIndicator(),)
-        : Stack(
-          children: [
-            GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: currentPosition,
-                zoom: 14.5,
-              ),
-              onMapCreated: (GoogleMapController controller){
-                _controller.complete(controller);
-              },
-              polylines: {
-                Polyline(
-                  polylineId: PolylineId("route"),
-                  points: polyLineCoordinates,
-                  color: Colors.green,
-                  width: 6,
-                )
-              },
-              markers: {
-                Marker(
-                  markerId: MarkerId("user"),
-                  position: currentPosition,
-                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-                ),
-                Marker(
-                  markerId: MarkerId("destination"),
-                  position: destination,
-                ),
-              },
-            ),
-<<<<<<< HEAD
-            Visibility(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                    height: MediaQuery.sizeOf(context).height * 3 / 9,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(topLeft:Radius.circular(20), topRight: Radius.circular(20))
+            ? Center(child: CircularProgressIndicator())
+            : Stack(
+                children: [
+                  GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: currentPosition,
+                      zoom: 14.5,
                     ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text('អ្នកបើកបរនឹងមកដល់ 3​ នាទីទៀត',style: TextStyle(fontSize: 12),),
-                            ],
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    polylines: {
+                      Polyline(
+                        polylineId: PolylineId("route"),
+                        points: polyLineCoordinates,
+                        color: Colors.green,
+                        width: 6,
+                      ),
+                    },
+                    markers: {
+                      Marker(
+                        markerId: MarkerId("user"),
+                        position: currentPosition,
+                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+                      ),
+                      Marker(
+                        markerId: MarkerId("destination"),
+                        position: destination,
+                      ),
+                    },
+                  ),
+                  Visibility(
+                    visible: currentPosition != destination,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 3 / 9,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
                           ),
                         ),
-                        Divider(),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: (){
-                                nextScreen(context, DriverProfileScreen());
-                              },
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
-                                    child: Container(
-                                      width: MediaQuery.sizeOf(context).width * 1 / 5,
-                                      height: MediaQuery.sizeOf(context).height * 1 / 10,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(50),
-                                        image: DecorationImage(image: NetworkImage(url))
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 20,),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          physics: BouncingScrollPhysics(),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10),
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Text('លាង ម៉េងហាំង', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-                                      Row(
-                                        children: [
-                                          Text('កំពុងធ្វើដំណើរ800មែត្រ . . .',style: TextStyle(fontSize: 12),),
-                                          Icon(Icons.location_on, color: Colors.red,size: 16,)
-                                        ],
-                                      )
+                                      Text(
+                                        'អ្នកបើកបរនឹងមកដល់ 3​ នាទីទៀត',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            Spacer(),
-                            _buildPayPalButton(context),
-                          ],
-                        ),
-                        Divider(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 25, right: 10, top: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('តម្លៃ 8800 រៀល', style: TextStyle(fontSize: 17),),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 20),
-                          child: Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle
                                 ),
-                                child: Stack(
-                                    children:[
-                                      IconButton(
-                                          onPressed: callNumber,
-                                    icon: Icon(CupertinoIcons.phone_fill,color: Colors.white,)),
-                                    ],
-                                ),
-                              ),
-                              SizedBox(width: 20,),
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    shape: BoxShape.circle
-                                ),
-                                child: Stack(
-                                    children:[
-                                      IconButton(onPressed: (){
-                                        nextScreen(context, MessageScreen());
-                                      }, icon: Icon(CupertinoIcons.chat_bubble_fill,color: Colors.white,)),
-                                    ]
-                                ),
-                              ),
-                              SizedBox(width: 20,),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red[400],
-                                  padding: EdgeInsets.symmetric(horizontal: 40,vertical: 10)
-                                ),
-                                onPressed: (){
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> AppScreen()), (Route<dynamic> route) => false,);
-                                },
-                                  child: Text("លុបចោលការកក់",style: TextStyle(color: Colors.white,fontSize: 20),),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    )
-                ),
-              )
-            ),
-            Positioned(
-              top: 10,
-              left: 10,
-              child: Container(
-                decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  shape: BoxShape.circle,
-                                ),
-                child: Center(
-                  child: IconButton(
-                                            icon: Icon(
-                                              Icons.arrow_back_ios,
-                                            ),
-                                            color: Colors.white,
-                                            onPressed: () {
-                                               Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => CurrentLocation()),
-                                                );
-                                            },),
-                ),
-              )
-            ),
-          ]
-        ),
-=======
-            onMapCreated: (GoogleMapController controller){
-              _controller.complete(controller);
-            },
-            polylines: {
-              Polyline(
-                polylineId: PolylineId("route"),
-                points: polyLineCoordinates,
-                color: Colors.green,
-                width: 6,
-              )
-            },
-            markers: {
-              Marker(
-                markerId: MarkerId("user"),
-                position: currentPosition,
-                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-              ),
-              Marker(
-                markerId: MarkerId("destination"),
-                position: destination,
-              ),
-            },
-          ),
-          Visibility(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                  height: MediaQuery.sizeOf(context).height * 3 / 9,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(topLeft:Radius.circular(20), topRight: Radius.circular(20))
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    physics: BouncingScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text('អ្នកបើកបរនឹងមកដល់ 3​ នាទីទៀត',style: TextStyle(fontSize: 12),),
-                              ],
-                            ),
-                          ),
-                          Divider(),
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: (){
-                                  nextScreen(context, DriverProfileScreen());
-                                },
-                                child: Row(
+                                Divider(),
+                                Row(
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
-                                      child: Container(
-                                        width: 70,
-                                        height: 70,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(50),
-                                          image: DecorationImage(image: NetworkImage(url))
-                                        ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        nextScreen(context, DriverProfileScreen());
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                                            child: Container(
+                                              width: 70,
+                                              height: 70,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(50),
+                                                image: DecorationImage(image: NetworkImage(url)),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 20),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'លាង ម៉េងហាំង',
+                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    'កំពុងធ្វើដំណើរ800មែត្រ . . .',
+                                                    style: TextStyle(fontSize: 12),
+                                                  ),
+                                                  Icon(Icons.location_on, color: Colors.red, size: 16),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(width: 20,),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Text('លាង ម៉េងហាំង', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-                                        Row(
-                                          children: [
-                                            Text('កំពុងធ្វើដំណើរ800មែត្រ . . .',style: TextStyle(fontSize: 12),),
-                                            Icon(Icons.location_on, color: Colors.red,size: 16,)
-                                          ],
-                                        )
-                                      ],
-                                    ),
+                                    Spacer(),
+                                    _buildPayPalButton(context),
                                   ],
                                 ),
-                              ),
-                              Spacer(),
-                              _buildPayPalButton(context),
-                            ],
-                          ),
-                          Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 25, right: 10, top: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('តម្លៃ 8800 រៀល', style: TextStyle(fontSize: 17),),
+                                Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 25, right: 10, top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'តម្លៃ 8800 រៀល',
+                                        style: TextStyle(fontSize: 17),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            IconButton(
+                                              onPressed: callNumber,
+                                              icon: Icon(CupertinoIcons.phone_fill, color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 20),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                nextScreen(context, MessageScreen());
+                                              },
+                                              icon: Icon(CupertinoIcons.chat_bubble_fill, color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 16),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red[400],
+                                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                        ),
+                                        onPressed: () {
+                                          nextScreen(context, CurrentLocation());
+                                        },
+                                        child: Text(
+                                          "លុបចោលការកក់",
+                                          style: TextStyle(color: Colors.white, fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 20),
-                            child: Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    shape: BoxShape.circle
-                                  ),
-                                  child: Stack(
-                                      children:[
-                                        IconButton(
-                                            onPressed: callNumber,
-                                      icon: Icon(CupertinoIcons.phone_fill,color: Colors.white,)),
-                                      ],
-                                  ),
-                                ),
-                                SizedBox(width: 20,),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      shape: BoxShape.circle
-                                  ),
-                                  child: Stack(
-                                      children:[
-                                        IconButton(onPressed: (){
-                                          nextScreen(context, MessageScreen());
-                                        }, icon: Icon(CupertinoIcons.chat_bubble_fill,color: Colors.white,)),
-                                      ]
-                                  ),
-                                ),
-                                SizedBox(width: 16),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red[400],
-                                    padding: EdgeInsets.symmetric(horizontal:16 ,vertical: 10)
-                                  ),
-                                  onPressed: (){
-                                    nextScreen(context, CurrentLocation());
-                                  },
-                                    child: Text("លុបចោលការកក់",style: TextStyle(color: Colors.white,fontSize: 16),),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
+                        ),
                       ),
                     ),
-                  )
+                  ),
+                ],
               ),
-            )
-          ),
-        ]
->>>>>>> develop_chhenglun
       ),
     );
   }
+
   Widget _buildPayPalButton(BuildContext context) {
     return Container(
       alignment: Alignment.centerRight,
       width: 80,
-      //margin: EdgeInsets.symmetric(horizontal: ),
       child: ElevatedButton(
-        onPressed: (){_startPayPalPayment(context);},
+        onPressed: () {
+          _startPayPalPayment(context);
+        },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue, // Button background color
+          backgroundColor: Colors.blue,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // Rounded corners
+            borderRadius: BorderRadius.circular(10),
           ),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15), // Button padding
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         ),
         child: Icon(Icons.payment, color: Colors.white),
       ),
@@ -512,18 +394,18 @@ class _BookingScreenState extends State<BookingScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => PaypalCheckoutView(
           sandboxMode: true,
-          clientId: "your-client-id",
-          secretKey: "your-secret-key",
+          clientId: "AapOPdf1LFi5JhFyhTUGqaa2jnaiqLV0F85Ekos2qWrn58vmrn0fqvzBJ7tAgEdB_SdxwiY5k8hYju4X",
+          secretKey: "ECh47QMoxwLC7tFGEy8wH2L3bF6YUy4QBDCyBFWPXfjAZETt165rJ5uSWbvy3fqytb3Mso28BGbZAm5I",
           transactions: [
             {
               "amount": {
-                "total": '10.12',
+                "total": '2.00',
                 "currency": "USD",
                 "details": {
-                  "subtotal": '10.12',
+                  "subtotal": '2.0',
                   "shipping": '0',
-                  "shipping_discount": 0
-                }
+                  "shipping_discount": 0,
+                },
               },
               "description": "The payment transaction description.",
               "item_list": {
@@ -531,37 +413,44 @@ class _BookingScreenState extends State<BookingScreen> {
                   {
                     "name": "Item name",
                     "quantity": 1,
-                    "price": '10.12',
-                    "currency": "USD"
-                  }
+                    "price": '2.00',
+                    "currency": "USD",
+                  },
                 ],
                 "shipping_address": {
-                  "recipient_name": "Jane Foster",
-                  "line1": "Travis County",
+                  "recipient_name": "Bou Taihor",
+                  "line1": "53BT Meanchey",
                   "line2": "",
-                  "city": "Austin",
+                  "city": "Phnom Penh",
                   "country_code": "US",
                   "postal_code": "73301",
                   "phone": "+00000000",
-                  "state": "Texas"
+                  "state": "Texas",
                 },
-              }
-            }
+              },
+            },
           ],
           note: "Contact us for any questions on your order.",
           onSuccess: (Map params) async {
             print("onSuccess: $params");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Payment Successful: $params')),
+            );
           },
           onError: (error) {
             print("onError: $error");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Payment Error: $error')),
+            );
           },
           onCancel: (params) {
             print('cancelled: $params');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Payment Cancelled')),
+            );
           },
         ),
       ),
     );
   }
-
-
 }

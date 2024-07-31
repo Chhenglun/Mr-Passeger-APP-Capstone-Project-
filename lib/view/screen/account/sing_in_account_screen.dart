@@ -48,7 +48,7 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorResources.whiteBackgroundColor,
+      backgroundColor: ColorResources.whiteColor,
       appBar: AppBar(
         backgroundColor: ColorResources.whiteBackgroundColor,
         leading: IconButton(
@@ -78,15 +78,10 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                     child: Column(
                       children: [
                         Container(
-                          height: 100,
+                          height: 150,
+                          width: Get.width * 0.5,
                           color: Colors.transparent,
-                          child: CircleAvatar(
-                            radius: 100,
-                            backgroundColor:
-                                ColorResources.backgroundBannerColor,
-                            backgroundImage:
-                                AssetImage('assets/images/logo.jpg'),
-                          ),
+                          child: Image.asset('assets/images/logo.jpg', fit: BoxFit.cover,),
                         ),
                         SizedBox(height: 20),
                         //Todo : _buildPhone

@@ -14,7 +14,6 @@ import 'package:scholarar/helper/token_helper.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/loading_dialog.dart';
 import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/account/login_screen.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
@@ -456,6 +455,28 @@ class AuthController extends GetxController implements GetxService {
     _isLoading = false;
     update();
   }
+//Todo: editePassengerController
+//   Future editePassengerController(
+//     BuildContext context, {
+//     String? firstName,
+//     String? lastName,
+//     String? phoneNumber,
+//     String? dateOfBirth,
+//     String? gender,
+//     String? email,
+//     String? oldPassword,
+//     String? newPassword,
+//   required String userId,
+//   required String token,
+//   }) async {
+//     try {
+//       _isLoading = true;
+//       update();
+//      Response apiResponse = await authRepository.editePassengerRepository(firstName:firstName, lastName:lastName, phoneNumber:, gender, dateOfBirth, email, oldPassword, newPassword)
+//   }catch(e){
+//     print(e.toString());
+//     customShowSnackBar('An error occurred. Please try again.', context, isError: true);
+//     }}
 
   // Todo: signOut
   Future signOut(context) async {

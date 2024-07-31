@@ -33,4 +33,19 @@ class TrackingRepository {
       throw Exception('An error occurred: $e');
     }
   }
+
+  //Todo: upateTokenRepo
+  Future updateToken(String deviceToken ,String driverId) async {
+  Map<String, dynamic> body = {
+    "deviceToken": deviceToken,
+    "driver_id": driverId,
+  };
+  try {
+    final response = await dioClient.postData(AppConstants.updateToken, body);
+    return response;
+  } catch (e) {
+    throw e.toString();
+  }
+}
+
 }

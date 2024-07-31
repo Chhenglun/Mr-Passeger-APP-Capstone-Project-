@@ -28,14 +28,15 @@ class _BookingScreenState extends State<BookingScreen> {
   LatLng currentPosition = destination;
   LatLng driverPosition = LatLng(11.570, 104.875);
   StreamSubscription<Position>? positionStreamSubscription;
-  String url = "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
+  String url =
+      "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
   Timer? driverTimer;
   Uri dialnumber = Uri(scheme: 'tel', path: '012345678');
-  
+
   Future<void> callNumber() async {
     await launchUrl(dialnumber);
   }
-  
+
   Future<void> directCall() async {
     await FlutterPhoneDirectCaller.callNumber('012345678');
   }
@@ -86,7 +87,6 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
-
   void _checkLocationPermissions() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -107,7 +107,7 @@ class _BookingScreenState extends State<BookingScreen> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-     // print('=====>>>>>>Location permissions are permanently denied.');
+      // print('=====>>>>>>Location permissions are permanently denied.');
       return;
     }
 
@@ -125,7 +125,8 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   void listenToPositionStream() {
-    positionStreamSubscription = Geolocator.getPositionStream().listen((Position newPosition) {
+    positionStreamSubscription =
+        Geolocator.getPositionStream().listen((Position newPosition) {
       //print('=====>>>>>>New position obtained: ${newPosition.latitude}, ${newPosition.longitude}');
       setState(() {
         currentPosition = LatLng(newPosition.latitude, newPosition.longitude);
@@ -137,15 +138,18 @@ class _BookingScreenState extends State<BookingScreen> {
 
   Future<void> _animateCameraToPosition(Position position) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
+    controller.animateCamera(
+        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
   }
 
   void _simulateDriverMovement() {
     const duration = Duration(seconds: 5);
     driverTimer = Timer.periodic(duration, (timer) {
       setState(() {
-        double newLat = driverPosition.latitude + (Random().nextDouble() * 0.001 - 0.0005);
-        double newLng = driverPosition.longitude + (Random().nextDouble() * 0.001 - 0.0005);
+        double newLat =
+            driverPosition.latitude + (Random().nextDouble() * 0.001 - 0.0005);
+        double newLng =
+            driverPosition.longitude + (Random().nextDouble() * 0.001 - 0.0005);
         driverPosition = LatLng(newLat, newLng);
         getPolyPoint();
       });
@@ -156,6 +160,7 @@ class _BookingScreenState extends State<BookingScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: currentPosition == destination
             ? Center(child: CircularProgressIndicator())
             : Stack(
@@ -180,13 +185,34 @@ class _BookingScreenState extends State<BookingScreen> {
                       Marker(
                         markerId: MarkerId("user"),
                         position: currentPosition,
-                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                            BitmapDescriptor.hueGreen),
                       ),
                       Marker(
                         markerId: MarkerId("destination"),
                         position: destination,
                       ),
                     },
+                  ),
+                  Positioned(
+                    left: 10,
+                    top: 10,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_back_ios),
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.pop(context);
+                            //nextScreenReplace(context, CurrentLocation());
+                          },
+                        ),
+                      ),
+                    ),
                   ),
                   Visibility(
                     visible: currentPosition != destination,
@@ -206,11 +232,13 @@ class _BookingScreenState extends State<BookingScreen> {
                           scrollDirection: Axis.vertical,
                           physics: BouncingScrollPhysics(),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Column(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10),
+                                  padding: const EdgeInsets.only(
+                                      top: 10, bottom: 5, left: 10),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -226,37 +254,48 @@ class _BookingScreenState extends State<BookingScreen> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        nextScreen(context, DriverProfileScreen());
+                                        nextScreen(
+                                            context, DriverProfileScreen());
                                       },
                                       child: Row(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                                            padding: const EdgeInsets.fromLTRB(
+                                                10, 5, 5, 5),
                                             child: Container(
                                               width: 70,
                                               height: 70,
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(50),
-                                                image: DecorationImage(image: NetworkImage(url)),
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                                image: DecorationImage(
+                                                    image: NetworkImage(url)),
                                               ),
                                             ),
                                           ),
                                           SizedBox(width: 20),
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
                                             children: [
                                               Text(
                                                 'លាង ម៉េងហាំង',
-                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20),
                                               ),
                                               Row(
                                                 children: [
                                                   Text(
                                                     'កំពុងធ្វើដំណើរ800មែត្រ . . .',
-                                                    style: TextStyle(fontSize: 12),
+                                                    style:
+                                                        TextStyle(fontSize: 12),
                                                   ),
-                                                  Icon(Icons.location_on, color: Colors.red, size: 16),
+                                                  Icon(Icons.location_on,
+                                                      color: Colors.red,
+                                                      size: 16),
                                                 ],
                                               ),
                                             ],
@@ -270,9 +309,11 @@ class _BookingScreenState extends State<BookingScreen> {
                                 ),
                                 Divider(),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 25, right: 10, top: 5),
+                                  padding: const EdgeInsets.only(
+                                      left: 25, right: 10, top: 5),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'តម្លៃ 8800 រៀល',
@@ -282,7 +323,8 @@ class _BookingScreenState extends State<BookingScreen> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25, vertical: 20),
                                   child: Row(
                                     children: [
                                       Container(
@@ -294,7 +336,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                           children: [
                                             IconButton(
                                               onPressed: callNumber,
-                                              icon: Icon(CupertinoIcons.phone_fill, color: Colors.white),
+                                              icon: Icon(
+                                                  CupertinoIcons.phone_fill,
+                                                  color: Colors.white),
                                             ),
                                           ],
                                         ),
@@ -309,9 +353,13 @@ class _BookingScreenState extends State<BookingScreen> {
                                           children: [
                                             IconButton(
                                               onPressed: () {
-                                                nextScreen(context, MessageScreen());
+                                                nextScreen(
+                                                    context, MessageScreen());
                                               },
-                                              icon: Icon(CupertinoIcons.chat_bubble_fill, color: Colors.white),
+                                              icon: Icon(
+                                                  CupertinoIcons
+                                                      .chat_bubble_fill,
+                                                  color: Colors.white),
                                             ),
                                           ],
                                         ),
@@ -320,14 +368,18 @@ class _BookingScreenState extends State<BookingScreen> {
                                       ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.red[400],
-                                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 10),
                                         ),
                                         onPressed: () {
-                                          nextScreen(context, CurrentLocation());
+                                          nextScreen(
+                                              context, CurrentLocation());
                                         },
                                         child: Text(
                                           "លុបចោលការកក់",
-                                          style: TextStyle(color: Colors.white, fontSize: 16),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16),
                                         ),
                                       ),
                                     ],
@@ -372,8 +424,10 @@ class _BookingScreenState extends State<BookingScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => PaypalCheckoutView(
           sandboxMode: true,
-          clientId: "AapOPdf1LFi5JhFyhTUGqaa2jnaiqLV0F85Ekos2qWrn58vmrn0fqvzBJ7tAgEdB_SdxwiY5k8hYju4X",
-          secretKey: "ECh47QMoxwLC7tFGEy8wH2L3bF6YUy4QBDCyBFWPXfjAZETt165rJ5uSWbvy3fqytb3Mso28BGbZAm5I",
+          clientId:
+              "AapOPdf1LFi5JhFyhTUGqaa2jnaiqLV0F85Ekos2qWrn58vmrn0fqvzBJ7tAgEdB_SdxwiY5k8hYju4X",
+          secretKey:
+              "ECh47QMoxwLC7tFGEy8wH2L3bF6YUy4QBDCyBFWPXfjAZETt165rJ5uSWbvy3fqytb3Mso28BGbZAm5I",
           transactions: [
             {
               "amount": {

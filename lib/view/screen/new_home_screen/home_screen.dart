@@ -25,7 +25,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
         appBar: AppBar(
           backgroundColor: Colors.red,
           centerTitle: true,
-          title: Text('Mr. Driver',style: TextStyle(fontSize: 24,color: Colors.white),),
+          title: Text('Mr.Driver',style: TextStyle(fontSize: 24,color: Colors.white),),
         ),
         body: Column(
           children: [
@@ -49,6 +49,22 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       onTap: () {
         nextScreen(context, CurrentLocation());
       },
+      // onTap: () {
+      //   //await _firebaseAPI.initNotifications();
+      //   String? deviceToken =frmTokenPublic; // Use the token obtained from initNotifications
+      //   String driverId =authController.userPassengerMap?["userDetails"]["_id"]; // Ensure this is the correct driver ID
+      //   if (deviceToken != null && driverId != null) {
+      //     _trackingController.updateToken(deviceToken, driverId);
+      //     isLoading = true;
+      //     customShowSnackBar('ការបើកការកក់របស់អ្នកទទួលបានជោគជ័យ', context, isError: false);
+      //     nextScreen(context, CurrentLocation());
+      //   } else {
+      //     customShowSnackBar('Device token or driver ID is missing', context,
+      //         isError: true);
+      //   }
+
+        
+      // },
       child: Card(
         color: Colors.grey,
         elevation: 5,

@@ -2,6 +2,7 @@
 
 import 'package:get/get.dart';
 import 'package:scholarar/data/repository/home_repository.dart';
+import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/repository/tracking_repository.dart';
@@ -43,4 +44,31 @@ class TrackingController extends GetxController implements GetxService {
       throw e.toString();
     }
   }
+
+  //Todo: updateTokenController
+  Future updateToken(String deviceToken ,String driverId) async {
+
+  try {
+    _isLoading = true;
+    //update();
+    Response apiResponse = await trackingRepositiry.updateToken(deviceToken, driverId);
+    if (apiResponse.statusCode == 200) {
+      print("Update Token Success: ${apiResponse.body}");
+      customShowSnackBar('ការបើកការកក់របស់អ្នកទទួលបានជោគជ័យ', Get.context!, isError: false);
+    } else if (apiResponse.statusCode == 404) {
+      print("Driver not found");
+      customShowSnackBar('Driver not found', Get.context!, isError: true);
+    } else {
+      print("Error updating token: ${apiResponse.body}");
+      customShowSnackBar('Error updating token', Get.context!, isError: true);
+    }
+  } catch (e) {
+    print("Error: $e");
+    customShowSnackBar('An error occurred', Get.context!, isError: true);
+  } finally {
+    _isLoading = false;
+    update();
+  }
+}
+
 }

@@ -10,12 +10,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scholarar/controller/auth_controller.dart';
+import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/util/style.dart';
 import 'package:scholarar/view/custom/custom_button_widget.dart';
 import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
 import 'package:scholarar/view/screen/profile/profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -28,6 +30,7 @@ String urlImagProfile =
     'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
 
 class _SettingScreenState extends State<SettingScreen> {
+  SharedPreferences? sharedPreferences;
   final ImagePicker _picker = ImagePicker();
   bool isLoading = true;
   XFile? _image;
@@ -56,17 +59,47 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+     
     return GetBuilder<AuthController>(builder: (authController) {
+      //String token = sharedPreferences!.getString(AppConstants.token) ?? "";
       return Scaffold(
         backgroundColor: ColorResources.primaryColor,
         body: isLoading != false
             ? Center(child: CircularProgressIndicator())
-            : _buildBody(authController),
+            : 
+    //         token.isEmpty
+    //                             ? Padding(
+    //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    //   child: GestureDetector(
+    //     onTap: () {
+          
+    //     },
+    //     child: Row(
+    //       children: [
+    //         Icon(
+    //           FontAwesomeIcons.signIn,
+    //           color: ColorResources.primaryColor,
+    //         ),
+    //         SizedBox(width: 16),
+    //         Text(
+    //           'Log In',
+    //           style: TextStyle(
+    //             color: ColorResources.primaryColor,
+    //             fontSize: 16,
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // ) : 
+    _buildBody(authController),
       );
     });
   }
+
   //Todo: _buildBody
   Widget _buildBody(AuthController authController) {
+   
     return SafeArea(
       child: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
@@ -78,7 +111,8 @@ class _SettingScreenState extends State<SettingScreen> {
               children: [
                 Column(
                   children: [
-                    Expanded(child: Container(
+                    Expanded(
+                        child: Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +133,8 @@ class _SettingScreenState extends State<SettingScreen> {
                         ],
                       ),
                     )),
-                    Expanded(child: Container(
+                    Expanded(
+                        child: Container(
                       width: Get.width,
                       height: Get.height,
                       color: ColorResources.whiteBackgroundColor,
@@ -118,7 +153,9 @@ class _SettingScreenState extends State<SettingScreen> {
                       height: Get.height,
                       child: Stack(
                         children: [
+                          
                           Column(
+                            
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -129,14 +166,15 @@ class _SettingScreenState extends State<SettingScreen> {
                               ),
                               //Todo: Setting
                               Expanded(
-                                child:_buildSetting(authController),
+                                child: _buildSetting(authController),
                               ),
                             ],
                           ),
                           //Todo: ImageProfile
                           Positioned(
-                            top: 50,  // Adjust the vertical position as needed
-                            left: (Get.width / 2) - 90,  // 50 is half the width of the image
+                            top: 50, // Adjust the vertical position as needed
+                            left: (Get.width / 2) -
+                                90, // 50 is half the width of the image
                             child: _buildImageProfile(authController),
                           ),
                         ],
@@ -145,12 +183,12 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
               ],
-            )
-        ),
+            )),
         // child: _buildProfile(authController),
       ),
     );
   }
+
 //Todo : buildImageProfile
   Widget _buildImageProfile(AuthController authController) {
     var userNextDetails = authController.userPassengerMap?['userDetails'];
@@ -161,25 +199,28 @@ class _SettingScreenState extends State<SettingScreen> {
       children: [
         _image == null
             ? Container(
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(urlImagProfile),
-              fit: BoxFit.cover,
-            ),
-          ),
-        )
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(urlImagProfile),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              )
             : CircleAvatar(
-          backgroundImage: Image.file(
-            File(_image!.path),
-          ).image,
-          radius: 50,
-        ),
+                backgroundImage: Image.file(
+                  File(_image!.path),
+                ).image,
+                radius: 50,
+              ),
         Text(
           // when get first_name success show it as UPPER CASE
-          authController.userPassengerMap?['userDetails']['first_name'].toString().toUpperCase()  ?? "Username",
+          authController.userPassengerMap?['userDetails']['first_name']
+                  .toString()
+                  .toUpperCase() ??
+              "Username",
           style: TextStyle(color: ColorResources.primaryColor, fontSize: 16),
         ),
         TextButton.icon(
@@ -188,8 +229,7 @@ class _SettingScreenState extends State<SettingScreen> {
               AlertDialog(
                 title: Text(
                   'ជ្រើសរើសរូបភាព',
-                  style:
-                  TextStyle(color: ColorResources.primaryColor),
+                  style: TextStyle(color: ColorResources.primaryColor),
                 ),
                 content: SingleChildScrollView(
                   child: Column(
@@ -203,7 +243,8 @@ class _SettingScreenState extends State<SettingScreen> {
                           Get.back();
                         },
                         icon: Icon(Icons.photo),
-                        label: Text("ជ្រើសរើសរូបភាព" , style: TextStyle(color: ColorResources.blackColor)),
+                        label: Text("ជ្រើសរើសរូបភាព",
+                            style: TextStyle(color: ColorResources.blackColor)),
                       ),
                       Padding(padding: EdgeInsets.all(8.0)),
                       TextButton.icon(
@@ -212,7 +253,8 @@ class _SettingScreenState extends State<SettingScreen> {
                           Get.back();
                         },
                         icon: Icon(Icons.camera_alt_outlined),
-                        label: Text("បើកកាមេរ៉ា", style: TextStyle(color: ColorResources.blackColor)),
+                        label: Text("បើកកាមេរ៉ា",
+                            style: TextStyle(color: ColorResources.blackColor)),
                       )
                     ],
                   ),
@@ -231,81 +273,81 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
       ],
     );
-
   }
+
   //Todo: _buildProfile
   Widget _buildSetting(AuthController authController) {
     var userDetails = authController.userPassengerMap;
     return userDetails != null
         ? Container(
-      decoration: BoxDecoration(
-        color: ColorResources.whiteBackgroundColor,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SizedBox(
-          width: Get.width,
-          height: Get.height,
-          child: Column(
-            children: [
-              SizedBox(height: 110),
-              // Todo: ListTile of Profile
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 16),
-                      CustomListWidget.customListTileSettingScreen(
-                        title: 'ព័ត៌មានរបស់ខ្ញុំ',
-                        icon: Icons.person_outline,
-                        onPress: () {
-                          nextScreen(context, ProfileScreen());
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      CustomListWidget.customListTileSettingScreen(
-                        title: 'ប្រវត្តិរបស់ខ្ញុំ',
-                        icon: FontAwesomeIcons.history,
-                        onPress: () {},
-                      ),
-                      SizedBox(height: 16),
-                      CustomListWidget.customListTileSettingScreen(
-                        title: 'ការជូនដំណឹង',
-                        icon: FontAwesomeIcons.bell,
-                        onPress: () {},
-                      ),
-                      SizedBox(height: 16),
-                      CustomListWidget.customListTileSettingScreen(
-                        title: 'ទំនាក់ទំនងយើង',
-                        icon: FontAwesomeIcons.phone,
-                        onPress: () {},
-                      ),
-                      SizedBox(height: 32),
-                      //Todo: Logout
-                      _buildLogout(authController),
+            decoration: BoxDecoration(
+              color: ColorResources.whiteBackgroundColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                width: Get.width,
+                height: Get.height,
+                child: Column(
+                  children: [
+                    SizedBox(height: 110),
+                    // Todo: ListTile of Profile
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        physics: BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 16),
+                            CustomListWidget.customListTileSettingScreen(
+                              title: 'ព័ត៌មានរបស់ខ្ញុំ',
+                              icon: Icons.person_outline,
+                              onPress: () {
+                                nextScreen(context, ProfileScreen());
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            CustomListWidget.customListTileSettingScreen(
+                              title: 'ប្រវត្តិរបស់ខ្ញុំ',
+                              icon: FontAwesomeIcons.history,
+                              onPress: () {},
+                            ),
+                            SizedBox(height: 16),
+                            CustomListWidget.customListTileSettingScreen(
+                              title: 'ការជូនដំណឹង',
+                              icon: FontAwesomeIcons.bell,
+                              onPress: () {},
+                            ),
+                            SizedBox(height: 16),
+                            CustomListWidget.customListTileSettingScreen(
+                              title: 'ទំនាក់ទំនងយើង',
+                              icon: FontAwesomeIcons.phone,
+                              onPress: () {},
+                            ),
+                            SizedBox(height: 32),
+                            //Todo: Logout
+                            _buildLogout(authController),
 
-                      SizedBox(height: 16),
-                    ],
-                  ),
+                            SizedBox(height: 16),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              )
-
-            ],
-          ),
-        ),
-      ),
-    )
+              ),
+            ),
+          )
         : Center(child: CircularProgressIndicator());
   }
+
   //Todo: _buildLogout
-  Widget _buildLogout (AuthController authController){
-    return  Padding(
+  Widget _buildLogout(AuthController authController) {
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: GestureDetector(
         onTap: () {
@@ -320,8 +362,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         Text(
                           "Log Out ",
                           style: textStyleMedium.copyWith(
-                              color: ColorResources.blackColor,
-                              fontSize: 20),
+                              color: ColorResources.blackColor, fontSize: 20),
                         ),
                       ],
                     ),
@@ -344,20 +385,18 @@ class _SettingScreenState extends State<SettingScreen> {
                     Row(
                       children: [
                         Padding(
-                          padding:
-                          EdgeInsets.symmetric(vertical: 8.0),
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
                           child: Text(
                             'Are you sure, you wish to log Out?',
-                            style: textStyleMedium.copyWith(
-                                fontSize: 12),
+                            style: textStyleMedium.copyWith(fontSize: 12),
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                actionsPadding: EdgeInsets.symmetric(
-                    vertical: 16, horizontal: 16),
+                actionsPadding:
+                    EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 actions: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -369,10 +408,9 @@ class _SettingScreenState extends State<SettingScreen> {
                         },
                         child: Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(16)),
-                              color: ColorResources.greyColor
-                                  .withOpacity(0.5),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16)),
+                              color: ColorResources.greyColor.withOpacity(0.5),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -382,8 +420,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               child: Text(
                                 'Close',
                                 style: TextStyle(
-                                  color: ColorResources
-                                      .whiteBackgroundColor,
+                                  color: ColorResources.whiteBackgroundColor,
                                 ),
                               ),
                             )),
@@ -391,6 +428,11 @@ class _SettingScreenState extends State<SettingScreen> {
                       Spacer(),
                       GestureDetector(
                         onTap: () async {
+                          // String token = sharedPreferences!
+                          //                 .getString(AppConstants.token) ??
+                          //                 "";
+                          // setState(() {
+                          // });
                           await authController.signOut(context);
                         },
                         child: Container(
@@ -398,8 +440,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             borderRadius: BorderRadius.all(
                               Radius.circular(16),
                             ),
-                            color: ColorResources.primaryColor
-                                .withOpacity(0.5),
+                            color: ColorResources.primaryColor.withOpacity(0.5),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -441,5 +482,4 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
     );
   }
-
 }

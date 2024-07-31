@@ -231,7 +231,7 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                               onPressed: () {
                                 nextScreen(context, SignUpAccountScreen());
                               },
-                              child: Text('ចុះឈ្ម៖គណនី'),
+                              child: Text('ចុះឈ្មោះគណនី'),
                             ),
                           ],
                         )

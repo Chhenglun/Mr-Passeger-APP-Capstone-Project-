@@ -1,6 +1,7 @@
 // ignore_for_file: await_only_futures, avoid_print, unnecessary_null_comparison, prefer_const_constructors, unused_local_variable, deprecated_member_use
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -283,6 +284,33 @@ class AuthController extends GetxController implements GetxService {
     }
   }
 
+  Future<void> postDeviceToken(String passengerID) async {
+    print(passengerID);
+    print(frmTokenPublic);
+    final String url =
+        'http://ec2-54-82-25-173.compute-1.amazonaws.com:8000/api/trips/updatePassengerToken';
+
+    final Map<String, dynamic> data = {
+      "passenger_id": passengerID,
+      "deviceToken": frmTokenPublic
+    };
+
+    final response = await http.post(
+      Uri.parse(url),
+      // headers: <String, String>{
+      //   'Content-Type': 'application/json',
+      // },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      print('Posted device token successfully');
+    } else {
+      print('response.statusCode device token ${response.statusCode}');
+      print('Failed to post data device token');
+    }
+  }
+
   //Todo: LoginPassager
   Future loginPassager(BuildContext context,
       {required String email, required String password}) async {
@@ -298,7 +326,10 @@ class AuthController extends GetxController implements GetxService {
       if (apiResponse.statusCode == 200) {
         Navigator.pop(Get.context!);
         Map<String, dynamic> map = apiResponse.body;
-
+        //post device token
+        await postDeviceToken(
+          map['_id'],
+        );
         try {
           token = map["token"];
           String role = map["role"];
@@ -417,6 +448,9 @@ class AuthController extends GetxController implements GetxService {
         print("Register Success : ${apiResponse.body['status_code']}");
         Map<String, dynamic> map = apiResponse.body;
         String message = "";
+        await postDeviceToken(
+          map['_id'],
+        );
         try {
           message = map["status_code"];
           print("Message : $message");
@@ -525,7 +559,6 @@ class AuthController extends GetxController implements GetxService {
 
   //Todo: getPassagerInfo
   Future getPassengerInfoController() async {
-    print('hi');
     try {
       _isLoading = true;
       //update();

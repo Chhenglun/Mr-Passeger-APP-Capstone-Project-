@@ -109,7 +109,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 nextScreen(context, BookingScreen());
                 FlutterAppBadger.removeBadge();
               },
-              btnText: 'ok'.tr,
+              btnText: 'Go To Trip'.tr,
             ); // ignore: unnecessary_statements
           });
         });

@@ -335,9 +335,9 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                     color: Colors.white,
                                     onPressed: () {
                                       Navigator.pop(context);
-                                      // String token = sharedPreferences!
-                                      //     .getString(AppConstants.token) ??
-                                      //     "";
+                                      String token = sharedPreferences!
+                                          .getString(AppConstants.token) ??
+                                          "";
                                       // if (token.isNotEmpty) {
                                       //   print("First Check Token $token");
                                       //   nextScreen(context, SettingScreen());
@@ -674,7 +674,30 @@ class _CurrentLocationState extends State<CurrentLocation> {
             ],
           ),
         ),
-        bottomNavigationBar: Container(
+        bottomNavigationBar: isLoading == true || isWaiting == true &&
+                  stopWaiting == false &&
+                  driAccept == false
+          ? Container(
+          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+          width: MediaQuery.sizeOf(context).width * 12 / 12,
+          child: Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: ElevatedButton(
+              onPressed: (){},
+              style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Colors.grey),
+                ),
+                child: Text(
+                  'បញ្ជាក់ការកក់',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                )
+            ),
+          ),
+        )
+        : Container(
           padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
           width: MediaQuery.sizeOf(context).width * 12 / 12,
           child: Padding(
@@ -796,6 +819,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                       fontWeight: FontWeight.bold),
                 )),
           ),
-        ));
+        )
+    );
   }
 }

@@ -80,7 +80,6 @@ class BookStoreController extends GetxController implements GetxService {
     }
   }
 
-  // TODO: GetBookDetail
   Future getBookDetail({required int bookId}) async {
     try {
       // _isLoading = true;

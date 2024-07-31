@@ -9,8 +9,10 @@
 import 'package:camera_web/camera_web.dart';
 import 'package:connectivity_for_web/connectivity_for_web.dart';
 import 'package:device_info_plus/src/device_info_plus_web.dart';
+import 'package:firebase_analytics_web/firebase_analytics_web.dart';
 import 'package:firebase_app_installations_web/firebase_app_installations_web.dart';
 import 'package:firebase_core_web/firebase_core_web.dart';
+import 'package:firebase_messaging_web/firebase_messaging_web.dart';
 import 'package:flutter_secure_storage_web/flutter_secure_storage_web.dart';
 import 'package:fluttertoast/fluttertoast_web.dart';
 import 'package:geolocator_web/geolocator_web.dart';
@@ -30,8 +32,10 @@ void registerPlugins([final Registrar? pluginRegistrar]) {
   CameraPlugin.registerWith(registrar);
   ConnectivityPlugin.registerWith(registrar);
   DeviceInfoPlusWebPlugin.registerWith(registrar);
+  FirebaseAnalyticsWeb.registerWith(registrar);
   FirebaseAppInstallationsWeb.registerWith(registrar);
   FirebaseCoreWeb.registerWith(registrar);
+  FirebaseMessagingWeb.registerWith(registrar);
   FlutterSecureStorageWeb.registerWith(registrar);
   FluttertoastWebPlugin.registerWith(registrar);
   GeolocatorPlugin.registerWith(registrar);

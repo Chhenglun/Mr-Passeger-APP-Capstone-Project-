@@ -9,7 +9,6 @@ import 'package:scholarar/controller/splash_controller.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

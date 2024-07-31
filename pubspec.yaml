@@ -66,6 +66,13 @@ dependencies:
   google_fonts: ^6.2.1
   curved_drawer_fork: ^0.0.1+1
   csc_picker: ^0.2.7
+  #firbase
+  firebase_core: ^2.3.0
+  firebase_analytics: ^10.10.7
+  firebase_crashlytics: ^3.5.7
+  flutter_local_notifications: ^17.2.1
+  #firebase_app_installations: ^0.2.5+7
+  firebase_messaging: ^14.9.4
 
 
 dependency_overrides:

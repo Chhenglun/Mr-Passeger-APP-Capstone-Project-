@@ -8,6 +8,7 @@ import 'package:scholarar/data/model/response/language_model.dart';
 
   String selectedFromAddress = '';
   String selectedToAddress = '';
+  String? frmTokenPublic;
 
 class AppConstants {
   //login in booking screen

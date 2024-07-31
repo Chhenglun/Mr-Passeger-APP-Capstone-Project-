@@ -8,17 +8,13 @@ import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/screen/booking/message.dart';
 import 'package:scholarar/view/screen/booking/profile_screen.dart';
 import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../chat/chat_screen.dart';
-import '../profile/profile_screen.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});

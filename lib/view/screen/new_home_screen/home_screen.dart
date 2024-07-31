@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/screen/home/current_location.dart';
 import '../../../controller/splash_controller.dart';
-import '../booking/booking_screen.dart';
-import 'booking_screen.dart';
 
 class NewHomeScreen extends StatefulWidget {
   const NewHomeScreen({super.key});
@@ -15,7 +13,9 @@ class NewHomeScreen extends StatefulWidget {
 }
 
 class _NewHomeScreenState extends State<NewHomeScreen> {
+
   @override
+
   Widget build(BuildContext context) {
     return DefaultTabController(
       initialIndex: 0,

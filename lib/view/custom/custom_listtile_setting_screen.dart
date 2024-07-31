@@ -28,7 +28,7 @@ class CustomListWidget {
       child: ListTile(
         leading: Icon(
           icon,
-          color: ColorResources.greyColor,
+          color: ColorResources.blackColor,
           //size: 22,
         ),
         title: Text(

@@ -73,6 +73,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     await FirebaseMessaging.instance.getAPNSToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print('onMessages: ${message.notification!.title!}');
+      if (message.notification!.title! == 'Trip Accepted') {
+        setState(() {
+          isWaiting = false;
+        });
+      }
     });
     if(token != null) {
       print('token $token');
@@ -94,7 +99,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
           FlutterAppBadger.updateBadgeCount(1);
           Future.delayed(Duration(seconds: 1), () {
-            customNotificationDialog(
+            driAccept == true
+                ?customNotificationDialog(
               context: Get.context!,
               title: message.notification!.title!,
               content: message.notification!.body!,
@@ -103,7 +109,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 FlutterAppBadger.removeBadge();
               },
               btnText: 'ok'.tr,
-            );
+            ) : null; // ignore: unnecessary_statements
           });
         });
       }

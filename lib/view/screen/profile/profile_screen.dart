@@ -120,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Expanded(child: Container(
                     width: Get.width,
                     height: Get.height,
-                    color: ColorResources.whiteBackgroundColor,
+                   color: ColorResources.whiteBackgroundColor,
                   )),
                 ],
               ),
@@ -277,7 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text(
                           "ព័ត៌មានរបស់ខ្ញុំ",
                           style: GoogleFonts.notoSerifKhmer(
-                            fontSize: 32,
+                            fontSize: 28,
                             color: ColorResources.primaryColor,
                           ),
                         ),
@@ -285,7 +285,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     SizedBox(height: 16),
                     // Todo: ListTile of Profile
-                    Expanded(
+                    Container(
+                      height: Get.height * 0.6,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
                         physics: BouncingScrollPhysics(),
@@ -334,6 +335,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 nextScreen(context, EditeProfileScreen());
                               }, size: 50,
                             ),
+                            SizedBox(height: 32,)
 
                           ],
                         ),

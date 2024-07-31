@@ -5,6 +5,8 @@ import 'package:scholarar/data/model/response/language_model.dart';
   late double longCur;
   late double latDir;
   late double longDir;
+  bool isWaiting = false;
+  bool driAccept = false;
 
   String selectedFromAddress = '';
   String selectedToAddress = '';

@@ -9,8 +9,12 @@ import 'package:scholarar/controller/splash_controller.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/screen/home/current_location.dart';
+import 'package:scholarar/view/screen/new_home_screen/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../home/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
         if (token.isNotEmpty) {
           print("First Check Token $token");
           await authController.getUserInfo().then((_) {
-            nextScreenReplace(Get.context, CurrentLocation());
+            nextScreenReplace(Get.context, AppScreen());
           });
         } else {
           print("Logout Token: ");

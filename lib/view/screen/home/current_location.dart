@@ -55,6 +55,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
   );
 
   Set<Marker> markers = {};
+
   LatLng selectedLatLng = LatLng(0, 0);
 
   Future<Position> _getGeoLocationPosition() async {
@@ -195,24 +196,24 @@ class _CurrentLocationState extends State<CurrentLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: CurvedDrawer(
-        color: const Color.fromARGB(255, 255, 240, 219),
-        buttonBackgroundColor: Colors.lightGreenAccent,
-        labelColor: Colors.red,
-        backgroundColor: Colors.transparent,
-        width: 75.0,
-        items: const <DrawerItem>[
-          DrawerItem(icon: Icon(Icons.home), label: "Home"),
-          DrawerItem(icon: Icon(FontAwesomeIcons.car), label: "Booking"),
-          DrawerItem(icon: Icon(Icons.person), label: "Profile"),
-        ],
-        onTap: (index) {
-          print('Button Pressed');
-          _pageController.animateToPage(index,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut);
-        },
-      ),
+      // drawer: CurvedDrawer(
+      //   color: const Color.fromARGB(255, 255, 240, 219),
+      //   buttonBackgroundColor: Colors.lightGreenAccent,
+      //   labelColor: Colors.red,
+      //   backgroundColor: Colors.transparent,
+      //   width: 75.0,
+      //   items: const <DrawerItem>[
+      //     DrawerItem(icon: Icon(Icons.home), label: "Home"),
+      //     DrawerItem(icon: Icon(FontAwesomeIcons.car), label: "Booking"),
+      //     DrawerItem(icon: Icon(Icons.person), label: "Profile"),
+      //   ],
+      //   onTap: (index) {
+      //     print('Button Pressed');
+      //     _pageController.animateToPage(index,
+      //         duration: const Duration(milliseconds: 300),
+      //         curve: Curves.easeOut);
+      //   },
+      // ),
       body: SafeArea(
         child: Stack(
           children: [
@@ -253,34 +254,34 @@ class _CurrentLocationState extends State<CurrentLocation> {
                         left: 10,
                         child: Row(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: IconButton(
-                                  icon: Icon(Icons.person),
-                                  color: Colors.white,
-                                  onPressed: () {
-                                    String token = sharedPreferences!.getString(AppConstants.token) ?? "";
-                                    if (token.isNotEmpty) {
-                                      print("First Check Token $token");
-                                      nextScreen(context, SettingScreen());
-                                    } else {
-                                      print("Logout Token: $token");
-                                      nextScreen(context, SignInAccountScreen());
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: MediaQuery.sizeOf(context).width * 1 / 24),
+                            // Container(
+                            //   decoration: BoxDecoration(
+                            //     color: Colors.red,
+                            //     shape: BoxShape.circle,
+                            //   ),
+                            //   child: Center(
+                            //     child: IconButton(
+                            //       icon: Icon(Icons.person),
+                            //       color: Colors.white,
+                            //       onPressed: () {
+                            //         String token = sharedPreferences!.getString(AppConstants.token) ?? "";
+                            //         if (token.isNotEmpty) {
+                            //           print("First Check Token $token");
+                            //           nextScreen(context, SettingScreen());
+                            //         } else {
+                            //           print("Logout Token: $token");
+                            //           nextScreen(context, SignInAccountScreen());
+                            //         }
+                            //       },
+                            //     ),
+                            //   ),
+                            // ),
+                             SizedBox(width: MediaQuery.sizeOf(context).width * 1 / 15),
                             toSelected == false
                                   ? Container(
                                       width: MediaQuery.sizeOf(context).width *
-                                          17 /
-                                          24,
+                                          18 /
+                                          22,
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade100,
                                         borderRadius: BorderRadius.circular(25),

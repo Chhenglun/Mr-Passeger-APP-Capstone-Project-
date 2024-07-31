@@ -21,7 +21,9 @@ import 'package:scholarar/util/alert_dialog.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/messages.dart';
+import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/util/notification_service.dart';
+import 'package:scholarar/view/screen/booking/booking_screen.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
 
 import 'helper/get_di.dart' as di;
@@ -99,17 +101,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
           FlutterAppBadger.updateBadgeCount(1);
           Future.delayed(Duration(seconds: 1), () {
-            driAccept == true
-                ?customNotificationDialog(
+            customNotificationDialog(
               context: Get.context!,
               title: message.notification!.title!,
               content: message.notification!.body!,
               onTap: () {
-                Get.back();
+                nextScreen(context, BookingScreen());
                 FlutterAppBadger.removeBadge();
               },
               btnText: 'ok'.tr,
-            ) : null; // ignore: unnecessary_statements
+            ); // ignore: unnecessary_statements
           });
         });
       }

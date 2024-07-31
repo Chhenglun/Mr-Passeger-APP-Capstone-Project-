@@ -25,7 +25,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
         appBar: AppBar(
           backgroundColor: Colors.red,
           centerTitle: true,
-          title: Text('Mr.Driver',style: TextStyle(fontSize: 24,color: Colors.white),),
+          title: Text('Mr. Driver',style: TextStyle(fontSize: 24,color: Colors.white),),
         ),
         body: Column(
           children: [

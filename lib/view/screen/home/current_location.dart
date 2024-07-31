@@ -42,9 +42,9 @@ class _CurrentLocationState extends State<CurrentLocation> {
   final GlobalKey<FormState> _formKeyEachTo = GlobalKey<FormState>();
   TextEditingController _searchController = TextEditingController();
   TextEditingController _searchFromController =
-  TextEditingController(text: selectedFromAddress);
+      TextEditingController(text: selectedFromAddress);
   TextEditingController _searchToController =
-  TextEditingController(text: selectedToAddress);
+      TextEditingController(text: selectedToAddress);
 
   // If not yet login
   final _usernameController = TextEditingController();
@@ -101,10 +101,10 @@ class _CurrentLocationState extends State<CurrentLocation> {
   void searchLocation() async {
     try {
       List<Location> locations =
-      await locationFromAddress(_searchController.text);
+          await locationFromAddress(_searchController.text);
       if (locations.isNotEmpty) {
         LatLng searchedLatLng =
-        LatLng(locations[0].latitude, locations[0].longitude);
+            LatLng(locations[0].latitude, locations[0].longitude);
 
         markers.clear();
         markers.add(Marker(
@@ -154,22 +154,22 @@ class _CurrentLocationState extends State<CurrentLocation> {
 
   void getAddressFromLatLng(LatLng latLng) async {
     List<Placemark> placemarks =
-    await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+        await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
     Placemark place = placemarks[0];
     setState(() {
       selectedFromAddress =
-      "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
+          "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
       _searchFromController.text = selectedFromAddress;
     });
   }
 
   void getAddressToLatLng(LatLng latLng) async {
     List<Placemark> placemarks =
-    await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+        await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
     Placemark place = placemarks[0];
     setState(() {
       selectedToAddress =
-      "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
+          "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
       _searchToController.text = selectedToAddress;
     });
   }
@@ -217,7 +217,6 @@ class _CurrentLocationState extends State<CurrentLocation> {
           setState(() {
             if (_counter > 0) {
               _counter--;
-
             } else {
               _timer.cancel();
               setState(() {
@@ -305,19 +304,19 @@ class _CurrentLocationState extends State<CurrentLocation> {
                           },
                           onTap: toSelected == false
                               ? (LatLng latLng) {
-                            markers.clear();
-                            markers.add(Marker(
-                                markerId: MarkerId('selectedLocation'),
-                                position: latLng));
-                            setState(() {
-                              selectedLatLng = latLng;
-                              if (fromSelected == false) {
-                                getAddressFromLatLng(latLng);
-                              } else {
-                                getAddressToLatLng(latLng);
-                              }
-                            });
-                          }
+                                  markers.clear();
+                                  markers.add(Marker(
+                                      markerId: MarkerId('selectedLocation'),
+                                      position: latLng));
+                                  setState(() {
+                                    selectedLatLng = latLng;
+                                    if (fromSelected == false) {
+                                      getAddressFromLatLng(latLng);
+                                    } else {
+                                      getAddressToLatLng(latLng);
+                                    }
+                                  });
+                                }
                               : null,
                         ),
                         Positioned(
@@ -332,20 +331,21 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                 ),
                                 child: Center(
                                   child: IconButton(
-                                    icon: Icon(Icons.person),
+                                    icon: Icon(Icons.arrow_back_ios),
                                     color: Colors.white,
                                     onPressed: () {
-                                      String token = sharedPreferences!
-                                          .getString(AppConstants.token) ??
-                                          "";
-                                      if (token.isNotEmpty) {
-                                        print("First Check Token $token");
-                                        nextScreen(context, SettingScreen());
-                                      } else {
-                                        print("Logout Token: $token");
-                                        nextScreen(
-                                            context, SignInAccountScreen());
-                                      }
+                                      Navigator.pop(context);
+                                      // String token = sharedPreferences!
+                                      //     .getString(AppConstants.token) ??
+                                      //     "";
+                                      // if (token.isNotEmpty) {
+                                      //   print("First Check Token $token");
+                                      //   nextScreen(context, SettingScreen());
+                                      // } else {
+                                      //   print("Logout Token: $token");
+                                      //   nextScreen(
+                                      //       context, SignInAccountScreen());
+                                      // }
                                     },
                                   ),
                                 ),
@@ -356,100 +356,100 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                       24),
                               toSelected == false
                                   ? Container(
-                                width: MediaQuery.sizeOf(context).width *
-                                    17 /
-                                    24,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(25),
-                                  border: Border.all(
-                                      color: Colors.white, width: 2),
-                                ),
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(right: 6),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.start,
-                                    children: [
-                                      IconButton(
-                                        color: Colors.black,
-                                        icon: Icon(
-                                          Icons.search,
+                                      width: MediaQuery.sizeOf(context).width *
+                                          17 /
+                                          24,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(25),
+                                        border: Border.all(
+                                            color: Colors.white, width: 2),
+                                      ),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 6),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            IconButton(
+                                              color: Colors.black,
+                                              icon: Icon(
+                                                Icons.search,
+                                              ),
+                                              onPressed: () {
+                                                searchLocation();
+                                              },
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.sizeOf(context)
+                                                      .width *
+                                                  0.5 /
+                                                  24,
+                                            ),
+                                            Expanded(
+                                              child: TextField(
+                                                controller: _searchController,
+                                                decoration: InputDecoration(
+                                                  hintText: "Search",
+                                                  hintStyle: TextStyle(
+                                                      color: Colors.grey),
+                                                  border: InputBorder.none,
+                                                ),
+                                                onSubmitted: (query) =>
+                                                    searchLocation(),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        onPressed: () {
-                                          searchLocation();
-                                        },
                                       ),
-                                      SizedBox(
-                                        width: MediaQuery.sizeOf(context)
-                                            .width *
-                                            0.5 /
-                                            24,
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller: _searchController,
-                                          decoration: InputDecoration(
-                                            hintText: "Search",
-                                            hintStyle: TextStyle(
-                                                color: Colors.grey),
-                                            border: InputBorder.none,
-                                          ),
-                                          onSubmitted: (query) =>
-                                              searchLocation(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
+                                    )
                                   : ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                      WidgetStatePropertyAll(
-                                          Colors.white)),
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedFromAddress = '';
-                                      selectedToAddress = '';
-                                      // latCur;
-                                      // longCur;
-                                      // latDir;
-                                      // longDir;
-                                    });
-                                    nextScreenReplace(
-                                        Get.context, CurrentLocation());
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.cancel,
-                                        color: Colors.red,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Undo Selected Location',
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                    ],
-                                  ))
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              WidgetStatePropertyAll(
+                                                  Colors.white)),
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedFromAddress = '';
+                                          selectedToAddress = '';
+                                          // latCur;
+                                          // longCur;
+                                          // latDir;
+                                          // longDir;
+                                        });
+                                        nextScreenReplace(
+                                            Get.context, CurrentLocation());
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.cancel,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Undo Selected Location',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ],
+                                      ))
                             ],
                           ),
                         ),
                         toSelected == false
                             ? Positioned(
-                          bottom: 65,
-                          right: 10,
-                          child: FloatingActionButton(
-                            onPressed: () async {
-                              await getCurrentLocation();
-                            },
-                            child: Icon(Icons.my_location),
-                          ),
-                        )
+                                bottom: 65,
+                                right: 10,
+                                child: FloatingActionButton(
+                                  onPressed: () async {
+                                    await getCurrentLocation();
+                                  },
+                                  child: Icon(Icons.my_location),
+                                ),
+                              )
                             : Container()
                       ],
                     ),
@@ -465,17 +465,17 @@ class _CurrentLocationState extends State<CurrentLocation> {
                               children: [
                                 Container(
                                   width:
-                                  MediaQuery.sizeOf(context).width * 3 / 24,
+                                      MediaQuery.sizeOf(context).width * 3 / 24,
                                   child: Text(
                                     'From',
                                     style:
-                                    TextStyle(fontWeight: FontWeight.bold),
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Expanded(
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      //border: Border.all(color: Colors.grey.shade50),
+                                        //border: Border.all(color: Colors.grey.shade50),
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.grey.shade300),
                                     child: Padding(
@@ -490,7 +490,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                 key: _formKeyEachFrom,
                                                 child: TextFormField(
                                                   controller:
-                                                  _searchFromController,
+                                                      _searchFromController,
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
@@ -501,7 +501,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                   enabled: false,
                                                   decoration: InputDecoration(
                                                     labelText: fromSelected ==
-                                                        false
+                                                            false
                                                         ? 'Select location'
                                                         : 'Selected location',
                                                     border: InputBorder.none,
@@ -517,24 +517,24 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                 ),
                                 fromSelected == false
                                     ? TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (_formKeyEachFrom.currentState
-                                          ?.validate() ??
-                                          false) {
-                                        fromSelected = true;
-                                        latCur = selectedLatLng.latitude;
-                                        longCur =
-                                            selectedLatLng.longitude;
-                                        print('latCur ${latCur}');
-                                        print('longCur ${longCur}');
-                                      }
-                                    });
-                                  },
-                                  child: Text('OK',
-                                      style:
-                                      TextStyle(color: Colors.red)),
-                                )
+                                        onPressed: () {
+                                          setState(() {
+                                            if (_formKeyEachFrom.currentState
+                                                    ?.validate() ??
+                                                false) {
+                                              fromSelected = true;
+                                              latCur = selectedLatLng.latitude;
+                                              longCur =
+                                                  selectedLatLng.longitude;
+                                              print('latCur ${latCur}');
+                                              print('longCur ${longCur}');
+                                            }
+                                          });
+                                        },
+                                        child: Text('OK',
+                                            style:
+                                                TextStyle(color: Colors.red)),
+                                      )
                                     : Container(),
                               ],
                             ),
@@ -543,17 +543,17 @@ class _CurrentLocationState extends State<CurrentLocation> {
                               children: [
                                 Container(
                                   width:
-                                  MediaQuery.sizeOf(context).width * 3 / 24,
+                                      MediaQuery.sizeOf(context).width * 3 / 24,
                                   child: Text(
                                     'To',
                                     style:
-                                    TextStyle(fontWeight: FontWeight.bold),
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Expanded(
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      //border: Border.all(color: Colors.grey.shade50),
+                                        //border: Border.all(color: Colors.grey.shade50),
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.grey.shade300),
                                     child: Padding(
@@ -569,7 +569,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                 key: _formKeyEachTo,
                                                 child: TextFormField(
                                                   controller:
-                                                  _searchToController,
+                                                      _searchToController,
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
@@ -580,7 +580,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                   enabled: false,
                                                   decoration: InputDecoration(
                                                     labelText: toSelected ==
-                                                        false
+                                                            false
                                                         ? 'Select location'
                                                         : 'Selected location',
                                                     border: InputBorder.none,
@@ -596,19 +596,19 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                 ),
                                 toSelected == false
                                     ? TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (_formKeyEachTo.currentState
-                                          ?.validate() ??
-                                          false) {
-                                        toSelected = true;
-                                      }
-                                    });
-                                  },
-                                  child: Text('OK',
-                                      style:
-                                      TextStyle(color: Colors.red)),
-                                )
+                                        onPressed: () {
+                                          setState(() {
+                                            if (_formKeyEachTo.currentState
+                                                    ?.validate() ??
+                                                false) {
+                                              toSelected = true;
+                                            }
+                                          });
+                                        },
+                                        child: Text('OK',
+                                            style:
+                                                TextStyle(color: Colors.red)),
+                                      )
                                     : Container(),
                               ],
                             ),
@@ -624,7 +624,9 @@ class _CurrentLocationState extends State<CurrentLocation> {
                   color: Colors.white.withOpacity(0.8),
                   child: Center(child: CircularProgressIndicator()),
                 ),
-              if (isWaiting == true && stopWaiting == false && driAccept == false)
+              if (isWaiting == true &&
+                  stopWaiting == false &&
+                  driAccept == false)
                 Center(
                   child: Container(
                     width: MediaQuery.sizeOf(context).width * 1 / 1,
@@ -645,7 +647,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                             child: CircularProgressIndicator(
                               value: (_counter / 10),
                               valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.red),
+                                  AlwaysStoppedAnimation<Color>(Colors.red),
                               strokeWidth: 5,
                             ),
                           ),
@@ -754,7 +756,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                               ElevatedButton(
                                 style: ButtonStyle(
                                     backgroundColor:
-                                    WidgetStatePropertyAll(Colors.red)),
+                                        WidgetStatePropertyAll(Colors.red)),
                                 child: Text(
                                   'Submit',
                                   style: TextStyle(color: Colors.white),

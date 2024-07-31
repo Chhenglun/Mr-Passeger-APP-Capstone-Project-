@@ -41,12 +41,12 @@ class _SplashScreenState extends State<SplashScreen> {
           });
         } else {
           print("Logout Token: ");
-          nextScreenReplace(context, CurrentLocation());
+          nextScreenReplace(Get.context, AppScreen());
         }
       } catch (e) {
         print('else');
         Timer(Duration(seconds: 5), () {
-          nextScreenReplace(Get.context, CurrentLocation());
+          nextScreenReplace(Get.context, AppScreen());
         });
         
       }

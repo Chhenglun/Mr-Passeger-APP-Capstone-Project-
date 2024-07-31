@@ -8,7 +8,10 @@ import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/view/screen/booking/booking_screen.dart';
 import 'package:scholarar/view/screen/chat/chat_screen.dart';
 import 'package:scholarar/view/screen/home/home_screen.dart';
+import 'package:scholarar/view/screen/new_home_screen/booking_screen.dart';
+import 'package:scholarar/view/screen/new_home_screen/home_screen.dart';
 import 'package:scholarar/view/screen/profile/profile_screen.dart';
+import 'package:scholarar/view/screen/profile/settings_screen.dart';
 
 class AppScreen extends StatefulWidget {
   const AppScreen({super.key});
@@ -21,10 +24,9 @@ class _AppScreenState extends State<AppScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Widget>? listScreen;
   final PageController _pageController = PageController();
-  final HomeScreen _homeScreen = HomeScreen();
-  final BookingScreen _bookingScreen = BookingScreen();
-  final ChatScreen _chatScreen = ChatScreen();
-  final ProfileScreen _profileScreen = ProfileScreen();
+  final NewHomeScreen _newHomeScreen = NewHomeScreen();
+  final BookingHistoryScreen _bookingHistoryScreen = BookingHistoryScreen();
+  final SettingScreen _settingScreen = SettingScreen();
   // final ScholarshipScreen _scholarshipScreen = ScholarshipScreen();
   // final CoursesScreen _coursesScreen = CoursesScreen();
   // final StoreScreen _storeScreen = StoreScreen();
@@ -32,10 +34,9 @@ class _AppScreenState extends State<AppScreen> {
   @override
   void initState() {
     listScreen = [
-      _homeScreen,
-      _bookingScreen,
-      _chatScreen,
-      _profileScreen,
+      _newHomeScreen,
+      _bookingHistoryScreen,
+      _settingScreen,
     ];
     super.initState();
   }
@@ -94,16 +95,10 @@ class _AppScreenState extends State<AppScreen> {
             label: 'Home'.tr,
           ),
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.car, color: Colors.white, size: 17,),
+            icon: FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 17,),
             selectedIcon:
-                FaIcon(FontAwesomeIcons.car, color: Colors.white, size: 29),
-            label: 'Booking'.tr,
-          ),
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.message, color: Colors.white, size: 17,),
-            selectedIcon:
-                FaIcon(FontAwesomeIcons.message, color: Colors.white, size: 29),
-            label: 'Chat'.tr,
+                FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 29),
+            label: 'My Booking'.tr,
           ),
           NavigationDestination(
             icon: FaIcon(Icons.person_pin, color: Colors.white, size: 20,),

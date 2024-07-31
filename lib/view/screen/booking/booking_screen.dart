@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
@@ -54,26 +52,6 @@ class _BookingScreenState extends State<BookingScreen> {
     driverTimer?.cancel();
     super.dispose();
   }
-
-  // void getPolyPoint() async {
-  //   PolylinePoints polylinePoints = PolylinePoints();
-  //   PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-  //     googleApiKey:  AppConstants.google_key_api,
-  //     PointLatLng(currentPosition.latitude, currentPosition.longitude),
-  //     PointLatLng(destination.latitude, destination.longitude),
-  //   );
-  //   if (result.points.isNotEmpty) {
-  //     polyLineCoordinates.clear();
-  //     result.points.forEach((PointLatLng point) {
-  //       polyLineCoordinates.add(LatLng(point.latitude, point.longitude));
-  //     });
-  //     setState(() {
-  //       print("=====>>>>>>>Polyline coordinates updated");
-  //     });
-  //   } else {
-  //     print('=====>>>>>>No points found or error in fetching points');
-  //   }
-  // }
 
   void getPolyPoint() async {
     PolylinePoints polylinePoints = PolylinePoints();

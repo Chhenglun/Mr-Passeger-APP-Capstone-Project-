@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, deprecated_member_use
 
 import 'dart:io';
 
@@ -12,7 +12,6 @@ import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/util/style.dart';
 import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
-import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:scholarar/view/screen/profile/profile_screen.dart';
 
 class SettingScreen extends StatefulWidget {

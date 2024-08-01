@@ -75,8 +75,12 @@ dependencies:
   flutter_local_notifications: ^17.2.1
   #firebase_app_installations: ^0.2.5+7
   firebase_messaging: ^14.9.4
+  flutter_launcher_icons: ^0.13.1
 
-
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/images/logo.jpg"
 
 dependency_overrides:
   modal_bottom_sheet:

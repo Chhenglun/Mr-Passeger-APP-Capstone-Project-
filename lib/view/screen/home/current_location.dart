@@ -668,6 +668,27 @@ class _CurrentLocationState extends State<CurrentLocation> {
                         height: MediaQuery.sizeOf(context).height * 1 / 30,
                       ),
                       Text('សូមរង់ចាំការឆ្លើយតបពីអ្នកបើកបរ'),
+                      SizedBox(
+              height: MediaQuery.sizeOf(context).height * 1 / 15,
+            ),
+            // ElevatedButton(
+            //                     style: const ButtonStyle(
+            //                       backgroundColor:
+            //                           MaterialStatePropertyAll(Colors.red),
+            //                     ),
+            //                     onPressed: () {
+            //                       setState(() {
+            //                         stopWaiting = true;
+            //                       });
+            //                       //Navigator.pop(context);
+            //                     },
+            //                     child: Padding(
+            //                       padding: const EdgeInsets.all(15.0),
+            //                       child: Text(
+            //                         'លុបចោលការកក់',
+            //                         style: TextStyle(color: Colors.white),
+            //                       ),
+            //                     )),
                     ]),
                   ),
                 ),

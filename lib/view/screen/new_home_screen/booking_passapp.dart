@@ -22,14 +22,14 @@ import 'package:curved_drawer_fork/curved_drawer_fork.dart';
 import 'package:scholarar/view/screen/profile/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CurrentLocation extends StatefulWidget {
-  const CurrentLocation({super.key});
+class BookingPassApp extends StatefulWidget {
+  const BookingPassApp({super.key});
 
   @override
-  State<CurrentLocation> createState() => _CurrentLocationState();
+  State<BookingPassApp> createState() => _BookingPassAppState();
 }
 
-class _CurrentLocationState extends State<CurrentLocation> {
+class _BookingPassAppState extends State<BookingPassApp> {
   SharedPreferences? sharedPreferences;
   AuthController authController = Get.find<AuthController>();
   bool fromSelected = false;
@@ -42,9 +42,9 @@ class _CurrentLocationState extends State<CurrentLocation> {
   final GlobalKey<FormState> _formKeyEachTo = GlobalKey<FormState>();
   TextEditingController _searchController = TextEditingController();
   TextEditingController _searchFromController =
-      TextEditingController(text: selectedFromAddress);
+  TextEditingController(text: selectedFromAddress);
   TextEditingController _searchToController =
-      TextEditingController(text: selectedToAddress);
+  TextEditingController(text: selectedToAddress);
 
   // If not yet login
   final _usernameController = TextEditingController();
@@ -101,10 +101,10 @@ class _CurrentLocationState extends State<CurrentLocation> {
   void searchLocation() async {
     try {
       List<Location> locations =
-          await locationFromAddress(_searchController.text);
+      await locationFromAddress(_searchController.text);
       if (locations.isNotEmpty) {
         LatLng searchedLatLng =
-            LatLng(locations[0].latitude, locations[0].longitude);
+        LatLng(locations[0].latitude, locations[0].longitude);
 
         markers.clear();
         markers.add(Marker(
@@ -154,22 +154,22 @@ class _CurrentLocationState extends State<CurrentLocation> {
 
   void getAddressFromLatLng(LatLng latLng) async {
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+    await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
     Placemark place = placemarks[0];
     setState(() {
       selectedFromAddress =
-          "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
+      "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
       _searchFromController.text = selectedFromAddress;
     });
   }
 
   void getAddressToLatLng(LatLng latLng) async {
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+    await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
     Placemark place = placemarks[0];
     setState(() {
       selectedToAddress =
-          "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
+      "${place.name}, ${place.thoroughfare}, ${place.subLocality}, ${place.locality}";
       _searchToController.text = selectedToAddress;
     });
   }
@@ -304,19 +304,19 @@ class _CurrentLocationState extends State<CurrentLocation> {
                           },
                           onTap: toSelected == false
                               ? (LatLng latLng) {
-                                  markers.clear();
-                                  markers.add(Marker(
-                                      markerId: MarkerId('selectedLocation'),
-                                      position: latLng));
-                                  setState(() {
-                                    selectedLatLng = latLng;
-                                    if (fromSelected == false) {
-                                      getAddressFromLatLng(latLng);
-                                    } else {
-                                      getAddressToLatLng(latLng);
-                                    }
-                                  });
-                                }
+                            markers.clear();
+                            markers.add(Marker(
+                                markerId: MarkerId('selectedLocation'),
+                                position: latLng));
+                            setState(() {
+                              selectedLatLng = latLng;
+                              if (fromSelected == false) {
+                                getAddressFromLatLng(latLng);
+                              } else {
+                                getAddressToLatLng(latLng);
+                              }
+                            });
+                          }
                               : null,
                         ),
                         Positioned(
@@ -360,100 +360,100 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                       24),
                               toSelected == false
                                   ? Container(
-                                      width: MediaQuery.sizeOf(context).width *
-                                          17 /
-                                          24,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
-                                        borderRadius: BorderRadius.circular(25),
-                                        border: Border.all(
-                                            color: Colors.white, width: 2),
+                                width: MediaQuery.sizeOf(context).width *
+                                    17 /
+                                    24,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(25),
+                                  border: Border.all(
+                                      color: Colors.white, width: 2),
+                                ),
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 6),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.start,
+                                    children: [
+                                      IconButton(
+                                        color: Colors.black,
+                                        icon: Icon(
+                                          Icons.search,
+                                        ),
+                                        onPressed: () {
+                                          searchLocation();
+                                        },
                                       ),
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 6),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            IconButton(
-                                              color: Colors.black,
-                                              icon: Icon(
-                                                Icons.search,
-                                              ),
-                                              onPressed: () {
-                                                searchLocation();
-                                              },
-                                            ),
-                                            SizedBox(
-                                              width: MediaQuery.sizeOf(context)
-                                                      .width *
-                                                  0.5 /
-                                                  24,
-                                            ),
-                                            Expanded(
-                                              child: TextField(
-                                                controller: _searchController,
-                                                decoration: InputDecoration(
-                                                  hintText: "ស្វែងរកទីតាំង...",
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  border: InputBorder.none,
-                                                ),
-                                                onSubmitted: (query) =>
-                                                    searchLocation(),
-                                              ),
-                                            ),
-                                          ],
+                                      SizedBox(
+                                        width: MediaQuery.sizeOf(context)
+                                            .width *
+                                            0.5 /
+                                            24,
+                                      ),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _searchController,
+                                          decoration: InputDecoration(
+                                            hintText: "ស្វែងរកទីតាំង...",
+                                            hintStyle: TextStyle(
+                                                color: Colors.grey),
+                                            border: InputBorder.none,
+                                          ),
+                                          onSubmitted: (query) =>
+                                              searchLocation(),
                                         ),
                                       ),
-                                    )
+                                    ],
+                                  ),
+                                ),
+                              )
                                   : ElevatedButton(
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              WidgetStatePropertyAll(
-                                                  Colors.white)),
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedFromAddress = '';
-                                          selectedToAddress = '';
-                                          // latCur;
-                                          // longCur;
-                                          // latDir;
-                                          // longDir;
-                                        });
-                                        nextScreenReplace(
-                                            Get.context, CurrentLocation());
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.cancel,
-                                            color: Colors.red,
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            'លុបចោលទីតាំងដែលបានជ្រេីសរេីស',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ],
-                                      ))
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                      WidgetStatePropertyAll(
+                                          Colors.white)),
+                                  onPressed: () {
+                                    setState(() {
+                                      selectedFromAddress = '';
+                                      selectedToAddress = '';
+                                      // latCur;
+                                      // longCur;
+                                      // latDir;
+                                      // longDir;
+                                    });
+                                    nextScreenReplace(
+                                        Get.context, BookingPassApp());
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.cancel,
+                                        color: Colors.red,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        'លុបចោលទីតាំងដែលបានជ្រេីសរេីស',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ],
+                                  ))
                             ],
                           ),
                         ),
                         toSelected == false
                             ? Positioned(
-                                bottom: 65,
-                                right: 10,
-                                child: FloatingActionButton(
-                                  onPressed: () async {
-                                    await getCurrentLocation();
-                                  },
-                                  child: Icon(Icons.my_location),
-                                ),
-                              )
+                          bottom: 65,
+                          right: 10,
+                          child: FloatingActionButton(
+                            onPressed: () async {
+                              await getCurrentLocation();
+                            },
+                            child: Icon(Icons.my_location),
+                          ),
+                        )
                             : Container()
                       ],
                     ),
@@ -469,17 +469,17 @@ class _CurrentLocationState extends State<CurrentLocation> {
                               children: [
                                 Container(
                                   width:
-                                      MediaQuery.sizeOf(context).width * 3 / 20,
+                                  MediaQuery.sizeOf(context).width * 3 / 20,
                                   child: Text(
                                     'ចាប់ផ្តេីមពី',
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Expanded(
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        //border: Border.all(color: Colors.grey.shade50),
+                                      //border: Border.all(color: Colors.grey.shade50),
                                         borderRadius: BorderRadius.circular(16),
                                         color: Colors.grey.shade300),
                                     child: Padding(
@@ -494,7 +494,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                 key: _formKeyEachFrom,
                                                 child: TextFormField(
                                                   controller:
-                                                      _searchFromController,
+                                                  _searchFromController,
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
@@ -505,7 +505,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                   enabled: false,
                                                   decoration: InputDecoration(
                                                     labelText: fromSelected ==
-                                                            false
+                                                        false
                                                         ? 'ទីតំាងចាប់ផ្តេីម'
                                                         : 'ទីតំាងដែលបានជ្រេីសរេីស',
                                                     border: InputBorder.none,
@@ -521,22 +521,22 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                 ),
                                 fromSelected == false
                                     ? TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            if (_formKeyEachFrom.currentState
-                                                    ?.validate() ??
-                                                false) {
-                                              fromSelected = true;
-                                              latCur = selectedLatLng.latitude;
-                                              longCur =
-                                                  selectedLatLng.longitude;
-                                              print('latCur ${latCur}');
-                                              print('longCur ${longCur}');
-                                            }
-                                          });
-                                        },
-                                        child: Text('OK', style: TextStyle(color: Colors.red)),
-                                      )
+                                  onPressed: () {
+                                    setState(() {
+                                      if (_formKeyEachFrom.currentState
+                                          ?.validate() ??
+                                          false) {
+                                        fromSelected = true;
+                                        latCur = selectedLatLng.latitude;
+                                        longCur =
+                                            selectedLatLng.longitude;
+                                        print('latCur ${latCur}');
+                                        print('longCur ${longCur}');
+                                      }
+                                    });
+                                  },
+                                  child: Text('OK', style: TextStyle(color: Colors.red)),
+                                )
                                     : Container(),
                               ],
                             ),
@@ -545,17 +545,17 @@ class _CurrentLocationState extends State<CurrentLocation> {
                               children: [
                                 Container(
                                   width:
-                                      MediaQuery.sizeOf(context).width * 3 / 20,
+                                  MediaQuery.sizeOf(context).width * 3 / 20,
                                   child: Text(
                                     'គោលដៅ',
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Expanded(
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        //border: Border.all(color: Colors.grey.shade50),
+                                      //border: Border.all(color: Colors.grey.shade50),
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.grey.shade300),
                                     child: Padding(
@@ -571,7 +571,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                 key: _formKeyEachTo,
                                                 child: TextFormField(
                                                   controller:
-                                                      _searchToController,
+                                                  _searchToController,
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
@@ -582,7 +582,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                   enabled: false,
                                                   decoration: InputDecoration(
                                                     labelText: toSelected ==
-                                                            false
+                                                        false
                                                         ? 'ទីតំាងគោលដៅ'
                                                         : 'គោលដៅដែលបានជ្រេីសរេីស',
                                                     border: InputBorder.none,
@@ -598,19 +598,19 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                 ),
                                 toSelected == false
                                     ? TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            if (_formKeyEachTo.currentState
-                                                    ?.validate() ??
-                                                false) {
-                                              toSelected = true;
-                                            }
-                                          });
-                                        },
-                                        child: Text('OK',
-                                            style:
-                                                TextStyle(color: Colors.red)),
-                                      )
+                                  onPressed: () {
+                                    setState(() {
+                                      if (_formKeyEachTo.currentState
+                                          ?.validate() ??
+                                          false) {
+                                        toSelected = true;
+                                      }
+                                    });
+                                  },
+                                  child: Text('OK',
+                                      style:
+                                      TextStyle(color: Colors.red)),
+                                )
                                     : Container(),
                               ],
                             ),
@@ -649,7 +649,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                             child: CircularProgressIndicator(
                               value: (_counter / 10),
                               valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.red),
+                              AlwaysStoppedAnimation<Color>(Colors.red),
                               strokeWidth: 5,
                             ),
                           ),
@@ -671,26 +671,26 @@ class _CurrentLocationState extends State<CurrentLocation> {
                       ),
                       Text('សូមរង់ចាំការឆ្លើយតបពីអ្នកបើកបរ'),
                       SizedBox(
-              height: MediaQuery.sizeOf(context).height * 1 / 15,
-            ),
-            // ElevatedButton(
-            //                     style: const ButtonStyle(
-            //                       backgroundColor:
-            //                           MaterialStatePropertyAll(Colors.red),
-            //                     ),
-            //                     onPressed: () {
-            //                       setState(() {
-            //                         stopWaiting = true;
-            //                       });
-            //                       //Navigator.pop(context);
-            //                     },
-            //                     child: Padding(
-            //                       padding: const EdgeInsets.all(15.0),
-            //                       child: Text(
-            //                         'លុបចោលការកក់',
-            //                         style: TextStyle(color: Colors.white),
-            //                       ),
-            //                     )),
+                        height: MediaQuery.sizeOf(context).height * 1 / 15,
+                      ),
+                      // ElevatedButton(
+                      //                     style: const ButtonStyle(
+                      //                       backgroundColor:
+                      //                           MaterialStatePropertyAll(Colors.red),
+                      //                     ),
+                      //                     onPressed: () {
+                      //                       setState(() {
+                      //                         stopWaiting = true;
+                      //                       });
+                      //                       //Navigator.pop(context);
+                      //                     },
+                      //                     child: Padding(
+                      //                       padding: const EdgeInsets.all(15.0),
+                      //                       child: Text(
+                      //                         'លុបចោលការកក់',
+                      //                         style: TextStyle(color: Colors.white),
+                      //                       ),
+                      //                     )),
                     ]),
                   ),
                 ),
@@ -698,16 +698,16 @@ class _CurrentLocationState extends State<CurrentLocation> {
           ),
         ),
         bottomNavigationBar: isLoading == true || isWaiting == true &&
-                  stopWaiting == false &&
-                  driAccept == false
-          ? Container(
+            stopWaiting == false &&
+            driAccept == false
+            ? Container(
           padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
           width: MediaQuery.sizeOf(context).width * 12 / 12,
           child: Padding(
             padding: const EdgeInsets.all(3.0),
             child: ElevatedButton(
-              onPressed: (){},
-              style: const ButtonStyle(
+                onPressed: (){},
+                style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.grey),
                 ),
                 child: Text(
@@ -720,7 +720,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
             ),
           ),
         )
-        : Container(
+            : Container(
           padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
           width: MediaQuery.sizeOf(context).width * 12 / 12,
           child: Padding(
@@ -802,7 +802,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                               ElevatedButton(
                                 style: ButtonStyle(
                                     backgroundColor:
-                                        WidgetStatePropertyAll(Colors.red)),
+                                    WidgetStatePropertyAll(Colors.red)),
                                 child: Text(
                                   'Submit',
                                   style: TextStyle(color: Colors.white),

@@ -174,23 +174,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
   //Todo : buildImageProfile
   Widget _buildImageProfile(AuthController authController) {
-    var userNextDetails = authController.userPassengerMap?['userDetails'];
-    var userDetails = authController.userPassengerMap;
+    final urlImage = "https://static.vecteezy.com/system/resources/previews/022/014/159/non_2x/avatar-icon-profile-icon-member-login-isolated-vector.jpg";
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _image == null
-            ? Container(
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(urlImagProfile),
-              fit: BoxFit.cover,
-            ),
-          ),
+            ? CircleAvatar(
+          radius: 50,
+          backgroundImage: Image.asset("assets/images/user.jpg ").image,
         )
             : CircleAvatar(
           backgroundImage: Image.file(

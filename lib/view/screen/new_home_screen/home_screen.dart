@@ -59,6 +59,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
           children: [
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SliderHome(),
                   Padding(
@@ -99,19 +100,22 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       //         isError: true);
       //   }
       // },
-      child: Card(
-        color: Colors.grey.shade300,
-        elevation: 5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Container(
-          padding: EdgeInsets.all(5),
-          alignment: Alignment.center,
-          child: CircleAvatar(
-            backgroundImage: AssetImage('assets/images/human.jpg'),
-            radius: 60,
-          )
+      child: Container(
+        height: Get.height/3.5,
+        child: Card(
+          color: Colors.grey.shade400,
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(5),
+            alignment: Alignment.center,
+            child: CircleAvatar(
+              backgroundImage: AssetImage('assets/images/human.jpg'),
+              radius: 50,
+            )
+          ),
         ),
       ),
     );
@@ -119,18 +123,21 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   Widget _buildPassAppButton(){
     return InkWell(
       onTap: () {},
-      child: Card(
-        color: Colors.grey.shade300,
-        elevation: 5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Container(
-          padding: EdgeInsets.all(5),
-          alignment: Alignment.center,
-          child: CircleAvatar(
-            backgroundImage: AssetImage('assets/images/passapp.jpg'),
-            radius: 60,
+      child: Container(
+        height: Get.height/3.5,
+        child: Card(
+          color: Colors.grey.shade400,
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(5),
+            alignment: Alignment.center,
+            child: CircleAvatar(
+              backgroundImage: AssetImage('assets/images/passapp.jpg'),
+              radius: 50,
+            ),
           ),
         ),
       ),

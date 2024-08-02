@@ -87,7 +87,9 @@ class _AppScreenState extends State<AppScreen> {
         height: 70,
         selectedIndex: splash.selectedIndex,
         onDestinationSelected: (index) async {
-          if (index == 2) {
+          splash.changeIndex(index);
+          _pageController.jumpToPage(index);
+         /* if (index == 2) {
             // Check if user has token
             String token = sharedPreferences?.getString(AppConstants.token) ?? "";
             if (token.isNotEmpty) {
@@ -99,9 +101,9 @@ class _AppScreenState extends State<AppScreen> {
           } else {
             splash.changeIndex(index);
             _pageController.jumpToPage(index);
-          }
+          }*/
         },
-        //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         destinations: [
           NavigationDestination(
             icon: FaIcon(Icons.home, color: Colors.white, size: 20),

@@ -154,10 +154,11 @@ class AuthRepository {
     }
   }
   //Todo: LoginPassenger
-  Future<Response> loginPassager(String email , String password, BuildContext context) async {
+  Future<Response> loginPassager(String email,String phoneNumber , String password, BuildContext context) async {
     try {
       Response response = await dioClient.postData(AppConstants.loginPassager, {
         'email': email,
+        'phone_number': phoneNumber,
         'password': password,
       });
       return response;

@@ -24,8 +24,7 @@ class AuthController extends GetxController implements GetxService {
   final AuthRepository authRepository;
   late final SharedPreferences sharedPreferences;
   final TokenHelper _tokenHelper = TokenHelper();
-  AuthController(
-      {required this.authRepository, required this.sharedPreferences});
+  AuthController({required this.authRepository, required this.sharedPreferences});
 
   // deviceInfo
   String? deviceName;
@@ -91,6 +90,7 @@ class AuthController extends GetxController implements GetxService {
       GlobalKey<FormState>(); // Form key for form validation
 
   String token = "";
+  String role = "";
   final String key = "secure_basicInfo_key";
   static const String noCache = "noCache";
 
@@ -213,8 +213,7 @@ class AuthController extends GetxController implements GetxService {
     try {
       _isLoading = true;
       update();
-      Response apiResponse =
-          await authRepository.loginWithPhone(phone, password, context);
+      Response apiResponse = await authRepository.loginWithPhone(phone, password, context);
       if (apiResponse.body['status'] == 200) {
         print("Hello World: ${apiResponse.body['message']}");
         if (apiResponse.body['message'] == "OK") {
@@ -287,8 +286,7 @@ class AuthController extends GetxController implements GetxService {
   Future<void> postDeviceToken(String passengerID) async {
     print(passengerID);
     print(frmTokenPublic);
-    final String url =
-        'http://ec2-54-82-25-173.compute-1.amazonaws.com:8000/api/trips/updatePassengerToken';
+    final String url = 'http://ec2-54-82-25-173.compute-1.amazonaws.com:8000/api/trips/updatePassengerToken';
 
     final Map<String, dynamic> data = {
       "passenger_id": passengerID,
@@ -312,16 +310,20 @@ class AuthController extends GetxController implements GetxService {
   }
 
   //Todo: LoginPassager
-  Future loginPassager(BuildContext context,
-      {required String email, required String password}) async {
+  Future loginPassenger(
+      BuildContext context,{
+     String? email,
+  String? phoneNumber,
+  required String password
+  })
+  async {
     loadingDialogs(Get.context!);
     try {
-      print("LoginPassager : $email, $password");
+      print("LoginPassager : $email,$phoneNumber, $password");
       _isLoading = true;
       update();
 
-      Response apiResponse =
-          await authRepository.loginPassager(email, password, context);
+      Response apiResponse = await authRepository.loginPassager(email!,phoneNumber!, password, context);
 
       if (apiResponse.statusCode == 200) {
         Navigator.pop(Get.context!);
@@ -330,20 +332,17 @@ class AuthController extends GetxController implements GetxService {
         await postDeviceToken(
           map['_id'],
         );
+        //print("Test print role : ${map["role"]}");
         try {
           token = map["token"];
-          String role = map["role"];
-          if (role == "passenger") {
-            print("${map["role"]} : passenger");
-          } else {
-            print("User");
-          }
+          //role = map["role"];
+          //print("Test Print role  : $role");
         } catch (e) {
           print(e.toString());
-          print("Token Error : ${apiResponse.body['message']}");
+          print("Token Error : $e");
         }
 
-        if (token != null && token.isNotEmpty) {
+        if (token != null && token.isNotEmpty ) {
           await _tokenHelper.saveToken(token: token).then((_) async {
             customShowSnackBar('successfulLoginAccount'.tr, Get.context!,
                 isError: false);
@@ -421,42 +420,39 @@ class AuthController extends GetxController implements GetxService {
 
 //Todo: RegisterPassager
   Future registerPassagerController(
-    BuildContext context, {
-    required String firstName,
-    required String lastName,
-    required String email,
-    required String password,
-    required String phoneNumber,
-    required String gender,
-    required String dateOfBirth,
-  }) async {
+      BuildContext context, {
+        required String firstName,
+        required String lastName,
+        String? email,
+        required String password,
+        required String phoneNumber,
+        required String gender,
+        required String dateOfBirth,
+      }) async {
     try {
       _isLoading = true;
       update();
+
+      // Log the input parameters
+      print("Registering passenger with: $firstName, $lastName, $email, $password, $phoneNumber, $gender, $dateOfBirth");
+
       Response apiResponse = await authRepository.registerPassager(
         firstName,
         lastName,
-        email,
+        email!,
         password,
         phoneNumber,
         gender,
         dateOfBirth,
       );
-      if (apiResponse.body['status'] == 201 &&
-          apiResponse.body['status_code'] == "success") {
-        print("status  : ${apiResponse.body['status']}");
+
+      // Log the response status and body
+      print("Response status: ${apiResponse.statusCode}");
+      print("Response body: ${apiResponse.body}");
+
+      if (apiResponse.statusCode == 201 && apiResponse.body['status_code'] == "success") {
         print("Register Success : ${apiResponse.body['status_code']}");
-        Map<String, dynamic> map = apiResponse.body;
-        String message = "";
-        await postDeviceToken(
-          map['_id'],
-        );
-        try {
-          message = map["status_code"];
-          print("Message : $message");
-        } catch (e) {
-          print(e.toString());
-        }
+        Map map = apiResponse.body;
         try {
           token = map["token"];
         } catch (e) {
@@ -471,24 +467,19 @@ class AuthController extends GetxController implements GetxService {
           nextScreenNoReturn(Get.context!, SplashScreen());
         });
       } else {
-        customShowSnackBar('theAccountHasAlreadyBeenTaken'.tr, Get.context!,
-            isError: true);
-        if (apiResponse.hasError is String) {
-          _isLoading = false;
-          update();
-        } else {
-          _isLoading = false;
-          update();
-        }
+        customShowSnackBar('theAccountHasAlreadyBeenTaken'.tr, Get.context!, isError: true);
       }
+
+      _isLoading = false;
+      update();
     } catch (e) {
-      print(e.toString());
-      customShowSnackBar('An error occurred. Please try again.', context,
-          isError: true);
+      print("Exception caught: ${e.toString()}");
+      customShowSnackBar('An error occurred. Please try again.', context, isError: true);
+      _isLoading = false;
+      update();
     }
-    _isLoading = false;
-    update();
   }
+
 //Todo: editePassengerController
 //   Future editePassengerController(
 //     BuildContext context, {

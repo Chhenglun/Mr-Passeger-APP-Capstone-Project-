@@ -19,8 +19,9 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
   AuthController authController = Get.find<AuthController>();
   final phoneNumberForcusNode = FocusNode();
   final passwordForcusNode = FocusNode();
-  final _emailControlle = TextEditingController().obs;
-  final _passwordController = TextEditingController().obs;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailPhoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   var obscureText = true.obs;
   final _form = GlobalKey<FormState>();
   var enterPassword = "";
@@ -36,12 +37,20 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
     return regex.hasMatch(email);
   }
 
-  Future<void> submit() async {
+  Future<void> submit1() async {
     final isValid = _form.currentState!.validate();
     if (isValid) {
       _form.currentState!.save();
-      print(enterPhone);
-      print(enterPassword);
+      authController.loginPassenger(
+        context,
+        email: isValidEmail(_emailPhoneController.text)
+            ? _emailPhoneController.text
+            : '',
+        phoneNumber: isValidEmail(_emailPhoneController.text)
+            ? ''
+            : _emailPhoneController.text,
+        password: _passwordController.text,
+      );
     }
   }
 
@@ -49,22 +58,6 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorResources.whiteColor,
-      /*appBar: AppBar(
-        backgroundColor: ColorResources.whiteBackgroundColor,
-        leading: Row(
-          children: [
-            IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: Icon(Icons.arrow_back, color: ColorResources.primaryColor),
-            ),
-          ],
-        ),
-        title: Text(
-          'ត្រឡប់ក្រោយ',
-          style: TextStyle(color: ColorResources.primaryColor),
-      ),),*/
       body: _buildBody(context),
     );
   }
@@ -124,31 +117,29 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "អ៊ីម៉ែល",
-                          style:
-                              TextStyle(color: ColorResources.blackColor),
+                          "អ៊ីម៉ែល ឬ លេខទូរស័ព្ទ",
+                          style: TextStyle(color: ColorResources.blackColor),
                         ),
                         SizedBox(height: 8),
                         SizedBox(
                           height: 60,
                           child: TextFormField(
-                            controller: _emailControlle.value,
+                            controller:_emailPhoneController,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (value) =>
-                                phoneNumberForcusNode.requestFocus(),
+                            onFieldSubmitted: (value) => phoneNumberForcusNode.requestFocus(),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.phone),
                               // labelText: 'Phone Number',
-                              hintText: 'Enter your Email ',
+                              hintText: 'Enter your Email or Phone number',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                             validator: (value) {
                               if (value == null ||
-                                  value.trim().length < 9) {
-                                return 'phone number muse be 9 character or long';
+                                  value.trim().length < 8) {
+                                return 'phone number or email is Invalid';
                               }
                               return null;
                             },
@@ -174,7 +165,7 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                             child: TextFormField(
                               focusNode: passwordForcusNode,
                               cursorColor: Colors.blueGrey,
-                              controller: _passwordController.value,
+                              controller: _passwordController,
                               obscureText: obscureText.value,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.lock),
@@ -182,9 +173,7 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                                 labelStyle:
                                     TextStyle(color: Colors.blueGrey),
                                 hintText: 'Enter your password',
-
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8)),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                                 suffixIcon: IconButton(
                                   onPressed: togglePasswordVisibility,
                                   icon: Icon(
@@ -225,23 +214,7 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                         height: 50,
                         width: double.infinity,
                         child: TextButton(
-                          onPressed: () async {
-                            if (_form.currentState!.validate()) {
-                              if (_emailControlle.value.text.isNotEmpty &&
-                                  _passwordController
-                                      .value.text.isNotEmpty) {
-                                await authController.loginPassager(context,
-                                    email: _emailControlle.value.text,
-                                    password:
-                                        _passwordController.value.text);
-                              } else {
-                                Get.snackbar('Error',
-                                    'Please enter valid email and password');
-                              }
-                              // nextScreenNoReturn(context, AppScreen());
-                              // submit();
-                            }
-                          },
+                          onPressed: submit1,
                           child: Text(
                             'ចូលគណនី',
                             style: TextStyle(

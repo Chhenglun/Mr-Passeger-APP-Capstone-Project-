@@ -11,12 +11,33 @@ class Booking {
   Booking({required this.id, required this.title, required this.date, required this.status});
 }
 
-class BookingHistoryScreen extends StatelessWidget {
+class BookingHistoryScreen extends StatefulWidget {
+  @override
+  State<BookingHistoryScreen> createState() => _BookingHistoryScreenState();
+}
+
+class _BookingHistoryScreenState extends State<BookingHistoryScreen> {
   final List<Booking> bookings = [
     Booking(id: '1', title: 'Booking 1', date: '2024-07-29', status: 'Completed'),
     Booking(id: '2', title: 'Booking 2', date: '2024-07-30', status: 'Completed'),
     Booking(id: '3', title: 'Booking 3', date: '2024-07-31', status: 'Completed'),
   ];
+
+  bool isLoading = true;
+
+  Future<void> init() async {
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      init();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +47,9 @@ class BookingHistoryScreen extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.red,
       ),
-      body: ListView.builder(
+      body: isLoading != false
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
         itemCount: bookings.length,
         itemBuilder: (context, index) {
           final booking = bookings[index];

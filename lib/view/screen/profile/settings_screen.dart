@@ -1,21 +1,18 @@
 // ignore_for_file: prefer_const_constructors, deprecated_member_use
 
 import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/util/style.dart';
-import 'package:scholarar/view/custom/custom_button_widget.dart';
 import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
+import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
 import 'package:scholarar/view/screen/profile/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,17 +48,18 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   void initState() {
+    _initSharedPreferences();
     setState(() {
       init();
     });
     super.initState();
   }
-
+  Future<void> _initSharedPreferences() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
   @override
   Widget build(BuildContext context) {
-     
     return GetBuilder<AuthController>(builder: (authController) {
-      //String token = sharedPreferences!.getString(AppConstants.token) ?? "";
       return Scaffold(
         backgroundColor: ColorResources.primaryColor,
         body: isLoading != false
@@ -142,10 +140,14 @@ class _SettingScreenState extends State<SettingScreen> {
 
 //Todo : buildImageProfile
   Widget _buildImageProfile(AuthController authController) {
+    String token = sharedPreferences!.getString(AppConstants.token) ?? "";
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+
+
+
         _image == null
             ? CircleAvatar(
                 radius: 50,
@@ -157,12 +159,12 @@ class _SettingScreenState extends State<SettingScreen> {
                 ).image,
                 radius: 50,
               ),
-        Text(
-          // when get first_name success show it as UPPER CASE
-          authController.userPassengerMap?['userDetails']['first_name']
-                  .toString()
-                  .toUpperCase() ??
+        SizedBox(height: 8),
+        token.isNotEmpty ?
+        Text(authController.userPassengerMap?['userDetails']['first_name'].toString().toUpperCase() ??
               "Username",
+          style: TextStyle(color: ColorResources.primaryColor, fontSize: 16),
+        ) : Text("Username",
           style: TextStyle(color: ColorResources.primaryColor, fontSize: 16),
         ),
         TextButton.icon(
@@ -220,6 +222,7 @@ class _SettingScreenState extends State<SettingScreen> {
   //Todo: _buildProfile
   Widget _buildSetting(AuthController authController) {
     var userDetails = authController.userPassengerMap;
+    String token = sharedPreferences!.getString(AppConstants.token) ?? "";
     return  Container(
             decoration: BoxDecoration(
               color: ColorResources.whiteBackgroundColor,
@@ -248,7 +251,11 @@ class _SettingScreenState extends State<SettingScreen> {
                               title: 'ព័ត៌មានរបស់ខ្ញុំ',
                               icon: Icons.person_outline,
                               onPress: () {
-                                nextScreen(context, ProfileScreen());
+                                if (token.isNotEmpty) {
+                                  nextScreen(context, ProfileScreen());
+                                } else {
+                                  Get.to(SignInAccountScreen());
+                                }
                               },
                             ),
                             SizedBox(height: 16),
@@ -271,7 +278,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             ),
                             SizedBox(height: 32),
                             //Todo: Logout
-                            _buildLogout(authController),
+                            token.isNotEmpty ? _buildLogout(authController) : Container(),
 
                             SizedBox(height: 16),
                           ],
@@ -302,7 +309,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         Text(
                           "Log Out ",
                           style: textStyleMedium.copyWith(
-                              color: ColorResources.blackColor, fontSize: 20),
+                              color: ColorResources.primaryColor, fontSize: 20),
                         ),
                       ],
                     ),
@@ -360,7 +367,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               child: Text(
                                 'Close',
                                 style: TextStyle(
-                                  color: ColorResources.whiteBackgroundColor,
+                                  color: ColorResources.blackColor,
                                 ),
                               ),
                             )),

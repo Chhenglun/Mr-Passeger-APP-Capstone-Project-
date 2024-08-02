@@ -143,7 +143,40 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                     SizedBox(height: 16),
                     _buildDatePicker("ថ្ងៃខែឆ្នាំកំណើត", _dateController, _pickDate, "Please pick your date of birth"),
                     SizedBox(height: 16),
-                    _buildTextField("អ៊ីម៉ែល", _emailController, TextInputType.emailAddress, TextInputAction.next, phoneNumberFocusNode, "Please enter valid email", validator: isValidEmail),
+                   //Todo: email
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("អុីម៉ែល (លើកលែង)", style: textStyleMedium),
+                      SizedBox(height: 8),
+                      SizedBox(
+                        height: 60,
+                        child: TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (value) => emailFocusNode.requestFocus(),
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.person),
+                            hintText: 'បញ្ចូលអុីម៉ែលរបស់អ្នក',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return null; // Allow empty email
+                            }
+                            if (!isValidEmail(value)) {
+                              return "Please enter valid email";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                     SizedBox(height: 16),
                     _buildPasswordField("ពាក្យសម្ងាត់", _passwordController, obscureText, () => setState(() => obscureText = !obscureText), "ពាក្យសម្ងាត់ត្រូវមានច្រើនជាង 9 តួអក្សរ"),
                     SizedBox(height: 16),
@@ -211,7 +244,7 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, TextInputType type, TextInputAction action, FocusNode focusNode, String errorMsg, {int? minLength, Function? validator}) {
+  Widget _buildTextField(String label, TextEditingController controller, TextInputType type, TextInputAction action, FocusNode focusNode, String errorMsg, {int? minLength,  Function? validator}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

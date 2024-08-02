@@ -141,6 +141,7 @@ class _SettingScreenState extends State<SettingScreen> {
 //Todo : buildImageProfile
   Widget _buildImageProfile(AuthController authController) {
     String token = sharedPreferences!.getString(AppConstants.token) ?? "";
+    print("Token : $token");
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

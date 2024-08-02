@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/screen/home/current_location.dart';
+import 'package:scholarar/view/screen/home/booking_driver.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -276,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         selectedFromAddress = '';
                                         selectedToAddress = '';
                                       });
-                                     Get.to(() => CurrentLocation());
+                                     Get.to(() => BookingDriver());
                                     },
                                   ),
                                 ),

@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:scholarar/controller/splash_controller.dart';
+import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/view/screen/booking/booking_screen.dart';
-import 'package:scholarar/view/screen/chat/chat_screen.dart';
-import 'package:scholarar/view/screen/home/home_screen.dart';
+import 'package:scholarar/view/screen/account/login_screen.dart';
+import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
 import 'package:scholarar/view/screen/new_home_screen/booking_screen.dart';
 import 'package:scholarar/view/screen/new_home_screen/home_screen.dart';
-import 'package:scholarar/view/screen/profile/profile_screen.dart';
 import 'package:scholarar/view/screen/profile/settings_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppScreen extends StatefulWidget {
   const AppScreen({super.key});
@@ -21,24 +21,27 @@ class AppScreen extends StatefulWidget {
 }
 
 class _AppScreenState extends State<AppScreen> {
+  SharedPreferences? sharedPreferences;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Widget>? listScreen;
   final PageController _pageController = PageController();
   final NewHomeScreen _newHomeScreen = NewHomeScreen();
   final BookingHistoryScreen _bookingHistoryScreen = BookingHistoryScreen();
   final SettingScreen _settingScreen = SettingScreen();
-  // final ScholarshipScreen _scholarshipScreen = ScholarshipScreen();
-  // final CoursesScreen _coursesScreen = CoursesScreen();
-  // final StoreScreen _storeScreen = StoreScreen();
 
   @override
   void initState() {
+    super.initState();
+    _initSharedPreferences();
     listScreen = [
       _newHomeScreen,
       _bookingHistoryScreen,
       _settingScreen,
     ];
-    super.initState();
+  }
+
+  Future<void> _initSharedPreferences() async {
+    sharedPreferences = await SharedPreferences.getInstance();
   }
 
   @override
@@ -57,7 +60,7 @@ class _AppScreenState extends State<AppScreen> {
   }
 
   // Todo: buildBody
-  Widget _buildBody(splash) {
+  Widget _buildBody(SplashController splash) {
     return PageView(
       physics: NeverScrollableScrollPhysics(),
       controller: _pageController,
@@ -83,25 +86,36 @@ class _AppScreenState extends State<AppScreen> {
         backgroundColor: ColorResources.primaryColor,
         height: 70,
         selectedIndex: splash.selectedIndex,
-        onDestinationSelected: (index) {
-          splash.changeIndex(index);
-          _pageController.jumpToPage(index);
+        onDestinationSelected: (index) async {
+          if (index == 2) {
+            // Check if user has token
+            String token = sharedPreferences?.getString(AppConstants.token) ?? "";
+            if (token.isNotEmpty) {
+              splash.changeIndex(index);
+              _pageController.jumpToPage(index);
+            } else {
+              Get.to(SignInAccountScreen());
+            }
+          } else {
+            splash.changeIndex(index);
+            _pageController.jumpToPage(index);
+          }
         },
         //labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         destinations: [
           NavigationDestination(
-            icon: FaIcon(Icons.home, color: Colors.white, size: 20,),
+            icon: FaIcon(Icons.home, color: Colors.white, size: 20),
             selectedIcon: FaIcon(Icons.home, color: Colors.white, size: 33),
             label: 'Home'.tr,
           ),
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 17,),
+            icon: FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 17),
             selectedIcon:
-                FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 29),
+            FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 29),
             label: 'My Booking'.tr,
           ),
           NavigationDestination(
-            icon: FaIcon(Icons.person_pin, color: Colors.white, size: 20,),
+            icon: FaIcon(Icons.person_pin, color: Colors.white, size: 20),
             selectedIcon: FaIcon(Icons.person_pin, color: Colors.white, size: 33),
             label: 'Account'.tr,
           ),

@@ -66,40 +66,13 @@ class _SettingScreenState extends State<SettingScreen> {
         backgroundColor: ColorResources.primaryColor,
         body: isLoading != false
             ? Center(child: CircularProgressIndicator())
-            : 
-    //         token.isEmpty
-    //                             ? Padding(
-    //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    //   child: GestureDetector(
-    //     onTap: () {
-          
-    //     },
-    //     child: Row(
-    //       children: [
-    //         Icon(
-    //           FontAwesomeIcons.signIn,
-    //           color: ColorResources.primaryColor,
-    //         ),
-    //         SizedBox(width: 16),
-    //         Text(
-    //           'Log In',
-    //           style: TextStyle(
-    //             color: ColorResources.primaryColor,
-    //             fontSize: 16,
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // ) : 
-    _buildBody(authController),
+            : _buildBody(authController),
       );
     });
   }
 
   //Todo: _buildBody
   Widget _buildBody(AuthController authController) {
-   
     return SafeArea(
       child: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
@@ -111,28 +84,7 @@ class _SettingScreenState extends State<SettingScreen> {
               children: [
                 Column(
                   children: [
-                    Expanded(
-                        child: Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // SizedBox(
-                          //   height: 50,
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.start,
-                          //     crossAxisAlignment: CrossAxisAlignment.center,
-                          //     children: [
-                          //       IconButton(onPressed: (){
-                          //         Get.back();
-                          //       }, icon: FaIcon(FontAwesomeIcons.angleLeft, color: ColorResources.whiteColor,)),
-                          //       Text('ត្រឡប់ក្រោយ', style: GoogleFonts.notoSerifKhmer(fontSize: 20, color: ColorResources.whiteColor),),
-                          //     ],
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    )),
+                    Expanded(child: Container()),
                     Expanded(
                         child: Container(
                       width: Get.width,
@@ -143,7 +95,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 //Todo: Profile
                 Positioned(
-                  top: Get.height * 0.05,
+                  top: 0,
                   left: 0,
                   right: 0,
                   child: Padding(
@@ -173,8 +125,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           //Todo: ImageProfile
                           Positioned(
                             top: 50, // Adjust the vertical position as needed
-                            left: (Get.width / 2) -
-                                90, // 50 is half the width of the image
+                            left: (Get.width / 2) - 90, // 50 is half the width of the image
                             child: _buildImageProfile(authController),
                           ),
                         ],
@@ -191,24 +142,15 @@ class _SettingScreenState extends State<SettingScreen> {
 
 //Todo : buildImageProfile
   Widget _buildImageProfile(AuthController authController) {
-    var userNextDetails = authController.userPassengerMap?['userDetails'];
-    var userDetails = authController.userPassengerMap;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _image == null
-            ? Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(urlImagProfile),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              )
+            ? CircleAvatar(
+                radius: 50,
+          backgroundImage: Image.asset("assets/images/user.jpg").image,
+        )
             : CircleAvatar(
                 backgroundImage: Image.file(
                   File(_image!.path),
@@ -278,8 +220,7 @@ class _SettingScreenState extends State<SettingScreen> {
   //Todo: _buildProfile
   Widget _buildSetting(AuthController authController) {
     var userDetails = authController.userPassengerMap;
-    return userDetails != null
-        ? Container(
+    return  Container(
             decoration: BoxDecoration(
               color: ColorResources.whiteBackgroundColor,
               borderRadius: BorderRadius.only(
@@ -341,8 +282,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
               ),
             ),
-          )
-        : Center(child: CircularProgressIndicator());
+          );
   }
 
   //Todo: _buildLogout

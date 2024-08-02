@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -14,7 +13,6 @@ import 'package:scholarar/view/custom/custom_button_widget.dart';
 import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:scholarar/view/screen/account/edite_profile_screen.dart';
-import 'package:scholarar/view/screen/home/current_location.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -70,24 +68,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         print("User Details: $item"); // Debug print to ensure data is fetched
         return Scaffold(
           backgroundColor: ColorResources.primaryColor,
-          body: isLoading != false
+          body: isLoading
               ? Center(child: CircularProgressIndicator())
               : _buildBody(authController),
         );
       },
     );
   }
-//Todo: buildBody
+
   Widget _buildBody(AuthController authController) {
-    var userDetails = authController.userPassengerMap;
-    print("aaa ${userDetails}");
-    if (userDetails == null) {
-      return Center(child: CircularProgressIndicator());
-    }
-    //Todo: buildBackground
     return SafeArea(
       child: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
         child: Container(
           width: Get.width,
           height: Get.height,
@@ -96,85 +87,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Column(
                 children: [
-                  Expanded(child: Container(
-                    child: Column(
+                  SizedBox(
+                    height: 50,
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              IconButton(onPressed: (){
-                                Get.back();
-                              }, icon: FaIcon(FontAwesomeIcons.angleLeft, color: ColorResources.whiteColor,)),
-                              Text('ត្រឡប់ក្រោយ', style: GoogleFonts.notoSerifKhmer(fontSize: 20, color: ColorResources.whiteColor),),
-                            ],
-                          ),
+                        IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: FaIcon(FontAwesomeIcons.angleLeft, color: ColorResources.whiteColor),
+                        ),
+                        Text(
+                          'ត្រឡប់ក្រោយ',
+                          style: GoogleFonts.notoSerifKhmer(fontSize: 20, color: ColorResources.whiteColor),
                         ),
                       ],
                     ),
-                  )),
-                  Expanded(child: Container(
-                    width: Get.width,
-                    height: Get.height,
-                   color: ColorResources.whiteBackgroundColor,
-                  )),
+                  ),
+                  Expanded(child: Container()),
+                  Expanded(
+                      child: Container(
+                        width: Get.width,
+                        height: Get.height,
+                        color: ColorResources.whiteBackgroundColor,
+                      )),
                 ],
               ),
-              //Todo: Profile
               Positioned(
                 top: Get.height * 0.03,
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: SizedBox(
-                      width: Get.width,
-                      height: Get.height,
-                      child: Stack(
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-
-                              Container(
-                                color: ColorResources.primaryColor,
-                                height: 100,
-                                width: Get.width,
-                              ),
-                             // SizedBox(height: 90),
-                              Expanded(
-                                  child:_buildProfile(authController),
-                              ),
-
-                            ],
-                          ),
-                          //write me center left
-                          Positioned(
-                            top: 50,  // Adjust the vertical position as needed
-                            left: (Get.width / 2) - 90,  // 50 is half the width of the image
-                            child: _buildImageProfile(authController),
-                          ),
-                        ],
+                left: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        color: ColorResources.primaryColor,
+                        height: 100,
+                        width: Get.width,
                       ),
-                    ),
+                      Container(
+                        height: Get.height - 150,
+                        child: _buildProfile(authController),
+                      ),
+                    ],
                   ),
+                ),
+              ),
+              Positioned(
+                top: Get.height * 0.1,
+                left: (Get.width / 2) - 80,
+                child: _buildImageProfile(authController),
               ),
             ],
-          )
+          ),
         ),
-
-        // child: _buildProfile(authController),
       ),
     );
   }
-  //Todo : buildImageProfile
+
   Widget _buildImageProfile(AuthController authController) {
-    final urlImage = "https://static.vecteezy.com/system/resources/previews/022/014/159/non_2x/avatar-icon-profile-icon-member-login-isolated-vector.jpg";
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -182,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _image == null
             ? CircleAvatar(
           radius: 50,
-          backgroundImage: Image.asset("assets/images/user.jpg ").image,
+          backgroundImage: Image.asset("assets/images/user.jpg").image,
         )
             : CircleAvatar(
           backgroundImage: Image.file(
@@ -196,8 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               AlertDialog(
                 title: Text(
                   'ជ្រើសរើសរូបភាព',
-                  style:
-                  TextStyle(color: ColorResources.primaryColor),
+                  style: TextStyle(color: ColorResources.primaryColor),
                 ),
                 content: SingleChildScrollView(
                   child: Column(
@@ -211,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Get.back();
                         },
                         icon: Icon(Icons.photo),
-                        label: Text("ជ្រើសរើសពីរូបភាព",style: TextStyle(color: ColorResources.blackColor),),
+                        label: Text("ជ្រើសរើសពីរូបភាព", style: TextStyle(color: ColorResources.blackColor)),
                       ),
                       Padding(padding: EdgeInsets.all(8.0)),
                       TextButton.icon(
@@ -220,8 +195,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Get.back();
                         },
                         icon: Icon(Icons.camera_alt_outlined),
-                        label: Text("បើកកាមេរ៉ា" , style: TextStyle(color: ColorResources.blackColor),),
-                      )
+                        label: Text("បើកកាមេរ៉ា", style: TextStyle(color: ColorResources.blackColor)),
+                      ),
                     ],
                   ),
                 ),
@@ -239,106 +214,95 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ],
     );
-
   }
-  //Todo: buildProfile
+
   Widget _buildProfile(AuthController authController) {
     var userNextDetails = authController.userPassengerMap?['userDetails'];
-    var userDetails = authController.userPassengerMap;
-    return userDetails != null
-        ? Container(
-            decoration: BoxDecoration(
-              color: ColorResources.whiteColor,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-              ),
+    return Container(
+      decoration: BoxDecoration(
+        color: ColorResources.whiteColor,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            SizedBox(height: 90),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "ព័ត៌មានរបស់ខ្ញុំ",
+                  style: GoogleFonts.notoSerifKhmer(
+                    fontSize: 28,
+                    color: ColorResources.primaryColor,
+                  ),
+                ),
+              ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: Get.width,
-                height: Get.height,
+            SizedBox(height: 16),
+            Container(
+              height: Get.height * 0.6,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                physics: BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    SizedBox(height: 90),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "ព័ត៌មានរបស់ខ្ញុំ",
-                          style: GoogleFonts.notoSerifKhmer(
-                            fontSize: 28,
-                            color: ColorResources.primaryColor,
-                          ),
-                        ),
-                      ],
+                    CustomListWidget.customListTile(
+                      title: userNextDetails?['first_name'] ?? "N/A",
+                      iconleading: Icons.person,
+                      onPress: () {},
+                    ),
+                    SizedBox(height: 8),
+                    CustomListWidget.customListTile(
+                      title: userNextDetails?['last_name'] ?? "N/A",
+                      iconleading: Icons.person,
+                      onPress: () {},
+                    ),
+                    SizedBox(height: 8),
+                    CustomListWidget.customListTile(
+                      iconleading: Icons.email,
+                      title: authController.userPassengerMap?['email'] ?? "N/A",
+                      onPress: () {},
                     ),
                     SizedBox(height: 16),
-                    // Todo: ListTile of Profile
-                    Container(
-                      height: Get.height * 0.6,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        physics: BouncingScrollPhysics(),
-                        child: Column(
-                          children: [
-                            CustomListWidget.customListTile(
-                              title: userNextDetails?['first_name'] ?? "N/A",
-                              iconleading: Icons.person,
-                              onPress: () {},
-                            ),
-                            SizedBox(height: 8),
-                            CustomListWidget.customListTile(
-                              title: userNextDetails?['last_name'] ?? "N/A",
-                              iconleading: Icons.person,
-                              onPress: () {},
-                            ),
-                            SizedBox(height: 8),
-                            CustomListWidget.customListTile(
-                              iconleading: Icons.email,
-                              title: authController.userPassengerMap?['email'] ?? "N/A",
-                              onPress: () {},
-                            ),
-                            SizedBox(height: 16),
-                            CustomListWidget.customListTile(
-                              title: userNextDetails?['phone_number'] ?? "N/A",
-                              iconleading: Icons.phone,
-                              onPress: () {},
-                            ),
-                            SizedBox(height: 8),
-                            CustomListWidget.customListTile(
-                              title: userNextDetails?['gender'] ?? "N/A",
-                              iconleading: Icons.wc,
-                              onPress: () {},
-                            ),
-                            SizedBox(height: 8),
-                            CustomListWidget.customListTile(
-                              title: formatDateOfBirth(userNextDetails?['date_of_birth']),
-                              iconleading: Icons.calendar_today,
-                              onPress: () {},
-                            ),
-                            SizedBox(height: 32),
-                            //Todo: buttonSaveEditeProfile
-                            CustomButtonWidget.buildButtonClick(
-                              title: 'កែប្រែព័ត៌មាន',
-                              onPress: () {
-                                nextScreen(context, EditeProfileScreen());
-                              }, size: 50,
-                            ),
-                            SizedBox(height: 32,)
-
-                          ],
-                        ),
-                      ),
-                    )
-
+                    CustomListWidget.customListTile(
+                      title:"+855 ${ userNextDetails?['phone_number'] ?? "N/A"} ",
+                      iconleading: Icons.phone,
+                      onPress: () {},
+                    ),
+                    SizedBox(height: 8),
+                    CustomListWidget.customListTile(
+                      title: userNextDetails?['gender'] ?? "N/A",
+                      iconleading: Icons.wc,
+                      onPress: () {},
+                    ),
+                    SizedBox(height: 8),
+                    CustomListWidget.customListTile(
+                      title: formatDateOfBirth(userNextDetails?['date_of_birth']),
+                      iconleading: Icons.calendar_today,
+                      onPress: () {},
+                    ),
+                    SizedBox(height: 32),
+                    CustomButtonWidget.buildButtonClick(
+                      title: 'កែប្រែព័ត៌មាន',
+                      onPress: () {
+                        nextScreen(context, EditeProfileScreen());
+                      },
+                      size: 50,
+                    ),
+                    SizedBox(height: 32),
                   ],
                 ),
               ),
             ),
-          )
-        : Center(child: CircularProgressIndicator());
+          ],
+        ),
+      ),
+    );
   }
 }

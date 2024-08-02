@@ -2,9 +2,12 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
+import 'dart:ui' as ui;
+import 'dart:ui';
+import 'dart:typed_data';
+import 'package:image/image.dart' as img;
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -45,8 +48,8 @@ class _BookingDriverState extends State<BookingDriver> {
       TextEditingController(text: selectedFromAddress);
   TextEditingController _searchToController =
       TextEditingController(text: selectedToAddress);
-  BitmapDescriptor SourceIcon = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor DestinationIcon = BitmapDescriptor.defaultMarker;
+  //BitmapDescriptor SourceIcon = BitmapDescriptor.defaultMarker;
+  //BitmapDescriptor DestinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor CurrentLocationIcon = BitmapDescriptor.defaultMarker;
 
   // If not yet login
@@ -60,8 +63,17 @@ class _BookingDriverState extends State<BookingDriver> {
     zoom: 15,
   );
 
-  final Set<Marker> _markers = {};
+   Set<Marker> _markers() {
+     return <Marker>[
+       Marker(
+         markerId: MarkerId('current_location'),
+         position: selectedLatLng!,
+         icon: CurrentLocationIcon!,
+       ),
+     ].toSet();
+   }
   LatLng selectedLatLng = LatLng(0, 0);
+
 
   Future<Position> _getGeoLocationPosition() async {
     bool serviceEnabled;
@@ -110,8 +122,8 @@ class _BookingDriverState extends State<BookingDriver> {
         LatLng searchedLatLng =
             LatLng(locations[0].latitude, locations[0].longitude);
 
-        _markers.clear();
-        _markers.add(Marker(
+        _markers().clear();
+        _markers().add(Marker(
           markerId: MarkerId('searchedLocation'),
           position: searchedLatLng,
         ));
@@ -133,11 +145,32 @@ class _BookingDriverState extends State<BookingDriver> {
     }
   }
 
-  void setCustomerMarkerIcon(){
-    BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, "assets/images/user.jpg").then((icon){SourceIcon = icon;});
-    BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, "assets/images/human.jpg").then((icon){DestinationIcon = icon;});
-    BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, "assets/images/user.jpg").then((icon){CurrentLocationIcon = icon;});
+  // void setCustomerMarkerIcon() async{
+  //   //BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, "assets/images/user.jpg").then((icon){SourceIcon = icon;});
+  //   //BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, "assets/images/human.jpg").then((icon){DestinationIcon = icon;});
+  //   BitmapDescriptor.fromAssetImage(ImageConfiguration(size: ui.Size(2, 2)), "assets/icons/user_icon.jpg").then((icon){setState(() {
+  //     CurrentLocationIcon = icon;
+  //   });});
+  // }
+  void setCustomerMarkerIcon() async {
+    final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
+    final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
+    // Resize the image
+    final img.Image resizedImage = img.copyResize(image!, width: 150, height: 170);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      img.encodePng(resizedImage).buffer.asUint8List(),
+    );
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+
+    final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
+
+    final BitmapDescriptor icon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    setState(() {
+      CurrentLocationIcon = icon;
+    });
   }
 
   Future<void> getCurrentLocation() async {
@@ -145,14 +178,13 @@ class _BookingDriverState extends State<BookingDriver> {
         desiredAccuracy: LocationAccuracy.high);
     LatLng currentLatLng = LatLng(position.latitude, position.longitude);
 
-    _markers.clear();
-    _markers.add(Marker(
+    _markers().clear();
+    _markers().add(Marker(
       markerId: MarkerId('currentLocation'),
       position: currentLatLng,
     ));
 
     googleMapController.animateCamera(CameraUpdate.newLatLng(currentLatLng));
-
     setState(() {
       selectedLatLng = currentLatLng;
       if (fromSelected == false) {
@@ -271,31 +303,27 @@ class _BookingDriverState extends State<BookingDriver> {
     before();
     setCustomerMarkerIcon();
     super.initState();
+    _addCurrentLocationMarker();
     init();
+  }
+  void _addCurrentLocationMarker() {
+    if (CurrentLocationIcon != null && selectedLatLng != null) {
+      setState(() {
+        _markers().add(
+          Marker(
+            markerId: MarkerId('current_location'),
+            position: selectedLatLng!,
+            icon: CurrentLocationIcon!,
+          ),
+        );
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        // drawer: CurvedDrawer(
-        //   color: const Color.fromARGB(255, 255, 240, 219),
-        //   buttonBackgroundColor: Colors.lightGreenAccent,
-        //   labelColor: Colors.red,
-        //   backgroundColor: Colors.transparent,
-        //   width: 75.0,
-        //   items: const <DrawerItem>[
-        //     DrawerItem(icon: Icon(Icons.home), label: "Home"),
-        //     DrawerItem(icon: Icon(FontAwesomeIcons.car), label: "Booking"),
-        //     DrawerItem(icon: Icon(Icons.person), label: "Profile"),
-        //   ],
-        //   onTap: (index) {
-        //     print('Button Pressed');
-        //     _pageController.animateToPage(index,
-        //         duration: const Duration(milliseconds: 300),
-        //         curve: Curves.easeOut);
-        //   },
-        // ),
         body: SafeArea(
           child: Stack(
             children: [
@@ -308,7 +336,7 @@ class _BookingDriverState extends State<BookingDriver> {
                       children: [
                       GoogleMap(
                       initialCameraPosition: initialCameraPosition,
-                      markers: _markers,
+                      markers:   _markers(),
                       zoomControlsEnabled: false,
                       mapType: MapType.normal,
                       onMapCreated: (GoogleMapController controller) {
@@ -317,15 +345,16 @@ class _BookingDriverState extends State<BookingDriver> {
                       },
                       onTap: toSelected == false
                           ? (LatLng latLng) {
-                        print('Map tapped at: $latLng');
-                        _markers.clear();
-                        setState(() {
-                          _markers.add(Marker(
-                            markerId: MarkerId('selectedLocation'),
-                            icon: CurrentLocationIcon,
-                            position: latLng,
-                          ));
-                        });
+                        // print('Map tapped at: $latLng');
+                       ;
+                        _markers().clear();
+                        _addCurrentLocationMarker();
+                        // _markers.add(Marker(
+                        //   markerId: MarkerId('selectedLocation'),
+                        //   icon: CurrentLocationIcon,
+                        //   position: latLng,
+                        // ));
+
 
                         setState(() {
                           selectedLatLng = latLng;
@@ -336,7 +365,9 @@ class _BookingDriverState extends State<BookingDriver> {
                           }
                         });
                       }
+
                           : null,
+
                     ),
                     Positioned(
                           top: 10,

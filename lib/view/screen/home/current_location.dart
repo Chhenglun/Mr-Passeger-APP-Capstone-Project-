@@ -266,24 +266,24 @@ class _CurrentLocationState extends State<CurrentLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        drawer: CurvedDrawer(
-          color: const Color.fromARGB(255, 255, 240, 219),
-          buttonBackgroundColor: Colors.lightGreenAccent,
-          labelColor: Colors.red,
-          backgroundColor: Colors.transparent,
-          width: 75.0,
-          items: const <DrawerItem>[
-            DrawerItem(icon: Icon(Icons.home), label: "Home"),
-            DrawerItem(icon: Icon(FontAwesomeIcons.car), label: "Booking"),
-            DrawerItem(icon: Icon(Icons.person), label: "Profile"),
-          ],
-          onTap: (index) {
-            print('Button Pressed');
-            _pageController.animateToPage(index,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut);
-          },
-        ),
+        // drawer: CurvedDrawer(
+        //   color: const Color.fromARGB(255, 255, 240, 219),
+        //   buttonBackgroundColor: Colors.lightGreenAccent,
+        //   labelColor: Colors.red,
+        //   backgroundColor: Colors.transparent,
+        //   width: 75.0,
+        //   items: const <DrawerItem>[
+        //     DrawerItem(icon: Icon(Icons.home), label: "Home"),
+        //     DrawerItem(icon: Icon(FontAwesomeIcons.car), label: "Booking"),
+        //     DrawerItem(icon: Icon(Icons.person), label: "Profile"),
+        //   ],
+        //   onTap: (index) {
+        //     print('Button Pressed');
+        //     _pageController.animateToPage(index,
+        //         duration: const Duration(milliseconds: 300),
+        //         curve: Curves.easeOut);
+        //   },
+        // ),
         body: SafeArea(
           child: Stack(
             children: [
@@ -321,15 +321,19 @@ class _CurrentLocationState extends State<CurrentLocation> {
                         ),
                         Positioned(
                           top: 10,
-                          left: 10,
+                          left: 16,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
+                                alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.circle,
                                 ),
-                                child: Center(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.only(left: 10),
                                   child: IconButton(
                                     icon: Icon(Icons.arrow_back_ios),
                                     color: Colors.white,
@@ -391,7 +395,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                               child: TextField(
                                                 controller: _searchController,
                                                 decoration: InputDecoration(
-                                                  hintText: "Search",
+                                                  hintText: "ស្វែងរកទីតាំង...",
                                                   hintStyle: TextStyle(
                                                       color: Colors.grey),
                                                   border: InputBorder.none,
@@ -431,7 +435,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                             width: 10,
                                           ),
                                           Text(
-                                            'Undo Selected Location',
+                                            'លុបចោលទីតាំងដែលបានជ្រេីសរេីស',
                                             style: TextStyle(color: Colors.red),
                                           ),
                                         ],
@@ -465,9 +469,9 @@ class _CurrentLocationState extends State<CurrentLocation> {
                               children: [
                                 Container(
                                   width:
-                                      MediaQuery.sizeOf(context).width * 3 / 24,
+                                      MediaQuery.sizeOf(context).width * 3 / 20,
                                   child: Text(
-                                    'From',
+                                    'ចាប់ផ្តេីមពី',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
@@ -476,7 +480,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                         //border: Border.all(color: Colors.grey.shade50),
-                                        borderRadius: BorderRadius.circular(20),
+                                        borderRadius: BorderRadius.circular(16),
                                         color: Colors.grey.shade300),
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 5),
@@ -494,7 +498,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
-                                                      return 'Please choose FROM location';
+                                                      return 'សូមជ្រេីសរេីសទីតំាងចាប់ផ្តេីម';
                                                     }
                                                     return null;
                                                   },
@@ -502,8 +506,8 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                   decoration: InputDecoration(
                                                     labelText: fromSelected ==
                                                             false
-                                                        ? 'Select location'
-                                                        : 'Selected location',
+                                                        ? 'ទីតំាងចាប់ផ្តេីម'
+                                                        : 'ទីតំាងដែលបានជ្រេីសរេីស',
                                                     border: InputBorder.none,
                                                   ),
                                                 ),
@@ -531,9 +535,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                             }
                                           });
                                         },
-                                        child: Text('OK',
-                                            style:
-                                                TextStyle(color: Colors.red)),
+                                        child: Text('OK', style: TextStyle(color: Colors.red)),
                                       )
                                     : Container(),
                               ],
@@ -543,9 +545,9 @@ class _CurrentLocationState extends State<CurrentLocation> {
                               children: [
                                 Container(
                                   width:
-                                      MediaQuery.sizeOf(context).width * 3 / 24,
+                                      MediaQuery.sizeOf(context).width * 3 / 20,
                                   child: Text(
-                                    'To',
+                                    'គោលដៅ',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
@@ -573,7 +575,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
-                                                      return 'Please choose TO location';
+                                                      return 'សូមជ្រេីសរេីសទីតាំងគោលដៅ';
                                                     }
                                                     return null;
                                                   },
@@ -581,8 +583,8 @@ class _CurrentLocationState extends State<CurrentLocation> {
                                                   decoration: InputDecoration(
                                                     labelText: toSelected ==
                                                             false
-                                                        ? 'Select location'
-                                                        : 'Selected location',
+                                                        ? 'ទីតំាងគោលដៅ'
+                                                        : 'គោលដៅដែលបានជ្រេីសរេីស',
                                                     border: InputBorder.none,
                                                   ),
                                                 ),

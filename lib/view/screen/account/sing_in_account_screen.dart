@@ -49,15 +49,22 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorResources.whiteColor,
-      appBar: AppBar(
+      /*appBar: AppBar(
         backgroundColor: ColorResources.whiteBackgroundColor,
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: Icon(Icons.arrow_back),
+        leading: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(Icons.arrow_back, color: ColorResources.primaryColor),
+            ),
+          ],
         ),
-      ),
+        title: Text(
+          'ត្រឡប់ក្រោយ',
+          style: TextStyle(color: ColorResources.primaryColor),
+      ),),*/
       body: _buildBody(context),
     );
   }
@@ -66,16 +73,41 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: SizedBox(
-              width: Get.width,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: Form(
-                    key: _form,
-                    child: Column(
+        child: SingleChildScrollView(
+          child: SizedBox(
+            width: Get.width,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Form(
+                key: _form,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: SizedBox(
+                        width: 200,
+                        height: 40,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.arrow_back, color: ColorResources.primaryColor),
+                            SizedBox(width: 5,),
+                            Text(
+                              'ត្រឡប់ក្រោយ',
+                              style: TextStyle(color: ColorResources.primaryColor, fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 60),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           height: 150,
@@ -83,161 +115,162 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                           color: Colors.transparent,
                           child: Image.asset('assets/images/logo.jpg', fit: BoxFit.cover,),
                         ),
-                        SizedBox(height: 20),
-                        //Todo : _buildPhone
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "អ៊ីម៉ែល",
-                              style:
-                                  TextStyle(color: ColorResources.blackColor),
-                            ),
-                            SizedBox(height: 8),
-                            SizedBox(
-                              height: 60,
-                              child: TextFormField(
-                                controller: _emailControlle.value,
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (value) =>
-                                    phoneNumberForcusNode.requestFocus(),
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.phone),
-                                  // labelText: 'Phone Number',
-                                  hintText: 'Enter your Email ',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null ||
-                                      value.trim().length < 9) {
-                                    return 'phone number muse be 9 character or long';
-                                  }
-                                  return null;
-                                },
-                                // onSaved: (newValue) =>  = newValue!,
-                              ),
-                            ),
-                          ],
-                        ),
-                        //Todo : _buildPassword
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "លេខសម្ងាត់",
-                              style:
-                                  TextStyle(color: ColorResources.blackColor),
-                            ),
-                            SizedBox(height: 8),
-                            Obx(
-                              () => SizedBox(
-                                height: 60,
-                                child: TextFormField(
-                                  focusNode: passwordForcusNode,
-                                  cursorColor: Colors.blueGrey,
-                                  controller: _passwordController.value,
-                                  obscureText: obscureText.value,
-                                  decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.lock),
-                                    // labelText: 'Password',
-                                    labelStyle:
-                                        TextStyle(color: Colors.blueGrey),
-                                    hintText: 'Enter your password',
-
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    suffixIcon: IconButton(
-                                      onPressed: togglePasswordVisibility,
-                                      icon: Icon(
-                                        obscureText.value
-                                            ? Icons.visibility_off
-                                            : Icons.visibility,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null ||
-                                        value.trim().length < 6) {
-                                      return 'password muse be 6 character or long';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    enterPassword = value!;
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "ភ្លេចពាក្យសម្ងាត់",
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    //Todo : _buildPhone
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "អ៊ីម៉ែល",
+                          style:
+                              TextStyle(color: ColorResources.blackColor),
                         ),
                         SizedBox(height: 8),
                         SizedBox(
-                            height: 50,
-                            width: double.infinity,
-                            child: TextButton(
-                              onPressed: () async {
-                                if (_form.currentState!.validate()) {
-                                  if (_emailControlle.value.text.isNotEmpty &&
-                                      _passwordController
-                                          .value.text.isNotEmpty) {
-                                    await authController.loginPassager(context,
-                                        email: _emailControlle.value.text,
-                                        password:
-                                            _passwordController.value.text);
-                                  } else {
-                                    Get.snackbar('Error',
-                                        'Please enter valid email and password');
-                                  }
-                                  // nextScreenNoReturn(context, AppScreen());
-                                  // submit();
-                                }
-                              },
-                              child: Text(
-                                'ចូលគណនី',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
+                          height: 60,
+                          child: TextFormField(
+                            controller: _emailControlle.value,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (value) =>
+                                phoneNumberForcusNode.requestFocus(),
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.phone),
+                              // labelText: 'Phone Number',
+                              hintText: 'Enter your Email ',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              style: TextButton.styleFrom(
-                                backgroundColor: ColorResources.primaryColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            )),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('Don\'t have an account?'),
-                            TextButton(
-                              onPressed: () {
-                                nextScreen(context, SignUpAccountScreen());
-                              },
-                              child: Text('ចុះឈ្មោះគណនី'),
                             ),
-                          ],
-                        )
+                            validator: (value) {
+                              if (value == null ||
+                                  value.trim().length < 9) {
+                                return 'phone number muse be 9 character or long';
+                              }
+                              return null;
+                            },
+                            // onSaved: (newValue) =>  = newValue!,
+                          ),
+                        ),
                       ],
                     ),
-                  ),
+                    //Todo : _buildPassword
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "លេខសម្ងាត់",
+                          style:
+                              TextStyle(color: ColorResources.blackColor),
+                        ),
+                        SizedBox(height: 8),
+                        Obx(
+                          () => SizedBox(
+                            height: 60,
+                            child: TextFormField(
+                              focusNode: passwordForcusNode,
+                              cursorColor: Colors.blueGrey,
+                              controller: _passwordController.value,
+                              obscureText: obscureText.value,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.lock),
+                                // labelText: 'Password',
+                                labelStyle:
+                                    TextStyle(color: Colors.blueGrey),
+                                hintText: 'Enter your password',
+
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                suffixIcon: IconButton(
+                                  onPressed: togglePasswordVisibility,
+                                  icon: Icon(
+                                    obscureText.value
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null ||
+                                    value.trim().length < 6) {
+                                  return 'password muse be 6 character or long';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                enterPassword = value!;
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "ភ្លេចពាក្យសម្ងាត់",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    SizedBox(
+                        height: 50,
+                        width: double.infinity,
+                        child: TextButton(
+                          onPressed: () async {
+                            if (_form.currentState!.validate()) {
+                              if (_emailControlle.value.text.isNotEmpty &&
+                                  _passwordController
+                                      .value.text.isNotEmpty) {
+                                await authController.loginPassager(context,
+                                    email: _emailControlle.value.text,
+                                    password:
+                                        _passwordController.value.text);
+                              } else {
+                                Get.snackbar('Error',
+                                    'Please enter valid email and password');
+                              }
+                              // nextScreenNoReturn(context, AppScreen());
+                              // submit();
+                            }
+                          },
+                          child: Text(
+                            'ចូលគណនី',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            backgroundColor: ColorResources.primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        )),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('Don\'t have an account?'),
+                        TextButton(
+                          onPressed: () {
+                            nextScreen(context, SignUpAccountScreen());
+                          },
+                          child: Text('ចុះឈ្មោះគណនី', style: TextStyle(fontSize: 16),),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ),

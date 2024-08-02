@@ -197,7 +197,7 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                           onPressed: () {
                             Get.back();
                           },
-                          child: Text('Sign In'),
+                          child: Text('Sign In',style: TextStyle(fontSize: 16),),
                         ),
                       ],
                     ),

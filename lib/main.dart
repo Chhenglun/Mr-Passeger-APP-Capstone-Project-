@@ -108,7 +108,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               title: message.notification!.title!,
               content: message.notification!.body!,
               onTap: () {
-                nextScreen(context, BookingScreen());
+                // nextScreen(context, BookingScreen());
+                nextScreen(context, DriverPick());
                 FlutterAppBadger.removeBadge();
               },
               btnText: 'Go To Trip'.tr,

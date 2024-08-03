@@ -15,6 +15,7 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
+import 'package:scholarar/view/screen/booking/booking_screen.dart';
 import 'package:scholarar/view/screen/booking/message.dart';
 import 'package:scholarar/view/screen/booking/profile_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -59,7 +60,7 @@ class _DriverPickState extends State<DriverPick> {
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
-    final img.Image resizedImage = img.copyResize(image!, width: 150, height: 170);
+    final img.Image resizedImage = img.copyResize(image!, width: 120, height: 120);
 
     final ui.Codec codec = await ui.instantiateImageCodec(
       img.encodePng(resizedImage).buffer.asUint8List(),
@@ -79,7 +80,7 @@ class _DriverPickState extends State<DriverPick> {
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
-    final img.Image resizedImage = img.copyResize(image!, width: 100, height: 170);
+    final img.Image resizedImage = img.copyResize(image!, width: 120, height: 120);
 
     final ui.Codec codec = await ui.instantiateImageCodec(
       img.encodePng(resizedImage).buffer.asUint8List(),
@@ -224,6 +225,16 @@ class _DriverPickState extends State<DriverPick> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: (){
+                  nextScreen(context, BookingScreen());
+                },
+                icon: Icon(Icons.time_to_leave)
+            )
+          ],
+        ),
         backgroundColor: Colors.white,
         body: currentPosition == destination
             ? Center(child: CircularProgressIndicator())

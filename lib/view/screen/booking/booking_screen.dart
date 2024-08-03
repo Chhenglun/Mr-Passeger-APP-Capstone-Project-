@@ -62,7 +62,7 @@ class _BookingScreenState extends State<BookingScreen> {
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
-    final img.Image resizedImage = img.copyResize(image!, width: 150, height: 170);
+    final img.Image resizedImage = img.copyResize(image!, width: 120, height: 120);
 
     final ui.Codec codec = await ui.instantiateImageCodec(
       img.encodePng(resizedImage).buffer.asUint8List(),
@@ -82,7 +82,7 @@ class _BookingScreenState extends State<BookingScreen> {
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
-    final img.Image resizedImage = img.copyResize(image!, width: 100, height: 170);
+    final img.Image resizedImage = img.copyResize(image!, width: 100, height: 150);
 
     final ui.Codec codec = await ui.instantiateImageCodec(
       img.encodePng(resizedImage).buffer.asUint8List(),
@@ -279,17 +279,17 @@ class _BookingScreenState extends State<BookingScreen> {
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
-                      child: Center(
-                        child: IconButton(
-                          icon: Icon(Icons.arrow_back_ios),
-                          color: Colors.white,
-                          onPressed: () {
-                            nextScreenReplace(Get.context, AppScreen());
-                            //Navigator.pop(context);
-                            //nextScreenReplace(context, CurrentLocation());
-                          },
-                        ),
-                      ),
+                      // child: Center(
+                      //   child: IconButton(
+                      //     icon: Icon(Icons.arrow_back_ios),
+                      //     color: Colors.white,
+                      //     onPressed: () {
+                      //       nextScreenReplace(Get.context, AppScreen());
+                      //       //Navigator.pop(context);
+                      //       //nextScreenReplace(context, CurrentLocation());
+                      //     },
+                      //   ),
+                      // ),
                     ),
                   ),
                   Visibility(
@@ -403,8 +403,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 25, vertical: 20),
+                                      horizontal: 8, vertical: 20),
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
@@ -422,7 +423,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                           ],
                                         ),
                                       ),
-                                      SizedBox(width: 20),
+                                      SizedBox(width: 16),
                                       Container(
                                         decoration: BoxDecoration(
                                           color: Colors.green,
@@ -444,21 +445,24 @@ class _BookingScreenState extends State<BookingScreen> {
                                         ),
                                       ),
                                       SizedBox(width: 16),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.red[400],
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 10),
-                                        ),
-                                        onPressed: () {
-                                          nextScreen(
-                                              context, BookingDriver());
-                                        },
-                                        child: Text(
-                                          "លុបចោលការកក់",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16),
+                                      Container(
+                                        width: Get.width / 2,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red[400],
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 10),
+                                          ),
+                                          onPressed: () {
+                                            nextScreen(
+                                                context, BookingDriver());
+                                          },
+                                          child: Text(
+                                            "លុបចោលការកក់",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          ),
                                         ),
                                       ),
                                     ],

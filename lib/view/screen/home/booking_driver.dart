@@ -166,7 +166,7 @@ class _BookingDriverState extends State<BookingDriver> {
 
     // Resize the image
     final img.Image resizedImage =
-        img.copyResize(image!, width: 150, height: 170);
+        img.copyResize(image!, width: 120, height: 120);
 
     final ui.Codec codec = await ui.instantiateImageCodec(
       img.encodePng(resizedImage).buffer.asUint8List(),

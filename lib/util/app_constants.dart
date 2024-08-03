@@ -7,6 +7,7 @@ late double latDir;
 late double longDir;
 bool isWaiting = false;
 bool driAccept = false;
+bool stopWaiting = false;
 
 String selectedFromAddress = '';
 String selectedToAddress = '';

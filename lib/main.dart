@@ -1,4 +1,3 @@
-
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
@@ -30,8 +29,8 @@ import 'helper/get_di.dart' as di;
 
 late List<CameraDescription> cameras;
 Future<void> main(context) async {
- WidgetsFlutterBinding.ensureInitialized();
-  if(Platform.isAndroid) {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
     await Firebase.initializeApp();
     await Future.delayed(Duration(seconds: 1));
     await FirebaseAPI().initNotifications();
@@ -47,9 +46,9 @@ Future<void> main(context) async {
   Map<String, Map<String, String>> _languages = await di.init();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark)
-  );
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarBrightness: Brightness.light));
+      statusBarIconBrightness: Brightness.dark));
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarBrightness: Brightness.light));
   runApp(MyApp(languages: _languages));
 }
 
@@ -69,7 +68,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     String? token = await FirebaseMessaging.instance.getAPNSToken();
 
     await FirebaseAPI().initNotifications();
-    if(Platform.isAndroid){
+    if (Platform.isAndroid) {
       Permission.notification.request();
     }
     await FirebaseMessaging.instance.getAPNSToken();
@@ -78,18 +77,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (message.notification!.title! == 'Trip Accepted') {
         setState(() {
           isWaiting = false;
+          driAccept = true;
         });
       }
     });
-    if(token != null) {
+    if (token != null) {
       print('token $token');
     }
     await FirebaseAPI().initNotifications();
   }
+
   @override
   void initState() {
     super.initState();
-    if(Platform.isAndroid) {
+    if (Platform.isAndroid) {
       firebase();
       WidgetsBinding.instance.addObserver(this);
       FirebaseMessaging.instance.getInitialMessage().then((message) {
@@ -97,7 +98,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           print('message $message');
         }
       });
-      if(Platform.isAndroid){
+      if (Platform.isAndroid) {
         FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
           FlutterAppBadger.updateBadgeCount(1);
           Future.delayed(Duration(seconds: 1), () {
@@ -115,20 +116,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         });
       }
       Notifications.init();
-      if(Platform.isAndroid){
+      if (Platform.isAndroid) {
         Permission.notification.request();
       }
       FirebaseMessaging _firebaseMessage = FirebaseMessaging.instance;
-      _firebaseMessage.getToken().then((token) =>{
-        print('token $token')
-      });
+      _firebaseMessage.getToken().then((token) => {print('token $token')});
     }
   }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ThemeController>(builder: (themeController) {

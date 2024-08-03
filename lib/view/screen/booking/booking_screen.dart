@@ -4,6 +4,8 @@ import 'dart:ui' as ui;
 import 'dart:ui';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/screen/booking/message.dart';
 import 'package:scholarar/view/screen/booking/profile_screen.dart';
 import 'package:scholarar/view/screen/home/booking_driver.dart';
@@ -281,7 +284,8 @@ class _BookingScreenState extends State<BookingScreen> {
                           icon: Icon(Icons.arrow_back_ios),
                           color: Colors.white,
                           onPressed: () {
-                            Navigator.pop(context);
+                            nextScreenReplace(Get.context, AppScreen());
+                            //Navigator.pop(context);
                             //nextScreenReplace(context, CurrentLocation());
                           },
                         ),
@@ -325,6 +329,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                 ),
                                 Divider(),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     GestureDetector(
                                       onTap: () {
@@ -335,10 +340,10 @@ class _BookingScreenState extends State<BookingScreen> {
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.fromLTRB(
-                                                10, 5, 5, 5),
+                                                5, 5, 5, 5),
                                             child: Container(
-                                              width: 70,
-                                              height: 70,
+                                              width: 60,
+                                              height: 60,
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(50),

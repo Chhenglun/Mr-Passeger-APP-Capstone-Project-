@@ -148,7 +148,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       },
       child: Column(
         children: [
-
           SizedBox(height: 8,),
           Stack(
             alignment: Alignment.bottomCenter,

@@ -40,7 +40,7 @@ class _BookingDriverState extends State<BookingDriver> {
   bool fromSelected = false;
   bool toSelected = false;
   bool isLoading = false;
-  bool stopWaiting = false;
+  
   late GoogleMapController googleMapController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyEachFrom = GlobalKey<FormState>();
@@ -55,27 +55,32 @@ class _BookingDriverState extends State<BookingDriver> {
   BitmapDescriptor CurrentLocationIcon = BitmapDescriptor.defaultMarker;
 
   // If not yet login
-  TextEditingController _usernameController = TextEditingController(text: "${newUserInfo?['userDetails']['first_name']} ${newUserInfo['userDetails']['last_name']}");
-  TextEditingController _phoneNumberController = TextEditingController(text: "${newUserInfo?['userDetails']['phone_number']}");
+  TextEditingController _usernameController = TextEditingController(
+      text: newUserInfo.isNotEmpty
+          ? "${newUserInfo['userDetails']['first_name']} ${newUserInfo['userDetails']['last_name']}"
+          : "");
+  TextEditingController _phoneNumberController = TextEditingController(
+      text: newUserInfo.isNotEmpty
+          ? "${newUserInfo['userDetails']['phone_number']}"
+          : "");
   final _formInfoKey = GlobalKey<FormState>();
-
 
   static const CameraPosition initialCameraPosition = CameraPosition(
     target: LatLng(11.672144885466007, 105.0565917044878),
     zoom: 15,
   );
 
-   Set<Marker> _markers() {
-     return <Marker>[
-       Marker(
-         markerId: MarkerId('current_location'),
-         position: selectedLatLng!,
-         icon: CurrentLocationIcon!,
-       ),
-     ].toSet();
-   }
-  LatLng selectedLatLng = LatLng(0, 0);
+  Set<Marker> _markers() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('current_location'),
+        position: selectedLatLng!,
+        icon: CurrentLocationIcon!,
+      ),
+    ].toSet();
+  }
 
+  LatLng selectedLatLng = LatLng(0, 0);
 
   Future<Position> _getGeoLocationPosition() async {
     bool serviceEnabled;
@@ -155,21 +160,25 @@ class _BookingDriverState extends State<BookingDriver> {
   //   });});
   // }
   void setCustomerMarkerIcon() async {
-    final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
+    final ByteData byteData =
+        await rootBundle.load('assets/icons/user_icon.jpg');
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
-    final img.Image resizedImage = img.copyResize(image!, width: 150, height: 170);
+    final img.Image resizedImage =
+        img.copyResize(image!, width: 150, height: 170);
 
     final ui.Codec codec = await ui.instantiateImageCodec(
       img.encodePng(resizedImage).buffer.asUint8List(),
     );
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
 
-    final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? resizedByteData =
+        await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
 
-    final BitmapDescriptor icon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    final BitmapDescriptor icon =
+        await BitmapDescriptor.fromBytes(resizedUint8List!);
     setState(() {
       CurrentLocationIcon = icon;
     });
@@ -240,7 +249,9 @@ class _BookingDriverState extends State<BookingDriver> {
     final Map<String, dynamic> data = {
       "passenger_id": authController.userPassengerMap?['userDetails']['_id'],
       "start_location": [longCur, latCur],
-      "end_location": [longDir, latDir]
+      "end_location": [longDir, latDir],
+      "passenger_name": _usernameController.text,
+      "passenger_phone_number": _phoneNumberController.text
     };
 
     final response = await http.post(
@@ -265,6 +276,7 @@ class _BookingDriverState extends State<BookingDriver> {
             } else {
               _timer.cancel();
               setState(() {
+                isWaiting = false;
                 stopWaiting = true;
               });
             }
@@ -272,6 +284,7 @@ class _BookingDriverState extends State<BookingDriver> {
         });
       } else {
         setState(() {
+          stopWaiting = true;
           driAccept = true;
         });
         Navigator.push(
@@ -302,12 +315,14 @@ class _BookingDriverState extends State<BookingDriver> {
 
   @override
   void initState() {
+    setState(() {});
     before();
     setCustomerMarkerIcon();
-    super.initState();
     _addCurrentLocationMarker();
     init();
+    super.initState();
   }
+
   void _addCurrentLocationMarker() {
     if (CurrentLocationIcon != null && selectedLatLng != null) {
       setState(() {
@@ -336,42 +351,38 @@ class _BookingDriverState extends State<BookingDriver> {
                   Expanded(
                     child: Stack(
                       children: [
-                      GoogleMap(
-                      initialCameraPosition: initialCameraPosition,
-                      markers:   _markers(),
-                      zoomControlsEnabled: false,
-                      mapType: MapType.normal,
-                      onMapCreated: (GoogleMapController controller) {
-                        googleMapController = controller;
-                        print('Map created');
-                      },
-                      onTap: toSelected == false
-                          ? (LatLng latLng) {
-                        // print('Map tapped at: $latLng');
-                       ;
-                        _markers().clear();
-                        _addCurrentLocationMarker();
-                        // _markers.add(Marker(
-                        //   markerId: MarkerId('selectedLocation'),
-                        //   icon: CurrentLocationIcon,
-                        //   position: latLng,
-                        // ));
+                        GoogleMap(
+                          initialCameraPosition: initialCameraPosition,
+                          markers: _markers(),
+                          zoomControlsEnabled: false,
+                          mapType: MapType.normal,
+                          onMapCreated: (GoogleMapController controller) {
+                            googleMapController = controller;
+                            print('Map created');
+                          },
+                          onTap: toSelected == false
+                              ? (LatLng latLng) {
+                                  // print('Map tapped at: $latLng');
+                                  _markers().clear();
+                                  _addCurrentLocationMarker();
+                                  // _markers.add(Marker(
+                                  //   markerId: MarkerId('selectedLocation'),
+                                  //   icon: CurrentLocationIcon,
+                                  //   position: latLng,
+                                  // ));
 
-
-                        setState(() {
-                          selectedLatLng = latLng;
-                          if (fromSelected == false) {
-                            getAddressFromLatLng(latLng);
-                          } else {
-                            getAddressToLatLng(latLng);
-                          }
-                        });
-                      }
-
-                          : null,
-
-                    ),
-                    Positioned(
+                                  setState(() {
+                                    selectedLatLng = latLng;
+                                    if (fromSelected == false) {
+                                      getAddressFromLatLng(latLng);
+                                    } else {
+                                      getAddressToLatLng(latLng);
+                                    }
+                                  });
+                                }
+                              : null,
+                        ),
+                        Positioned(
                           top: 10,
                           left: 16,
                           child: Row(
@@ -391,17 +402,8 @@ class _BookingDriverState extends State<BookingDriver> {
                                     color: Colors.white,
                                     onPressed: () {
                                       Navigator.pop(context);
-                                      String token = sharedPreferences!
-                                          .getString(AppConstants.token) ??
-                                          "";
-                                      // if (token.isNotEmpty) {
-                                      //   print("First Check Token $token");
-                                      //   nextScreen(context, SettingScreen());
-                                      // } else {
-                                      //   print("Logout Token: $token");
-                                      //   nextScreen(
-                                      //       context, SignInAccountScreen());
-                                      // }
+                                      selectedFromAddress = "";
+                                      selectedToAddress = "";
                                     },
                                   ),
                                 ),
@@ -461,40 +463,37 @@ class _BookingDriverState extends State<BookingDriver> {
                                       ),
                                     )
                                   : Container(
-                                margin: EdgeInsets.only(right: 10),
-                                    child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                WidgetStatePropertyAll(
-                                                    Colors.white)),
-                                        onPressed: () {
-                                          setState(() {
-                                            selectedFromAddress = '';
-                                            selectedToAddress = '';
-                                            // latCur;
-                                            // longCur;
-                                            // latDir;
-                                            // longDir;
-                                          });
-                                          nextScreenReplace(
-                                              Get.context, BookingDriver());
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.cancel,
-                                              color: Colors.red,
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(
-                                              'លុបចោលទីតាំងដែលបានជ្រេីសរេីស',
-                                              style: TextStyle(color: Colors.red),
-                                            ),
-                                          ],
-                                        )),
-                                  )
+                                      margin: EdgeInsets.only(right: 10),
+                                      child: ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  WidgetStatePropertyAll(
+                                                      Colors.white)),
+                                          onPressed: () {
+                                            setState(() {
+                                              selectedFromAddress = '';
+                                              selectedToAddress = '';
+                                            });
+                                            nextScreenReplace(
+                                                Get.context, BookingDriver());
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.cancel,
+                                                color: Colors.red,
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(
+                                                'លុបចោលទីតាំងដែលបានជ្រេីសរេីស',
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ],
+                                          )),
+                                    )
                             ],
                           ),
                         ),
@@ -524,8 +523,7 @@ class _BookingDriverState extends State<BookingDriver> {
                             Row(
                               children: [
                                 Container(
-                                  width:
-                                      Get.width / 5,
+                                  width: Get.width / 5,
                                   child: Text(
                                     'ចាប់ផ្តេីមពី',
                                     style:
@@ -537,7 +535,7 @@ class _BookingDriverState extends State<BookingDriver> {
                                     decoration: BoxDecoration(
                                         //border: Border.all(color: Colors.grey.shade50),
                                         borderRadius: BorderRadius.circular(16),
-                                        color: Colors.grey.shade500),
+                                        color: Colors.grey.shade400),
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 5),
                                       child: Row(
@@ -551,7 +549,8 @@ class _BookingDriverState extends State<BookingDriver> {
                                                 child: TextFormField(
                                                   controller:
                                                       _searchFromController,
-                                                  style: TextStyle(color: Colors.white),
+                                                  style: TextStyle(
+                                                      color: Colors.white),
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
@@ -593,7 +592,9 @@ class _BookingDriverState extends State<BookingDriver> {
                                             }
                                           });
                                         },
-                                        child: Text('OK', style: TextStyle(color: Colors.red)),
+                                        child: Text('OK',
+                                            style:
+                                                TextStyle(color: Colors.red)),
                                       )
                                     : Container(),
                               ],
@@ -614,7 +615,7 @@ class _BookingDriverState extends State<BookingDriver> {
                                     decoration: BoxDecoration(
                                         //border: Border.all(color: Colors.grey.shade50),
                                         borderRadius: BorderRadius.circular(20),
-                                        color: Colors.grey.shade500),
+                                        color: Colors.grey.shade400),
                                     child: Padding(
                                       padding: const EdgeInsets.only(
                                           left: 5, right: 5),
@@ -622,13 +623,15 @@ class _BookingDriverState extends State<BookingDriver> {
                                         children: [
                                           Expanded(
                                             child: Padding(
-                                              padding: const EdgeInsets.only(left: 5),
+                                              padding: const EdgeInsets.only(
+                                                  left: 5),
                                               child: Form(
                                                 key: _formKeyEachTo,
                                                 child: TextFormField(
                                                   controller:
                                                       _searchToController,
-                                                  style: TextStyle(color: Colors.white),
+                                                  style: TextStyle(
+                                                      color: Colors.white),
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
@@ -729,179 +732,188 @@ class _BookingDriverState extends State<BookingDriver> {
                       ),
                       Text('សូមរង់ចាំការឆ្លើយតបពីអ្នកបើកបរ'),
                       SizedBox(
-              height: MediaQuery.sizeOf(context).height * 1 / 15,
-            ),
-            // ElevatedButton(
-            //                     style: const ButtonStyle(
-            //                       backgroundColor:
-            //                           MaterialStatePropertyAll(Colors.red),
-            //                     ),
-            //                     onPressed: () {
-            //                       setState(() {
-            //                         stopWaiting = true;
-            //                       });
-            //                       //Navigator.pop(context);
-            //                     },
-            //                     child: Padding(
-            //                       padding: const EdgeInsets.all(15.0),
-            //                       child: Text(
-            //                         'លុបចោលការកក់',
-            //                         style: TextStyle(color: Colors.white),
-            //                       ),
-            //                     )),
+                        height: MediaQuery.sizeOf(context).height * 1 / 15,
+                      ),
+                      // ElevatedButton(
+                      //                     style: const ButtonStyle(
+                      //                       backgroundColor:
+                      //                           MaterialStatePropertyAll(Colors.red),
+                      //                     ),
+                      //                     onPressed: () {
+                      //                       setState(() {
+                      //                         stopWaiting = true;
+                      //                       });
+                      //                       //Navigator.pop(context);
+                      //                     },
+                      //                     child: Padding(
+                      //                       padding: const EdgeInsets.all(15.0),
+                      //                       child: Text(
+                      //                         'លុបចោលការកក់',
+                      //                         style: TextStyle(color: Colors.white),
+                      //                       ),
+                      //                     )),
                     ]),
                   ),
                 ),
             ],
           ),
         ),
-        bottomNavigationBar: isLoading == true || isWaiting == true &&
-                  stopWaiting == false &&
-                  driAccept == false
-              ? null
-        //   ? Container(
-        //   padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
-        //   width: MediaQuery.sizeOf(context).width * 12 / 12,
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(3.0),
-        //     child: ElevatedButton(
-        //       onPressed: (){},
-        //       style: const ButtonStyle(
-        //           backgroundColor: MaterialStatePropertyAll(Colors.grey),
-        //         ),
-        //         child: Text(
-        //           'បញ្ជាក់ការកក់',
-        //           style: TextStyle(
-        //               color: Colors.white,
-        //               fontSize: 16,
-        //               fontWeight: FontWeight.bold),
-        //         )
-        //     ),
-        //   ),
-        // )
-        : Container(
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
-          width: MediaQuery.sizeOf(context).width * 12 / 12,
-          child: Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: ElevatedButton(
-                onPressed: () async {
-                  String token =
-                      sharedPreferences!.getString(AppConstants.token) ?? "";
-                  //         if (token.isNotEmpty) {
-                  //           print("First Check Token $token");
-                  //           nextScreen(context, SettingScreen());
-                  //         } else {
-                  //           print("Logout Token: $token");
-                  //           nextScreen(context, SignInAccountScreen());
-                  //         }
-                  if (token.isNotEmpty) {
-                    setState(() {
-                      latDir = selectedLatLng.latitude;
-                      longDir = selectedLatLng.longitude;
-                      // print(latDir);
-                      // print(longDir);
-                      isLoading = true;
-                    });
-                    await Future.delayed(Duration(seconds: 3), () {
-                      setState(() {
-                        isLoading = false;
-                      });
-                    });
-                    if (_formKeyEachFrom.currentState!.validate() &&
-                        _formKeyEachTo.currentState!.validate()) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text(
-                              'សូមបំពេញព័ត៍មានអ្នកដំណើរ',
-                              style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
-                            ),
-                            content: Form(
-                              key: _formInfoKey,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  TextFormField(
-                                    controller: _usernameController,
-                                    decoration: InputDecoration(
-                                      labelText: 'ឈ្មោះ',
+        bottomNavigationBar: isLoading == true 
+            ? null
+            //   ? Container(
+            //   padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+            //   width: MediaQuery.sizeOf(context).width * 12 / 12,
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(3.0),
+            //     child: ElevatedButton(
+            //       onPressed: (){},
+            //       style: const ButtonStyle(
+            //           backgroundColor: MaterialStatePropertyAll(Colors.grey),
+            //         ),
+            //         child: Text(
+            //           'បញ្ជាក់ការកក់',
+            //           style: TextStyle(
+            //               color: Colors.white,
+            //               fontSize: 16,
+            //               fontWeight: FontWeight.bold),
+            //         )
+            //     ),
+            //   ),
+            // )
+            : isWaiting == true && 
+                //stopWaiting == false && 
+                driAccept == false
+                ? null
+                : Container(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                width: MediaQuery.sizeOf(context).width * 12 / 12,
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        String token =
+                            sharedPreferences!.getString(AppConstants.token) ??
+                                "";
+                        //         if (token.isNotEmpty) {
+                        //           print("First Check Token $token");
+                        //           nextScreen(context, SettingScreen());
+                        //         } else {
+                        //           print("Logout Token: $token");
+                        //           nextScreen(context, SignInAccountScreen());
+                        //         }
+                        if (token.isNotEmpty) {
+                          setState(() {
+                            latDir = selectedLatLng.latitude;
+                            longDir = selectedLatLng.longitude;
+                            // print(latDir);
+                            // print(longDir);
+                            isLoading = true;
+                          });
+                          await Future.delayed(Duration(seconds: 3), () {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          });
+                          if (_formKeyEachFrom.currentState!.validate() &&
+                              _formKeyEachTo.currentState!.validate()) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    'សូមបំពេញព័ត៍មានអ្នកដំណើរ',
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  content: Form(
+                                    key: _formInfoKey,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        TextFormField(
+                                          controller: _usernameController,
+                                          decoration: InputDecoration(
+                                            labelText: 'ឈ្មោះ',
+                                          ),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'សូមបំពេញឈ្មោះ';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        TextFormField(
+                                          controller: _phoneNumberController,
+                                          decoration: InputDecoration(
+                                              labelText: 'លេខទូរស័ព្ទ'),
+                                          keyboardType: TextInputType.phone,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'សូមបំពេញលេខទូរស័ព្ទ';
+                                            } else if (value.length < 8) {
+                                              return "Password must be at least 8 characters";
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ],
                                     ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'សូមបំពេញឈ្មោះ';
-                                      }
-                                      return null;
-                                    },
                                   ),
-                                  TextFormField(
-                                    controller: _phoneNumberController,
-                                    decoration: InputDecoration(
-                                        labelText: 'លេខទូរស័ព្ទ'),
-                                    keyboardType: TextInputType.phone,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'សូមបំពេញលេខទូរស័ព្ទ';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('លុបចោល'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        WidgetStatePropertyAll(Colors.red)),
-                                child: Text(
-                                  'បញ្ជូន',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                onPressed: () async {
-                                  if (_formInfoKey.currentState!.validate()) {
-                                    Navigator.of(context).pop();
-                                    postData();
-                                    // Handle submission logic here
-                                    //   name: _usernameController.text,
-                                    //   phoneNumber:  _phoneNumberController.text,
-                                    // latCur;
-                                    //       longCur;
-                                    //       latDir;
-                                    //       longDir;
-                                  }
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  } else {
-                    print("Logout Token: $token");
-                    nextScreen(context, SignInAccountScreen());
-                  }
-                },
-                style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Colors.red),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('លុបចោល'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              WidgetStatePropertyAll(
+                                                  Colors.red)),
+                                      child: Text(
+                                        'បញ្ជូន',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () async {
+                                        if (_formInfoKey.currentState!
+                                            .validate()) {
+                                          Navigator.of(context).pop();
+                                          postData();
+                                          // Handle submission logic here
+                                          //   name: _usernameController.text,
+                                          //   phoneNumber:  _phoneNumberController.text,
+                                          // latCur;
+                                          //       longCur;
+                                          //       latDir;
+                                          //       longDir;
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        } else {
+                          print("Logout Token: $token");
+                          nextScreen(context, SignInAccountScreen());
+                        }
+                      },
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(Colors.red),
+                      ),
+                      child: Text(
+                        'បញ្ជាក់ការកក់',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      )),
                 ),
-                child: Text(
-                  'បញ្ជាក់ការកក់',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                )),
-          ),
-        )
-    );
+              ));
   }
 }

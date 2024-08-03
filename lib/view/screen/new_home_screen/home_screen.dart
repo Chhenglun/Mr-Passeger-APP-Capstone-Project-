@@ -71,26 +71,21 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
             text: ['សូមស្វាគមន៍មកកាន់ Mr. Driver'],
             textStyle: TextStyle(
               color: Colors.red,
-              fontSize: 20.0,
+              fontSize: 19.0,
               fontWeight: FontWeight.bold,
             ),
             speed: Duration(milliseconds: 200),
           ),
         ],
       ),
-      actions: [
-        IconButton(
-            onPressed: () {
-              // LocalNotifications.showSimpleNotification(
-              //     title: "Message from KUNVATH",
-              //     body: "Hello! How are you today?",
-              //     payload: "This is simple data");
-            },
-            icon: Icon(
-              Icons.notifications,
-              color: Colors.red,
-            ))
-      ],
+      // actions: [
+      //   IconButton(
+      //       onPressed: () {},
+      //       icon: Icon(
+      //         Icons.notifications,
+      //         color: Colors.red,
+      //       ))
+      // ],
     );
   }
   //Todo: _buildBody
@@ -133,7 +128,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
         await _firebaseAPI.initNotifications();
         String? deviceToken = frmTokenPublic;
         print("deviceToken : $deviceToken");
-        String passengerId = userNextDetails?["_id"];
+        String? passengerId = userNextDetails?["_id"];
         print("passengerId : $passengerId");// Ensure this is the correct driver ID
         if (deviceToken != null && passengerId != null) {
           trackingController.updatePassengerTokenController(deviceToken, passengerId);
@@ -142,9 +137,9 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
           nextScreen(context, BookingDriver());
         } else {
           customShowSnackBar('Device token or driver ID is missing', context, isError: true);
-
+          nextScreen(context, BookingDriver());
         }
-        //nextScreen(context, BookingDriver());
+        nextScreen(context, BookingDriver());
       },
       child: Column(
         children: [

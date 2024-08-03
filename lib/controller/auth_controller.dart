@@ -283,31 +283,31 @@ class AuthController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> postDeviceToken(String passengerID) async {
-    print(passengerID);
-    print(frmTokenPublic);
-    final String url = 'http://ec2-54-82-25-173.compute-1.amazonaws.com:8000/api/trips/updatePassengerToken';
+  // Future<void> postDeviceToken(String passengerID) async {
+  //   print(passengerID);
+  //   print(frmTokenPublic);
+  //   final String url = 'http://ec2-54-82-25-173.compute-1.amazonaws.com:8000/api/trips/updatePassengerToken';
 
-    final Map<String, dynamic> data = {
-      "passenger_id": passengerID,
-      "deviceToken": frmTokenPublic
-    };
+  //   final Map<String, dynamic> data = {
+  //     "passenger_id": passengerID,
+  //     "deviceToken": frmTokenPublic
+  //   };
 
-    final response = await http.post(
-      Uri.parse(url),
-      // headers: <String, String>{
-      //   'Content-Type': 'application/json',
-      // },
-      body: jsonEncode(data),
-    );
+  //   final response = await http.post(
+  //     Uri.parse(url),
+  //     // headers: <String, String>{
+  //     //   'Content-Type': 'application/json',
+  //     // },
+  //     body: jsonEncode(data),
+  //   );
 
-    if (response.statusCode == 200) {
-      print('Posted device token successfully');
-    } else {
-      print('response.statusCode device token ${response.statusCode}');
-      print('Failed to post data device token');
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     print('Posted device token successfully');
+  //   } else {
+  //     print('response.statusCode device token ${response.statusCode}');
+  //     print('Failed to post data device token');
+  //   }
+  // }
 
   //Todo: LoginPassager
   Future<void> loginPassenger(
@@ -329,7 +329,7 @@ class AuthController extends GetxController implements GetxService {
         Map<String, dynamic> map = apiResponse.body;
 
         // Post device token
-        await postDeviceToken(map['_id']);
+        //await postDeviceToken(map['_id']);
 
         try {
           role = map['role'];

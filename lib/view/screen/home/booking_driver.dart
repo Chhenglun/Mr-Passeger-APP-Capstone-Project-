@@ -792,8 +792,8 @@ class _BookingDriverState extends State<BookingDriver> {
                     setState(() {
                       latDir = selectedLatLng.latitude;
                       longDir = selectedLatLng.longitude;
-                      print(latDir);
-                      print(longDir);
+                      // print(latDir);
+                      // print(longDir);
                       isLoading = true;
                     });
                     await Future.delayed(Duration(seconds: 3), () {
@@ -846,7 +846,7 @@ class _BookingDriverState extends State<BookingDriver> {
                             ),
                             actions: <Widget>[
                               TextButton(
-                                child: Text('Cancel'),
+                                child: Text('លុបចោល'),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -856,7 +856,7 @@ class _BookingDriverState extends State<BookingDriver> {
                                     backgroundColor:
                                         WidgetStatePropertyAll(Colors.red)),
                                 child: Text(
-                                  'Submit',
+                                  'បញ្ជូន',
                                   style: TextStyle(color: Colors.white),
                                 ),
                                 onPressed: () async {

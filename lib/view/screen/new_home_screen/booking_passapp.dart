@@ -2,9 +2,11 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
+import 'dart:ui';
+import 'dart:ui' as ui;
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:image/image.dart' as img;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -50,13 +52,35 @@ class _BookingPassAppState extends State<BookingPassApp> {
   final _usernameController = TextEditingController();
   final _phoneNumberController = TextEditingController();
   final _formInfoKey = GlobalKey<FormState>();
+  BitmapDescriptor CurrentLocationIcon = BitmapDescriptor.defaultMarker;
 
   static const CameraPosition initialCameraPosition = CameraPosition(
     target: LatLng(11.672144885466007, 105.0565917044878),
     zoom: 15,
   );
 
-  Set<Marker> markers = {};
+  Set<Marker> _markers() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('current_location'),
+        position: selectedLatLng!,
+        icon: CurrentLocationIcon!,
+      ),
+    ].toSet();
+  }
+  void _addCurrentLocationMarker() {
+    if (CurrentLocationIcon != null && selectedLatLng != null) {
+      setState(() {
+        _markers().add(
+          Marker(
+            markerId: MarkerId('current_location'),
+            position: selectedLatLng!,
+            icon: CurrentLocationIcon!,
+          ),
+        );
+      });
+    }
+  }
   LatLng selectedLatLng = LatLng(0, 0);
 
   Future<Position> _getGeoLocationPosition() async {
@@ -98,6 +122,27 @@ class _BookingPassAppState extends State<BookingPassApp> {
         desiredAccuracy: LocationAccuracy.high);
   }
 
+  void setCustomerMarkerIcon() async {
+    final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
+    final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
+
+    // Resize the image
+    final img.Image resizedImage = img.copyResize(image!, width: 150, height: 170);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      img.encodePng(resizedImage).buffer.asUint8List(),
+    );
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+
+    final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
+
+    final BitmapDescriptor icon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    setState(() {
+      CurrentLocationIcon = icon;
+    });
+  }
+
   void searchLocation() async {
     try {
       List<Location> locations =
@@ -106,8 +151,8 @@ class _BookingPassAppState extends State<BookingPassApp> {
         LatLng searchedLatLng =
         LatLng(locations[0].latitude, locations[0].longitude);
 
-        markers.clear();
-        markers.add(Marker(
+        _markers().clear();
+        _markers().add(Marker(
           markerId: MarkerId('searchedLocation'),
           position: searchedLatLng,
         ));
@@ -134,8 +179,8 @@ class _BookingPassAppState extends State<BookingPassApp> {
         desiredAccuracy: LocationAccuracy.high);
     LatLng currentLatLng = LatLng(position.latitude, position.longitude);
 
-    markers.clear();
-    markers.add(Marker(
+    _markers().clear();
+    _markers().add(Marker(
       markerId: MarkerId('currentLocation'),
       position: currentLatLng,
     ));
@@ -258,7 +303,9 @@ class _BookingPassAppState extends State<BookingPassApp> {
   @override
   void initState() {
     before();
+    setCustomerMarkerIcon();
     super.initState();
+    _addCurrentLocationMarker();
     init();
   }
 
@@ -296,7 +343,7 @@ class _BookingPassAppState extends State<BookingPassApp> {
                       children: [
                         GoogleMap(
                           initialCameraPosition: initialCameraPosition,
-                          markers: markers,
+                          markers: _markers(),
                           zoomControlsEnabled: false,
                           mapType: MapType.normal,
                           onMapCreated: (GoogleMapController controller) {
@@ -304,10 +351,8 @@ class _BookingPassAppState extends State<BookingPassApp> {
                           },
                           onTap: toSelected == false
                               ? (LatLng latLng) {
-                            markers.clear();
-                            markers.add(Marker(
-                                markerId: MarkerId('selectedLocation'),
-                                position: latLng));
+                            _markers().clear();
+                            _addCurrentLocationMarker();
                             setState(() {
                               selectedLatLng = latLng;
                               if (fromSelected == false) {

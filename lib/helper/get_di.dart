@@ -10,6 +10,7 @@ import 'package:scholarar/controller/localization_controller.dart';
 import 'package:scholarar/controller/splash_controller.dart';
 import 'package:scholarar/controller/test_controller.dart';
 import 'package:scholarar/controller/theme_controller.dart';
+import 'package:scholarar/controller/tracking_controller.dart';
 import 'package:scholarar/data/api/api_client.dart';
 import 'package:scholarar/data/model/response/language_model.dart';
 import 'package:scholarar/data/repository/auth_repository.dart';
@@ -19,6 +20,7 @@ import 'package:scholarar/data/repository/home_repository.dart';
 import 'package:scholarar/data/repository/language_repository.dart';
 import 'package:scholarar/data/repository/scholarship_repository.dart';
 import 'package:scholarar/data/repository/test_repository.dart';
+import 'package:scholarar/data/repository/tracking_repository.dart';
 import 'package:scholarar/helper/network_info.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +42,8 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => BookStoreRepository(dioClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => CourseRepository(dioClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeRepository(dioClient: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => TrackingRepository(dioClient: Get.find(), sharedPreferences: Get.find()));
+
 
   // Controller
   Get.lazyPut(() => SplashController());
@@ -50,6 +54,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => BookStoreController(bookStoreRepository: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => CourseController(courseRepository: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeController(homeRepository: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => TrackingController(trackingRepositiry: Get.find(), sharedPreferences: Get.find()));
 
   // Retrieving localized data
   Map<String, Map<String, String>> languages = Map();

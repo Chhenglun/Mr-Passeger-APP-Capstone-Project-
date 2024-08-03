@@ -20,7 +20,6 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
   AuthController authController = Get.find<AuthController>();
   final phoneNumberForcusNode = FocusNode();
   final passwordForcusNode = FocusNode();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _emailPhoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   var obscureText = true.obs;

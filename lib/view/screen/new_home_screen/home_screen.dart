@@ -2,13 +2,16 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scholarar/controller/auth_controller.dart';
+import 'package:scholarar/controller/tracking_controller.dart';
+import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
+import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/home/booking_driver.dart';
 import 'package:scholarar/view/screen/home/slide.dart';
 import 'package:scholarar/view/screen/new_home_screen/booking_passapp.dart';
-import 'package:scholarar/view/screen/new_home_screen/developer_screen.dart';
-import 'package:scholarar/view/screen/new_home_screen/premium.dart';
 import '../../../controller/splash_controller.dart';
 
 class NewHomeScreen extends StatefulWidget {
@@ -19,6 +22,25 @@ class NewHomeScreen extends StatefulWidget {
 }
 
 class _NewHomeScreenState extends State<NewHomeScreen> {
+  final AuthController authController = Get.find<AuthController>();
+  final TrackingController trackingController = Get.find<TrackingController>();
+  final FirebaseAPI _firebaseAPI = FirebaseAPI();
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    setState(() {
+      init();
+    });
+    super.initState();
+  }
+
+  Future<void> init() async {
+    await authController.getPassengerInfoController();
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
 
@@ -28,96 +50,102 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       length: 3,
       child: GetBuilder<SplashController>(builder: (splash){
       return Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: Colors.red.shade600,
-        //   centerTitle: true,
-        //   title: Text('Mr. Driver App',style: TextStyle(fontSize: 24,color: Colors.white),),
-        // ),
-        appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: AssetImage('assets/images/logo.jpg'),
-            ),
-            SizedBox(width: 10,),
-            TypewriterAnimatedTextKit(
-              text: ['សូមស្វាគមន៍មកកាន់ Mr. Driver'],
-              textStyle: TextStyle(
-                color: Colors.red,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-              speed: Duration(milliseconds: 200),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                // LocalNotifications.showSimpleNotification(
-                //     title: "Message from KUNVATH",
-                //     body: "Hello! How are you today?",
-                //     payload: "This is simple data");
-              },
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.red,
-              ))
-        ],
-      ),
-        body: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SliderHome(),
-                    SizedBox(height: 20,),
-                    Container(
-                      //alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text('សូមជ្រេីសរេីសការកក់របស់អ្នក', style: TextStyle(color: ColorResources.blackColor,fontSize: 24,fontWeight: FontWeight.bold),)),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Expanded(child: _buildHumanButton()),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Expanded(child: _buildPassAppButton()),
-                    ),
-                    //PremiumPlanPage()
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        appBar: _buildAppbar(),
+        body:_buildBody(),
           );
         }
       ),
     );
   }
+  //Todo: _buildAppbar
+  AppBar _buildAppbar(){
+    return AppBar(
+      automaticallyImplyLeading: false,
+      title: Row(
+        children: [
+          CircleAvatar(
+            backgroundImage: AssetImage('assets/images/logo.jpg'),
+          ),
+          SizedBox(width: 10,),
+          TypewriterAnimatedTextKit(
+            text: ['សូមស្វាគមន៍មកកាន់ Mr. Driver'],
+            textStyle: TextStyle(
+              color: Colors.red,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+            speed: Duration(milliseconds: 200),
+          ),
+        ],
+      ),
+      actions: [
+        IconButton(
+            onPressed: () {
+              // LocalNotifications.showSimpleNotification(
+              //     title: "Message from KUNVATH",
+              //     body: "Hello! How are you today?",
+              //     payload: "This is simple data");
+            },
+            icon: Icon(
+              Icons.notifications,
+              color: Colors.red,
+            ))
+      ],
+    );
+  }
+  //Todo: _buildBody
+  Widget _buildBody(){
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SliderHome(),
+                SizedBox(height: 20,),
+                Container(
+                  //alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(left: 10),
+                    child: Text('សូមជ្រេីសរេីសការកក់របស់អ្នក', style: TextStyle(color: ColorResources.blackColor,fontSize: 24,fontWeight: FontWeight.bold),)),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Expanded(child: _buildHumanButton()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Expanded(child: _buildPassAppButton()),
+                ),
+                //PremiumPlanPage()
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  //Todo: buildHumanButton
   Widget _buildHumanButton() {
+    var userNextDetails = authController.userPassengerMap?['userDetails'];
     return InkWell(
-      onTap: () {
-        nextScreen(context, BookingDriver());
+      onTap: () async{
+        await _firebaseAPI.initNotifications();
+        String? deviceToken = frmTokenPublic;
+        print("deviceToken : $deviceToken");
+        String passengerId = userNextDetails?["_id"];
+        print("passengerId : $passengerId");// Ensure this is the correct driver ID
+        if (deviceToken != null && passengerId != null) {
+          trackingController.updatePassengerTokenController(deviceToken, passengerId);
+          isLoading = true;
+          //customShowSnackBar('ការបើកការកក់របស់អ្នកទទួលបានជោគជ័យ', context, isError: false);
+          nextScreen(context, BookingDriver());
+        } else {
+          customShowSnackBar('Device token or driver ID is missing', context, isError: true);
+
+        }
+        //nextScreen(context, BookingDriver());
       },
-      // onTap: () {
-      //   //await _firebaseAPI.initNotifications();
-      //   String? deviceToken =frmTokenPublic; // Use the token obtained from initNotifications
-      //   String driverId =authController.userPassengerMap?["userDetails"]["_id"]; // Ensure this is the correct driver ID
-      //   if (deviceToken != null && driverId != null) {
-      //     _trackingController.updateToken(deviceToken, driverId);
-      //     isLoading = true;
-      //     customShowSnackBar('ការបើកការកក់របស់អ្នកទទួលបានជោគជ័យ', context, isError: false);
-      //     nextScreen(context, CurrentLocation());
-      //   } else {
-      //     customShowSnackBar('Device token or driver ID is missing', context,
-      //         isError: true);
-      //   }
-      // },
       child: Column(
         children: [
 

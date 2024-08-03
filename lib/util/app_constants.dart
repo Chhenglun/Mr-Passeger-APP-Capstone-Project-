@@ -10,6 +10,7 @@ bool driAccept = false;
 
 String selectedFromAddress = '';
 String selectedToAddress = '';
+Map newUserInfo = {};
 String? frmTokenPublic;
 
 class AppConstants {

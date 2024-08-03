@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 import 'dart:ui';
 import 'dart:typed_data';
+import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -24,6 +25,7 @@ import 'package:scholarar/view/screen/booking/booking_screen.dart';
 import 'package:curved_drawer_fork/curved_drawer_fork.dart';
 import 'package:scholarar/view/screen/profile/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:scholarar/controller/auth_controller.dart';
 
 class BookingDriver extends StatefulWidget {
   const BookingDriver({super.key});
@@ -53,8 +55,8 @@ class _BookingDriverState extends State<BookingDriver> {
   BitmapDescriptor CurrentLocationIcon = BitmapDescriptor.defaultMarker;
 
   // If not yet login
-  final _usernameController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController(text: "${newUserInfo?['userDetails']['first_name']} ${newUserInfo['userDetails']['last_name']}");
+  TextEditingController _phoneNumberController = TextEditingController(text: "${newUserInfo?['userDetails']['phone_number']}");
   final _formInfoKey = GlobalKey<FormState>();
 
 
@@ -518,6 +520,7 @@ class _BookingDriverState extends State<BookingDriver> {
                         key: _formKey,
                         child: Column(
                           children: [
+                            SizedBox(height: 5),
                             Row(
                               children: [
                                 Container(
@@ -534,7 +537,7 @@ class _BookingDriverState extends State<BookingDriver> {
                                     decoration: BoxDecoration(
                                         //border: Border.all(color: Colors.grey.shade50),
                                         borderRadius: BorderRadius.circular(16),
-                                        color: Colors.grey.shade300),
+                                        color: Colors.grey.shade500),
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 5),
                                       child: Row(
@@ -548,6 +551,7 @@ class _BookingDriverState extends State<BookingDriver> {
                                                 child: TextFormField(
                                                   controller:
                                                       _searchFromController,
+                                                  style: TextStyle(color: Colors.white),
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
@@ -555,9 +559,10 @@ class _BookingDriverState extends State<BookingDriver> {
                                                     }
                                                     return null;
                                                   },
+                                                  maxLines: null,
                                                   enabled: false,
                                                   decoration: InputDecoration(
-                                                    labelText: fromSelected ==
+                                                    hintText: fromSelected ==
                                                             false
                                                         ? 'ទីតំាងចាប់ផ្តេីម'
                                                         : 'ទីតំាងដែលបានជ្រេីសរេីស',
@@ -593,7 +598,7 @@ class _BookingDriverState extends State<BookingDriver> {
                                     : Container(),
                               ],
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 5),
                             Row(
                               children: [
                                 Container(
@@ -609,7 +614,7 @@ class _BookingDriverState extends State<BookingDriver> {
                                     decoration: BoxDecoration(
                                         //border: Border.all(color: Colors.grey.shade50),
                                         borderRadius: BorderRadius.circular(20),
-                                        color: Colors.grey.shade300),
+                                        color: Colors.grey.shade500),
                                     child: Padding(
                                       padding: const EdgeInsets.only(
                                           left: 5, right: 5),
@@ -624,6 +629,7 @@ class _BookingDriverState extends State<BookingDriver> {
                                                 child: TextFormField(
                                                   controller:
                                                       _searchToController,
+                                                  style: TextStyle(color: Colors.white),
                                                   validator: (un_value) {
                                                     if (un_value == null ||
                                                         un_value.isEmpty) {
@@ -632,8 +638,9 @@ class _BookingDriverState extends State<BookingDriver> {
                                                     return null;
                                                   },
                                                   enabled: false,
+                                                  maxLines: null,
                                                   decoration: InputDecoration(
-                                                    labelText: toSelected ==
+                                                    hintText: toSelected ==
                                                             false
                                                         ? 'ទីតំាងគោលដៅ'
                                                         : 'គោលដៅដែលបានជ្រេីសរេីស',
@@ -752,28 +759,29 @@ class _BookingDriverState extends State<BookingDriver> {
         bottomNavigationBar: isLoading == true || isWaiting == true &&
                   stopWaiting == false &&
                   driAccept == false
-          ? Container(
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-          width: MediaQuery.sizeOf(context).width * 12 / 12,
-          child: Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: ElevatedButton(
-              onPressed: (){},
-              style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Colors.grey),
-                ),
-                child: Text(
-                  'បញ្ជាក់ការកក់',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                )
-            ),
-          ),
-        )
+              ? null
+        //   ? Container(
+        //   padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+        //   width: MediaQuery.sizeOf(context).width * 12 / 12,
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(3.0),
+        //     child: ElevatedButton(
+        //       onPressed: (){},
+        //       style: const ButtonStyle(
+        //           backgroundColor: MaterialStatePropertyAll(Colors.grey),
+        //         ),
+        //         child: Text(
+        //           'បញ្ជាក់ការកក់',
+        //           style: TextStyle(
+        //               color: Colors.white,
+        //               fontSize: 16,
+        //               fontWeight: FontWeight.bold),
+        //         )
+        //     ),
+        //   ),
+        // )
         : Container(
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
           width: MediaQuery.sizeOf(context).width * 12 / 12,
           child: Padding(
             padding: const EdgeInsets.all(3.0),

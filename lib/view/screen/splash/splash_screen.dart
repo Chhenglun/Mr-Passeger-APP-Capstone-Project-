@@ -48,13 +48,22 @@ class _SplashScreenState extends State<SplashScreen> {
         Timer(Duration(seconds: 5), () {
           nextScreenReplace(Get.context, AppScreen());
         });
-        
       }
     }
   }
 
+  bool isLoading = false;
+
+  Future<void> init() async {
+    await authController.getPassengerInfoController();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void initState() {
+    init();
     super.initState();
     afterSplash();
   }

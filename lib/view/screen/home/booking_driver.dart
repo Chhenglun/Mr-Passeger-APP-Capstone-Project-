@@ -622,8 +622,7 @@ class _BookingDriverState extends State<BookingDriver> {
                                         children: [
                                           Expanded(
                                             child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5),
+                                              padding: const EdgeInsets.only(left: 5),
                                               child: Form(
                                                 key: _formKeyEachTo,
                                                 child: TextFormField(

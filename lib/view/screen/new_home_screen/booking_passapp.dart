@@ -514,7 +514,7 @@ class _BookingPassAppState extends State<BookingPassApp> {
                               children: [
                                 Container(
                                   width:
-                                  MediaQuery.sizeOf(context).width * 3 / 20,
+                                  Get.width/5,
                                   child: Text(
                                     'ចាប់ផ្តេីមពី',
                                     style:
@@ -589,8 +589,7 @@ class _BookingPassAppState extends State<BookingPassApp> {
                             Row(
                               children: [
                                 Container(
-                                  width:
-                                  MediaQuery.sizeOf(context).width * 3 / 20,
+                                  width:Get.width/5,
                                   child: Text(
                                     'គោលដៅ',
                                     style:

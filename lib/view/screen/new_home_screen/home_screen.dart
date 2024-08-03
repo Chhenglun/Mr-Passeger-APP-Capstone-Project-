@@ -35,14 +35,22 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
         // ),
         appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: TypewriterAnimatedTextKit(
-          text: ['សូមស្វាគមន៏មកកាន់ Mr. Driver'],
-          textStyle: TextStyle(
-            color: Colors.red,
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-          ),
-          speed: Duration(milliseconds: 200),
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: AssetImage('assets/images/logo.jpg'),
+            ),
+            SizedBox(width: 10,),
+            TypewriterAnimatedTextKit(
+              text: ['សូមស្វាគមន៍មកកាន់ Mr. Driver'],
+              textStyle: TextStyle(
+                color: Colors.red,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+              speed: Duration(milliseconds: 200),
+            ),
+          ],
         ),
         actions: [
           IconButton(
@@ -61,20 +69,27 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
         body: Column(
           children: [
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SliderHome(),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Expanded(child: _buildHumanButton()),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Expanded(child: _buildPassAppButton()),
-                  ),
-                  //PremiumPlanPage()
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SliderHome(),
+                    SizedBox(height: 20,),
+                    Container(
+                      //alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.only(left: 10),
+                        child: Text('សូមជ្រេីសរេីសការកក់របស់អ្នក', style: TextStyle(color: ColorResources.blackColor,fontSize: 24,fontWeight: FontWeight.bold),)),
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Expanded(child: _buildHumanButton()),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Expanded(child: _buildPassAppButton()),
+                    ),
+                    //PremiumPlanPage()
+                  ],
+                ),
               ),
             ),
           ],
@@ -105,31 +120,36 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       // },
       child: Column(
         children: [
-          Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(left: 10),
-              child: Text('បញ្ជាការកក់អ្នកបេីកបរ', style: TextStyle(color: ColorResources.primaryColor,fontSize: 18,fontWeight: FontWeight.bold),)),
+
           SizedBox(height: 8,),
-          Container(
-            height: Get.height/4,
-            child: Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: ColorResources.blackColor,
-                  borderRadius: BorderRadius.circular(16)
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Container(
+                height: Get.height/4,
+                child: Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: ColorResources.backgroundBannerColor,
+                      borderRadius: BorderRadius.circular(16)
+                    ),
+                    padding: EdgeInsets.all(5),
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/human.jpg'),
+                      radius: 50,
+                    )
+                  ),
                 ),
-                padding: EdgeInsets.all(5),
-                alignment: Alignment.center,
-                child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/human.jpg'),
-                  radius: 50,
-                )
               ),
-            ),
+              Container(
+                margin: EdgeInsets.only(bottom: 20),
+                  child: Text('កក់អ្នកបេីកបរ', style: TextStyle(color: ColorResources.blackColor,fontSize: 18,fontWeight: FontWeight.bold),)),
+            ],
           ),
         ],
       ),
@@ -142,32 +162,36 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       },
       child: Column(
         children: [
-          Container(
-            alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(left: 10),
-              child: Text('បញ្ជាការកក់កង់បី', style: TextStyle(color: ColorResources.primaryColor,fontSize: 18,fontWeight: FontWeight.bold),)),
           SizedBox(height: 8,),
-          Container(
-            height: Get.height/4,
-            child: Card(
-              color: Colors.grey.shade400,
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: ColorResources.blackColor,
-                    borderRadius: BorderRadius.circular(16)
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children:[
+              Container(
+                height: Get.height/4,
+                child: Card(
+                  color: Colors.grey.shade400,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: ColorResources.backgroundBannerColor,
+                        borderRadius: BorderRadius.circular(16)
+                    ),
+                    padding: EdgeInsets.all(5),
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/passapp.jpg'),
+                      radius: 50,
+                    ),
+                  ),
                 ),
-                padding: EdgeInsets.all(5),
-                alignment: Alignment.center,
-                child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/passapp.jpg'),
-                  radius: 50,
-                ),
               ),
-            ),
+              Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: Text('កក់កង់បី', style: TextStyle(color: ColorResources.blackColor,fontSize: 18,fontWeight: FontWeight.bold),)),
+            ]
           ),
         ],
       ),

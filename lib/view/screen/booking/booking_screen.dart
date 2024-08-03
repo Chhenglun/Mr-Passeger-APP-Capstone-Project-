@@ -1,5 +1,10 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as ui;
+import 'dart:ui';
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:image/image.dart' as img;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
@@ -23,27 +28,106 @@ class BookingScreen extends StatefulWidget {
 
 class _BookingScreenState extends State<BookingScreen> {
   final Completer<GoogleMapController> _controller = Completer();
+  bool toSelected = false;
   static const LatLng destination = LatLng(11.544, 104.8112);
   List<LatLng> polyLineCoordinates = [];
   LatLng currentPosition = destination;
   LatLng driverPosition = LatLng(11.570, 104.875);
   StreamSubscription<Position>? positionStreamSubscription;
-  String url =
-      "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
+  String url = "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
   Timer? driverTimer;
   Uri dialnumber = Uri(scheme: 'tel', path: '012345678');
+  BitmapDescriptor CurrentIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor DestinationIcon = BitmapDescriptor.defaultMarker;
+
+  Set<Marker> _markers() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('current_location'),
+        position: currentPosition,
+        icon: CurrentIcon!,
+      ),
+      Marker(
+        markerId: MarkerId('current_location'),
+        position: destination,
+        icon: DestinationIcon!,
+      ),
+    ].toSet();
+  }
+  void setCurrentIcon() async {
+    final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
+    final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
+
+    // Resize the image
+    final img.Image resizedImage = img.copyResize(image!, width: 150, height: 170);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      img.encodePng(resizedImage).buffer.asUint8List(),
+    );
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+
+    final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
+
+    final BitmapDescriptor Currenticon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    setState(() {
+      CurrentIcon = Currenticon;
+    });
+  }
+  void setDestinationIcon() async {
+    final ByteData byteData = await rootBundle.load('assets/icons/driver_pin_map.jpg');
+    final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
+
+    // Resize the image
+    final img.Image resizedImage = img.copyResize(image!, width: 100, height: 170);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      img.encodePng(resizedImage).buffer.asUint8List(),
+    );
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+
+    final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
+
+    final BitmapDescriptor destinationIcon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    setState(() {
+      DestinationIcon = destinationIcon;
+    });
+  }
+  void _addCurrentLocationMarker() {
+    if (CurrentIcon != null && currentPosition != null) {
+      setState(() {
+        _markers().add(
+          Marker(
+            markerId: MarkerId('current_location'),
+            position: currentPosition!,
+            icon: CurrentIcon!,
+          ),
+        );
+        _markers().add(
+          Marker(
+            markerId: MarkerId('current_location'),
+            position: destination!,
+            icon: DestinationIcon!,
+          ),
+        );
+      });
+    }
+  }
 
   Future<void> callNumber() async {
     await launchUrl(dialnumber);
   }
-
   Future<void> directCall() async {
     await FlutterPhoneDirectCaller.callNumber('012345678');
   }
 
   @override
   void initState() {
+    setCurrentIcon();
+    setDestinationIcon();
     super.initState();
+    //_addCurrentLocationMarker();
     _checkLocationPermissions();
   }
 
@@ -181,18 +265,8 @@ class _BookingScreenState extends State<BookingScreen> {
                         width: 6,
                       ),
                     },
-                    markers: {
-                      Marker(
-                        markerId: MarkerId("user"),
-                        position: currentPosition,
-                        icon: BitmapDescriptor.defaultMarkerWithHue(
-                            BitmapDescriptor.hueGreen),
-                      ),
-                      Marker(
-                        markerId: MarkerId("destination"),
-                        position: destination,
-                      ),
-                    },
+                    markers: _markers(),
+
                   ),
                   Positioned(
                     left: 10,
@@ -243,7 +317,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'អ្នកបើកបរនឹងមកដល់ 3​ នាទីទៀត',
+                                        'អ្នកបើកបរនឹងមកដល់ 3 នាទីទៀត',
                                         style: TextStyle(fontSize: 12),
                                       ),
                                     ],

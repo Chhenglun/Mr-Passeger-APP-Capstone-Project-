@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/account/singup_account_screen.dart';
 import 'package:scholarar/view/screen/home/booking_driver.dart';
 
@@ -51,6 +52,9 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
             : _emailPhoneController.text,
         password: _passwordController.text,
       );
+    }else{
+      Navigator.pop(Get.context!);
+      customShowSnackBar('Invalid Email Phone or Password!'.tr, Get.context!, isError: true);
     }
   }
 

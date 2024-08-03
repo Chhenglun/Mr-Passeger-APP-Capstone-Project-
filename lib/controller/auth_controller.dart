@@ -310,58 +310,72 @@ class AuthController extends GetxController implements GetxService {
   }
 
   //Todo: LoginPassager
-  Future loginPassenger(
-      BuildContext context,{
-     String? email,
-  String? phoneNumber,
-  required String password
-  })
-  async {
+  Future<void> loginPassenger(
+      BuildContext context, {
+        String? email,
+        String? phoneNumber,
+        required String password,
+      }) async {
     loadingDialogs(Get.context!);
     try {
-      print("LoginPassager : $email,$phoneNumber, $password");
+      print("LoginPassenger: $email, $phoneNumber, $password");
       _isLoading = true;
       update();
 
-      Response apiResponse = await authRepository.loginPassager(email!,phoneNumber!, password, context);
+      Response apiResponse = await authRepository.loginPassager(email!, phoneNumber!, password, context);
 
       if (apiResponse.statusCode == 200) {
         Navigator.pop(Get.context!);
         Map<String, dynamic> map = apiResponse.body;
-        //post device token
-        await postDeviceToken(
-          map['_id'],
-        );
-        //print("Test print role : ${map["role"]}");
+
+        // Post device token
+        await postDeviceToken(map['_id']);
+
         try {
-          token = map["token"];
-          //role = map["role"];
-          //print("Test Print role  : $role");
+          role = map['role'];
+          print("Role: $role");
         } catch (e) {
           print(e.toString());
-          print("Token Error : $e");
+          print("Role Error: $e");
         }
 
-        if (token != null && token.isNotEmpty ) {
-          await _tokenHelper.saveToken(token: token).then((_) async {
-            customShowSnackBar('successfulLoginAccount'.tr, Get.context!,
-                isError: false);
-            nextScreenNoReturn(Get.context!, SplashScreen());
-          });
+        try {
+          token = map["token"];
+        } catch (e) {
+          print(e.toString());
+          customShowSnackBar("Invalid phone/email or password!".tr, Get.context!, isError: true);
+        }
+
+        if (token != null && token.isNotEmpty) {
+          if (role == "passenger") {
+            await _tokenHelper.saveToken(token: token).then((_) async {
+              customShowSnackBar('successfulLoginAccount'.tr, Get.context!, isError: false);
+              nextScreenNoReturn(Get.context!, SplashScreen());
+            });
+          } else {
+            customShowSnackBar('Invalid role! You are not a passenger.'.tr, Get.context!, isError: true);
+          }
+        } else {
+          customShowSnackBar('theAccountHasAlreadyBeenTaken'.tr, Get.context!, isError: true);
         }
 
         _isLoading = false;
         update();
       } else {
         Navigator.pop(Get.context!);
+        customShowSnackBar('Invalid Email/Phone or Password'.tr, Get.context!, isError: true);
       }
     } catch (e) {
       print("Error B");
       print(e.toString());
+      Navigator.pop(Get.context!);
+      customShowSnackBar('Error during login. Please try again.'.tr, Get.context!, isError: true);
       _isLoading = false;
       update();
     }
   }
+
+
 
   //Todo: RegisterController
   Future registerController(BuildContext context,

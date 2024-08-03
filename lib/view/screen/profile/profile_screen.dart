@@ -21,8 +21,7 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-String urlImagProfile =
-    'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
+String urlImagProfile = 'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
 
 class _ProfileScreenState extends State<ProfileScreen> {
   AuthController authController = Get.find<AuthController>();

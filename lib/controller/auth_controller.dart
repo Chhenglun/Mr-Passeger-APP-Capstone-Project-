@@ -572,6 +572,7 @@ class AuthController extends GetxController implements GetxService {
           response.body["message"] == "User login success") {
         print("b sl o ${response.body}");
         _userPassengerMap = response.body;
+        newUserInfo = response.body;
         print("UserEmail : ${response.body["email"]}");
         print("Get Passager Info : $_userPassengerMap");
         _isLoading = false;

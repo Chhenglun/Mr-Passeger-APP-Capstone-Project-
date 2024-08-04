@@ -151,14 +151,6 @@ class _BookingDriverState extends State<BookingDriver> {
       //print('Error: $e');
     }
   }
-
-  // void setCustomerMarkerIcon() async{
-  //   //BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, "assets/images/user.jpg").then((icon){SourceIcon = icon;});
-  //   //BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, "assets/images/human.jpg").then((icon){DestinationIcon = icon;});
-  //   BitmapDescriptor.fromAssetImage(ImageConfiguration(size: ui.Size(2, 2)), "assets/icons/user_icon.jpg").then((icon){setState(() {
-  //     CurrentLocationIcon = icon;
-  //   });});
-  // }
   void setCustomerMarkerIcon() async {
     final ByteData byteData =
         await rootBundle.load('assets/icons/user_icon.jpg');
@@ -322,7 +314,6 @@ class _BookingDriverState extends State<BookingDriver> {
     init();
     super.initState();
   }
-
   void _addCurrentLocationMarker() {
     if (CurrentLocationIcon != null && selectedLatLng != null) {
       setState(() {

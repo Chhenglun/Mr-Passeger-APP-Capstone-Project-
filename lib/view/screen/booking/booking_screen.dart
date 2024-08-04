@@ -97,26 +97,6 @@ class _BookingScreenState extends State<BookingScreen> {
       DestinationIcon = destinationIcon;
     });
   }
-  // void _addCurrentLocationMarker() {
-  //   if (CurrentIcon != null && currentPosition != null) {
-  //     setState(() {
-  //       _markers().add(
-  //         Marker(
-  //           markerId: MarkerId('current_location'),
-  //           position: currentPosition!,
-  //           icon: CurrentIcon!,
-  //         ),
-  //       );
-  //       _markers().add(
-  //         Marker(
-  //           markerId: MarkerId('current_location'),
-  //           position: destination!,
-  //           icon: DestinationIcon!,
-  //         ),
-  //       );
-  //     });
-  //   }
-  // }
 
   Future<void> callNumber() async {
     await launchUrl(dialnumber);
@@ -269,7 +249,6 @@ class _BookingScreenState extends State<BookingScreen> {
                       ),
                     },
                     markers: _markers(),
-
                   ),
                   Positioned(
                     left: 10,

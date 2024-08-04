@@ -9,6 +9,7 @@ import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
+import 'package:scholarar/view/screen/booking/driver_pick_passenger.dart';
 import 'package:scholarar/view/screen/home/booking_driver.dart';
 import 'package:scholarar/view/screen/home/slide.dart';
 import 'package:scholarar/view/screen/new_home_screen/booking_passapp.dart';
@@ -80,7 +81,9 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       ),
       // actions: [
       //   IconButton(
-      //       onPressed: () {},
+      //       onPressed: () {
+      //         nextScreen(context, DriverPick());
+      //       },
       //       icon: Icon(
       //         Icons.notifications,
       //         color: Colors.red,
@@ -99,10 +102,12 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
               children: [
                 SliderHome(),
                 SizedBox(height: 20,),
-                Container(
-                  //alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.only(left: 10),
-                    child: Text('សូមជ្រេីសរេីសការកក់របស់អ្នក', style: TextStyle(color: ColorResources.blackColor,fontSize: 24,fontWeight: FontWeight.bold),)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [Text('សូមជ្រេីសរេីសការកក់របស់អ្នក', style: TextStyle(color: ColorResources.blackColor,fontSize: 19,fontWeight: FontWeight.w500),)]),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Expanded(child: _buildHumanButton()),
@@ -143,7 +148,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       },
       child: Column(
         children: [
-          SizedBox(height: 8,),
+          SizedBox(height: 5,),
           Stack(
             alignment: Alignment.bottomCenter,
             children: [
@@ -169,8 +174,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(bottom: 20),
-                  child: Text('កក់អ្នកបេីកបរ', style: TextStyle(color: ColorResources.blackColor,fontSize: 18,fontWeight: FontWeight.bold),)),
+                margin: EdgeInsets.only(bottom: 15),
+                  child: Text('កក់អ្នកបេីកបរ', style: TextStyle(color: ColorResources.blackColor,fontSize: 17,fontWeight: FontWeight.bold),)),
             ],
           ),
         ],
@@ -184,7 +189,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
       },
       child: Column(
         children: [
-          SizedBox(height: 8,),
+          SizedBox(height: 5,),
           Stack(
             alignment: Alignment.bottomCenter,
             children:[
@@ -211,8 +216,8 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: Text('កក់កង់បី', style: TextStyle(color: ColorResources.blackColor,fontSize: 18,fontWeight: FontWeight.bold),)),
+                  margin: EdgeInsets.only(bottom: 15),
+                  child: Text('កក់កង់បី', style: TextStyle(color: ColorResources.blackColor,fontSize: 17,fontWeight: FontWeight.bold),)),
             ]
           ),
         ],

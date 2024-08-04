@@ -12,6 +12,12 @@ bool stopWaiting = false;
 String selectedFromAddress = '';
 String selectedToAddress = '';
 Map newUserInfo = {};
+Map postBookingInfo = {};
+Map getDriverTrip = {};
+late double latitudePas;
+late double longitudePas;
+late double latitudeDri;
+late double longitudeDri;
 String? frmTokenPublic;
 
 class AppConstants {
@@ -20,7 +26,8 @@ class AppConstants {
 
   static const String theme = "authenticator_theme";
   static const String appName = "Authenticator";
-  static const String baseURL = "http://ec2-54-82-25-173.compute-1.amazonaws.com:8000";
+  static const String baseURL =
+      "http://ec2-54-82-25-173.compute-1.amazonaws.com:8000";
   static const String registerPassager = "/api/users/register-passenger";
   static const String loginPassager = "/api/users/login";
   static const String getPassengerInfor = "/api/users/profile";

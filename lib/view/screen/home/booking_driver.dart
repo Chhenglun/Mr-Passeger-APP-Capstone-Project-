@@ -40,7 +40,7 @@ class _BookingDriverState extends State<BookingDriver> {
   bool fromSelected = false;
   bool toSelected = false;
   bool isLoading = false;
-  
+
   late GoogleMapController googleMapController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyEachFrom = GlobalKey<FormState>();
@@ -267,6 +267,10 @@ class _BookingDriverState extends State<BookingDriver> {
         isLoading = false;
         isWaiting = true;
       });
+      postBookingInfo = json.decode(response.body);
+      print(postBookingInfo);
+      print('Data posted successfully');
+      
       print('Data posted successfully');
       if (isWaiting == true) {
         _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -301,6 +305,8 @@ class _BookingDriverState extends State<BookingDriver> {
     }
   }
 
+  
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -315,7 +321,14 @@ class _BookingDriverState extends State<BookingDriver> {
 
   @override
   void initState() {
-    setState(() {});
+    setState(() {
+      isWaiting = false;
+      stopWaiting = false;
+      driAccept = false;
+      print('isWaiting $isWaiting');
+      print('stopWaiting $stopWaiting');
+      print('driAccept $driAccept');
+    });
     before();
     setCustomerMarkerIcon();
     _addCurrentLocationMarker();
@@ -708,7 +721,7 @@ class _BookingDriverState extends State<BookingDriver> {
                               color: Colors.black12,
                             ),
                             child: CircularProgressIndicator(
-                              value: (_counter / 10),
+                              value: (_counter / _counter),
                               valueColor:
                                   AlwaysStoppedAnimation<Color>(Colors.red),
                               strokeWidth: 5,
@@ -758,7 +771,7 @@ class _BookingDriverState extends State<BookingDriver> {
             ],
           ),
         ),
-        bottomNavigationBar: isLoading == true 
+        bottomNavigationBar: isLoading == true
             ? null
             //   ? Container(
             //   padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
@@ -780,140 +793,141 @@ class _BookingDriverState extends State<BookingDriver> {
             //     ),
             //   ),
             // )
-            : isWaiting == true && 
-                //stopWaiting == false && 
-                driAccept == false
+            : isWaiting == true && stopWaiting == false && driAccept == false
                 ? null
                 : Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
-                width: MediaQuery.sizeOf(context).width * 12 / 12,
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: ElevatedButton(
-                      onPressed: () async {
-                        String token =
-                            sharedPreferences!.getString(AppConstants.token) ??
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                    width: MediaQuery.sizeOf(context).width * 12 / 12,
+                    child: Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            String token = sharedPreferences!
+                                    .getString(AppConstants.token) ??
                                 "";
-                        //         if (token.isNotEmpty) {
-                        //           print("First Check Token $token");
-                        //           nextScreen(context, SettingScreen());
-                        //         } else {
-                        //           print("Logout Token: $token");
-                        //           nextScreen(context, SignInAccountScreen());
-                        //         }
-                        if (token.isNotEmpty) {
-                          setState(() {
-                            latDir = selectedLatLng.latitude;
-                            longDir = selectedLatLng.longitude;
-                            // print(latDir);
-                            // print(longDir);
-                            isLoading = true;
-                          });
-                          await Future.delayed(Duration(seconds: 3), () {
-                            setState(() {
-                              isLoading = false;
-                            });
-                          });
-                          if (_formKeyEachFrom.currentState!.validate() &&
-                              _formKeyEachTo.currentState!.validate()) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text(
-                                    'សូមបំពេញព័ត៍មានអ្នកដំណើរ',
-                                    style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  content: Form(
-                                    key: _formInfoKey,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        TextFormField(
-                                          controller: _usernameController,
-                                          decoration: InputDecoration(
-                                            labelText: 'ឈ្មោះ',
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'សូមបំពេញឈ្មោះ';
-                                            }
-                                            return null;
+                            //         if (token.isNotEmpty) {
+                            //           print("First Check Token $token");
+                            //           nextScreen(context, SettingScreen());
+                            //         } else {
+                            //           print("Logout Token: $token");
+                            //           nextScreen(context, SignInAccountScreen());
+                            //         }
+                            if (token.isNotEmpty) {
+                              setState(() {
+                                latDir = selectedLatLng.latitude;
+                                longDir = selectedLatLng.longitude;
+                                // print(latDir);
+                                // print(longDir);
+                                isLoading = true;
+                              });
+                              await Future.delayed(Duration(seconds: 3), () {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              });
+                              if (_formKeyEachFrom.currentState!.validate() &&
+                                  _formKeyEachTo.currentState!.validate()) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                        'សូមបំពេញព័ត៍មានអ្នកដំណើរ',
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      content: Form(
+                                        key: _formInfoKey,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            TextFormField(
+                                              controller: _usernameController,
+                                              decoration: InputDecoration(
+                                                labelText: 'ឈ្មោះ',
+                                              ),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'សូមបំពេញឈ្មោះ';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            TextFormField(
+                                              controller:
+                                                  _phoneNumberController,
+                                              decoration: InputDecoration(
+                                                  labelText: 'លេខទូរស័ព្ទ'),
+                                              keyboardType: TextInputType.phone,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'សូមបំពេញលេខទូរស័ព្ទ';
+                                                } else if (value.length < 8) {
+                                                  return "Password must be at least 8 characters";
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text('លុបចោល'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
                                           },
                                         ),
-                                        TextFormField(
-                                          controller: _phoneNumberController,
-                                          decoration: InputDecoration(
-                                              labelText: 'លេខទូរស័ព្ទ'),
-                                          keyboardType: TextInputType.phone,
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'សូមបំពេញលេខទូរស័ព្ទ';
-                                            } else if (value.length < 8) {
-                                              return "Password must be at least 8 characters";
+                                        ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  WidgetStatePropertyAll(
+                                                      Colors.red)),
+                                          child: Text(
+                                            'បញ្ជូន',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          onPressed: () async {
+                                            if (_formInfoKey.currentState!
+                                                .validate()) {
+                                              Navigator.of(context).pop();
+                                              postData();
+                                              // Handle submission logic here
+                                              //   name: _usernameController.text,
+                                              //   phoneNumber:  _phoneNumberController.text,
+                                              // latCur;
+                                              //       longCur;
+                                              //       latDir;
+                                              //       longDir;
                                             }
-                                            return null;
                                           },
                                         ),
                                       ],
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('លុបចោល'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    ElevatedButton(
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              WidgetStatePropertyAll(
-                                                  Colors.red)),
-                                      child: Text(
-                                        'បញ្ជូន',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      onPressed: () async {
-                                        if (_formInfoKey.currentState!
-                                            .validate()) {
-                                          Navigator.of(context).pop();
-                                          postData();
-                                          // Handle submission logic here
-                                          //   name: _usernameController.text,
-                                          //   phoneNumber:  _phoneNumberController.text,
-                                          // latCur;
-                                          //       longCur;
-                                          //       latDir;
-                                          //       longDir;
-                                        }
-                                      },
-                                    ),
-                                  ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          }
-                        } else {
-                          print("Logout Token: $token");
-                          nextScreen(context, SignInAccountScreen());
-                        }
-                      },
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(Colors.red),
-                      ),
-                      child: Text(
-                        'បញ្ជាក់ការកក់',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      )),
-                ),
-              ));
+                              }
+                            } else {
+                              print("Logout Token: $token");
+                              nextScreen(context, SignInAccountScreen());
+                            }
+                          },
+                          style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(Colors.red),
+                          ),
+                          child: Text(
+                            'បញ្ជាក់ការកក់',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                  ));
   }
 }

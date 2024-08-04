@@ -8,6 +8,7 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/view/screen/account/login_screen.dart';
 import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
+import 'package:scholarar/view/screen/booking/booking_history_display.dart';
 import 'package:scholarar/view/screen/new_home_screen/booking_screen.dart';
 import 'package:scholarar/view/screen/new_home_screen/home_screen.dart';
 import 'package:scholarar/view/screen/profile/settings_screen.dart';
@@ -26,7 +27,8 @@ class _AppScreenState extends State<AppScreen> {
   List<Widget>? listScreen;
   final PageController _pageController = PageController();
   final NewHomeScreen _newHomeScreen = NewHomeScreen();
-  final BookingHistoryScreen _bookingHistoryScreen = BookingHistoryScreen();
+  final DisplayScreen _bookingHistoryScreen =
+      DisplayScreen(); //BookingHistoryScreen();
   final SettingScreen _settingScreen = SettingScreen();
 
   @override
@@ -89,7 +91,7 @@ class _AppScreenState extends State<AppScreen> {
         onDestinationSelected: (index) async {
           splash.changeIndex(index);
           _pageController.jumpToPage(index);
-         /* if (index == 2) {
+          /* if (index == 2) {
             // Check if user has token
             String token = sharedPreferences?.getString(AppConstants.token) ?? "";
             if (token.isNotEmpty) {
@@ -111,14 +113,16 @@ class _AppScreenState extends State<AppScreen> {
             label: 'Home'.tr,
           ),
           NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 17),
+            icon:
+                FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 17),
             selectedIcon:
-            FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 29),
+                FaIcon(FontAwesomeIcons.history, color: Colors.white, size: 29),
             label: 'My Booking'.tr,
           ),
           NavigationDestination(
             icon: FaIcon(Icons.person_pin, color: Colors.white, size: 20),
-            selectedIcon: FaIcon(Icons.person_pin, color: Colors.white, size: 33),
+            selectedIcon:
+                FaIcon(Icons.person_pin, color: Colors.white, size: 33),
             label: 'Account'.tr,
           ),
         ],

@@ -17,7 +17,7 @@ class _WaitingState extends State<Waiting> {
 
   int _counter = 10;
   late Timer _timer;
-
+  
   @override
   void initState() {
     super.initState();

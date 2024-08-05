@@ -139,7 +139,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Positioned(
                 top: Get.height * 0.1,
-                left: (Get.width / 2) - 80,
                 child: _buildImageProfile(authController),
               ),
             ],
@@ -150,68 +149,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildImageProfile(AuthController authController) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _image == null
-            ? CircleAvatar(
-          radius: 50,
-          backgroundImage: Image.asset("assets/images/user.jpg").image,
-        )
-            : CircleAvatar(
-          backgroundImage: Image.file(
-            File(_image!.path),
-          ).image,
-          radius: 50,
-        ),
-        TextButton.icon(
-          onPressed: () {
-            Get.dialog(
-              AlertDialog(
-                title: Text(
-                  'ជ្រើសរើសរូបភាព',
-                  style: TextStyle(color: ColorResources.primaryColor),
-                ),
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Divider(),
-                      TextButton.icon(
-                        onPressed: () {
-                          pickImage(ImageSource.gallery);
-                          Get.back();
-                        },
-                        icon: Icon(Icons.photo),
-                        label: Text("ជ្រើសរើសពីរូបភាព", style: TextStyle(color: ColorResources.blackColor)),
-                      ),
-                      Padding(padding: EdgeInsets.all(8.0)),
-                      TextButton.icon(
-                        onPressed: () {
-                          pickImage(ImageSource.camera);
-                          Get.back();
-                        },
-                        icon: Icon(Icons.camera_alt_outlined),
-                        label: Text("បើកកាមេរ៉ា", style: TextStyle(color: ColorResources.blackColor)),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-          icon: Icon(Icons.camera_alt_outlined),
-          label: Text(
-            'កែប្រែរូបភាព',
-            style: TextStyle(
-              color: ColorResources.primaryColor,
-              fontSize: 16,
-            ),
+    return Container(
+      width: Get.width,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _image == null
+              ? CircleAvatar(
+            radius: 50,
+            backgroundImage: Image.asset("assets/images/user.jpg").image,
+          )
+              : CircleAvatar(
+            backgroundImage: Image.file(
+              File(_image!.path),
+            ).image,
+            radius: 50,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -229,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            SizedBox(height: 90),
+            SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -289,6 +246,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(height: 32),
                     CustomButtonWidget.buildButtonClick(
                       title: 'កែប្រែព័ត៌មាន',
+                      activeColor: true,
                       onPress: () {
                         nextScreen(context, EditeProfileScreen());
                       },

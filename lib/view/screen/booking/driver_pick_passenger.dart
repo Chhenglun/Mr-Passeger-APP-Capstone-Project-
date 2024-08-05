@@ -4,7 +4,6 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/cupertino.dart';
@@ -24,8 +23,6 @@ import 'package:scholarar/view/screen/booking/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_geofire/flutter_geofire.dart';
-import '../../../util/app_constants.dart';
 
 class DriverPick extends StatefulWidget {
   const DriverPick({super.key});

@@ -25,8 +25,8 @@ import 'package:scholarar/util/notification_service.dart';
 import 'package:scholarar/view/screen/booking/booking_screen.dart';
 import 'package:scholarar/view/screen/booking/driver_pick_passenger.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
-
 import 'helper/get_di.dart' as di;
+
 
 late List<CameraDescription> cameras;
 Future<void> main(context) async {

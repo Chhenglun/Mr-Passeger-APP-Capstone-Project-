@@ -35,12 +35,12 @@ class CustomListWidget {
           title,
           style: textStyleMedium.copyWith(
             fontSize: 18,
-            color:  ColorResources.primaryColor,
-            fontWeight: FontWeight.bold,
+            color:  ColorResources.blackColor,
+           // fontWeight: FontWeight.bold,
           ),
         ),
         titleAlignment: ListTileTitleAlignment.center,
-        trailing: FaIcon(FontAwesomeIcons.angleRight, color: ColorResources.primaryColor),
+        trailing: FaIcon(FontAwesomeIcons.angleRight, color: ColorResources.blackColor),
         // trailing: IconButton(
         //   icon: FaIcon(FontAwesomeIcons.angleRight, color: Colors.blueGrey),
         //   onPressed: () => onTap(),

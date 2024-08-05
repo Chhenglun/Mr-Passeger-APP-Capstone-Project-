@@ -15,6 +15,7 @@ import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
 import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
 import 'package:scholarar/view/screen/chat/contact_us.dart';
 import 'package:scholarar/view/screen/chat/developer_screen.dart';
+import 'package:scholarar/view/screen/chat/notification_screen.dart';
 import 'package:scholarar/view/screen/profile/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -269,7 +270,9 @@ class _SettingScreenState extends State<SettingScreen> {
                             CustomListWidget.customListTileSettingScreen(
                               title: 'ការជូនដំណឹង',
                               icon: FontAwesomeIcons.bell,
-                              onPress: () {},
+                              onPress: () {
+                                nextScreen(context, NotificationScreen());
+                              },
                             ),
                             SizedBox(height: 16),
                             CustomListWidget.customListTileSettingScreen(

@@ -258,6 +258,7 @@ class _BookingDriverState extends State<BookingDriver> {
       setState(() {
         isLoading = false;
         isWaiting = true;
+        driAccept = false;
       });
       postBookingInfo = json.decode(response.body);
       print(postBookingInfo);
@@ -273,15 +274,15 @@ class _BookingDriverState extends State<BookingDriver> {
               _timer.cancel();
               setState(() {
                 isWaiting = false;
-                stopWaiting = true;
+                //stopWaiting = true;
               });
             }
           });
         });
       } else {
         setState(() {
-          stopWaiting = true;
-          driAccept = true;
+          // stopWaiting = true;
+          // driAccept = true;
         });
         Navigator.push(
           context,
@@ -692,7 +693,7 @@ class _BookingDriverState extends State<BookingDriver> {
                   child: Center(child: CircularProgressIndicator()),
                 ),
               if (isWaiting == true &&
-                  stopWaiting == false &&
+                  //stopWaiting == false &&
                   driAccept == false)
                 Center(
                   child: Container(

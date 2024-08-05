@@ -124,14 +124,13 @@ class _DriverPickState extends State<DriverPick> {
   }
 
   bool isLoading = false;
+  List<Map<String, dynamic>> driverTrips = [];
   Future<void> getDataDriver() async {
     setState(() {
       isLoading = true;
     });
     final String url =
         'http://ec2-54-82-25-173.compute-1.amazonaws.com:8000/api/trips/${postBookingInfo['_id']}';
-
-    final Map<String, dynamic> data = {};
 
     final response = await http.get(
       Uri.parse(url),
@@ -142,6 +141,7 @@ class _DriverPickState extends State<DriverPick> {
     if (response.statusCode == 200) {
       setState(() {});
       getDriverTrip = json.decode(response.body);
+      print("getDriverTrip $getDriverTrip");
 
       latitudePas = double.parse(
           getDriverTrip['start_location']['coordinates'][1].toString());
@@ -151,11 +151,25 @@ class _DriverPickState extends State<DriverPick> {
           getDriverTrip['driver_id']['location']['coordinates'][1].toString());
       longitudeDri = double.parse(
           getDriverTrip['driver_id']['location']['coordinates'][0].toString());
-// Save data to local storage
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('getDriverTrip', json.encode(getDriverTrip));
+      latitudePasDir = double.parse(
+          getDriverTrip['end_location']['coordinates'][1].toString());
+      longitudePasDir = double.parse(
+          getDriverTrip['end_location']['coordinates'][0].toString());
 
-      print("ok: $getDriverTrip");
+      // Load existing trips from local storage
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? storedTrips = prefs.getString('driverTrips');
+      if (storedTrips != null) {
+        driverTrips = List<Map<String, dynamic>>.from(json.decode(storedTrips));
+      }
+
+      // Add the new trip to the list
+      driverTrips.add(getDriverTrip);
+
+      // Save the updated list to local storage
+      await prefs.setString('driverTrips', json.encode(driverTrips));
+
+      print("ok: $driverTrips");
       print('Data get successfully');
     } else {
       setState(() {
@@ -166,21 +180,20 @@ class _DriverPickState extends State<DriverPick> {
     }
   }
 
-  Future<Map<String, dynamic>> getStoredDriverTrip() async {
+  Future<List<Map<String, dynamic>>> getStoredDriverTrips() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? storedTripData = prefs.getString('getDriverTrip');
+    String? storedTrips = prefs.getString('driverTrips');
 
-    if (storedTripData != null) {
-      print("object");
-      return json.decode(storedTripData);
+    if (storedTrips != null) {
+      return List<Map<String, dynamic>>.from(json.decode(storedTrips));
     } else {
-      return {};
+      return [];
     }
   }
 
   before() async {
     await getDataDriver();
-    await getStoredDriverTrip();
+    await getStoredDriverTrips();
     await _checkLocationPermissions();
     await setCurrentIcon();
     await setDestinationIcon();
@@ -234,6 +247,40 @@ class _DriverPickState extends State<DriverPick> {
       print('Error occurred: $e');
     }
   }
+
+  // void getPolyPoint() async {
+  //   PolylinePoints polylinePoints = PolylinePoints();
+
+  //   // Create a PolylineRequest object with required parameters
+  //   PolylineRequest request = PolylineRequest(
+  //     origin: PointLatLng(destination.latitude, destination.longitude),
+  //     destination:
+  //         PointLatLng(driverDestination.latitude, driverDestination.longitude),
+  //     mode: TravelMode.driving, // Set the mode of travel if required
+  //   );
+
+  //   try {
+  //     // Pass the request object and API key to getRouteBetweenCoordinates
+  //     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+  //       request: request,
+  //       googleApiKey: AppConstants.google_key_api,
+  //     );
+
+  //     if (result.points.isNotEmpty) {
+  //       polyLineCoordinates.clear();
+  //       result.points.forEach((PointLatLng point) {
+  //         polyLineCoordinates.add(LatLng(point.latitude, point.longitude));
+  //       });
+  //       setState(() {
+  //         print("=====>>>>>>>Polyline coordinates updated");
+  //       });
+  //     } else {
+  //       print('=====>>>>>>No points found or error in fetching points');
+  //     }
+  //   } catch (e) {
+  //     print('Error occurred: $e');
+  //   }
+  // }
 
   Future<void> _checkLocationPermissions() async {
     bool serviceEnabled;
@@ -299,300 +346,298 @@ class _DriverPickState extends State<DriverPick> {
         double newLng =
             driverPosition.longitude + (Random().nextDouble() * 0.001 - 0.0005);
         driverPosition = LatLng(newLat, newLng);
+        //_updateMarkers();
         getPolyPoint();
+
+        // if (driverPosition.latitude == latitudePas &&
+        //     driverPosition.longitude == longitudePas) {
+        //   timer.cancel();
+        // }
       });
     });
   }
+
+  // void _updateMarkers() {
+  //   setState(() {
+  //     _markers();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            IconButton(
-                onPressed: () {
-                  nextScreen(context, BookingScreen());
-                },
-                icon: Icon(Icons.time_to_leave))
-          ],
-        ),
         backgroundColor: Colors.white,
-        body: currentPosition == destination
-            ? Center(child: CircularProgressIndicator())
-            : Stack(
-                children: [
-                  GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: currentPosition,
-                      zoom: 14.5,
-                    ),
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
+        body: Stack(
+          children: [
+            GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: currentPosition,
+                zoom: 14.5,
+              ),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              polylines: {
+                Polyline(
+                  polylineId: PolylineId("route"),
+                  points: polyLineCoordinates,
+                  color: Colors.green,
+                  width: 6,
+                ),
+              },
+              markers: _markers(),
+            ),
+            Positioned(
+              left: 10,
+              top: 10,
+              child: Container(
+                padding: EdgeInsets.only(left: 10),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back_ios),
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
-                    polylines: {
-                      Polyline(
-                        polylineId: PolylineId("route"),
-                        points: polyLineCoordinates,
-                        color: Colors.green,
-                        width: 6,
-                      ),
-                    },
-                    markers: _markers(),
                   ),
-                  Positioned(
-                    left: 10,
-                    top: 10,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: IconButton(
-                          icon: Icon(Icons.arrow_back_ios),
-                          color: Colors.white,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: currentPosition != destination,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 3 / 9,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
                     ),
                   ),
-                  Visibility(
-                    visible: currentPosition != destination,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 3 / 9,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          physics: BouncingScrollPhysics(),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Column(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    physics: BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 10, bottom: 5, left: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10, bottom: 5, left: 10),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'អ្នកបើកបរនឹងមកដល់ 3 នាទីទៀត',
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
+                                Text(
+                                  'អ្នកបើកបរនឹងមកដល់ 5 នាទីទៀត',
+                                  style: TextStyle(fontSize: 12),
                                 ),
-                                Divider(),
+                              ],
+                            ),
+                          ),
+                          Divider(),
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  nextScreen(context, DriverProfileScreen());
+                                },
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 5, 5, 5),
+                                      child: Container(
+                                        width: 70,
+                                        height: 70,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          image: DecorationImage(
+                                              image: NetworkImage(url)),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 20),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          getDriverTrip.isNotEmpty
+                                              ? '${getDriverTrip['driver_id']['first_name']} ${getDriverTrip['driver_id']['last_name']}'
+                                              : "Driver",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'កំពុងធ្វើដំណើរ . . .',
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                            Icon(Icons.location_on,
+                                                color: Colors.red, size: 16),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 25, right: 10, top: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'តម្លៃ ${getDriverTrip['cost']} រៀល',
+                                  style: TextStyle(fontSize: 17),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
                                 Row(
                                   children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        nextScreen(
-                                            context, DriverProfileScreen());
-                                      },
-                                      child: Row(
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Stack(
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                10, 5, 5, 5),
-                                            child: Container(
-                                              width: 70,
-                                              height: 70,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                                image: DecorationImage(
-                                                    image: NetworkImage(url)),
-                                              ),
-                                            ),
+                                          IconButton(
+                                            onPressed: () {
+                                              callNumber(
+                                                  "${getDriverTrip['driver_id']['phone_number']}");
+                                            },
+                                            icon: Icon(
+                                                CupertinoIcons.phone_fill,
+                                                color: Colors.white),
                                           ),
-                                          SizedBox(width: 20),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                getDriverTrip.isNotEmpty
-                                                    ? '${getDriverTrip['driver_id']['first_name']} ${getDriverTrip['driver_id']['last_name']}'
-                                                    : "Driver",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    'កំពុងធ្វើដំណើរ800មែត្រ . . .',
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                  ),
-                                                  Icon(Icons.location_on,
-                                                      color: Colors.red,
-                                                      size: 16),
-                                                ],
-                                              ),
-                                            ],
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              nextScreen(
+                                                  context, MessageScreen());
+                                            },
+                                            icon: Icon(
+                                                CupertinoIcons.chat_bubble_fill,
+                                                color: Colors.white),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
-                                Divider(),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 25, right: 10, top: 5),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'តម្លៃ 8800 រៀល',
-                                        style: TextStyle(fontSize: 17),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Stack(
-                                              children: [
-                                                IconButton(
-                                                  onPressed: () {
-                                                    callNumber(
-                                                        "${getDriverTrip['driver_id']['phone_number']}");
-                                                  },
-                                                  icon: Icon(
-                                                      CupertinoIcons.phone_fill,
-                                                      color: Colors.white),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Stack(
-                                              children: [
-                                                IconButton(
-                                                  onPressed: () {
-                                                    nextScreen(context,
-                                                        MessageScreen());
-                                                  },
-                                                  icon: Icon(
-                                                      CupertinoIcons
-                                                          .chat_bubble_fill,
-                                                      color: Colors.white),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(width: 10),
-                                      Container(
-                                        width: Get.width / 2,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.red[400],
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 10),
-                                          ),
-                                          onPressed: () {
-                                            _showAlertDialog();
-                                          },
-                                          child: Text(
-                                            "លុបចោលការកក់",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                SizedBox(width: 10),
+                                Container(
+                                  width: Get.width / 2,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red[400],
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 10),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  BookingScreen()));
+                                      //_showAlertDialog();
+                                    },
+                                    child: Text(
+                                      "អ្នកបើកបរបានមកដល់",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void _showAlertDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("បញ្ជាក់"),
-          content: Text(
-            "តេីអ្នកពិតជាចង់លុបចោលការកក់មែនទេ?",
-            style: TextStyle(color: ColorResources.blackColor, fontSize: 16),
-          ),
-          actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorResources.greyColor),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'បោះបង់',
-                style:
-                    TextStyle(color: ColorResources.blackColor, fontSize: 14),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorResources.redColor),
-              onPressed: () {
-                nextScreen(context, AppScreen());
-              },
-              child: Text(
-                'យល់ព្រម',
-                style:
-                    TextStyle(color: ColorResources.whiteColor, fontSize: 14),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void _showAlertDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text("បញ្ជាក់"),
+  //         content: Text(
+  //           "តេីអ្នកពិតជាចង់លុបចោលការកក់មែនទេ?",
+  //           style: TextStyle(color: ColorResources.blackColor, fontSize: 16),
+  //         ),
+  //         actions: [
+  //           ElevatedButton(
+  //             style: ElevatedButton.styleFrom(
+  //                 backgroundColor: ColorResources.greyColor),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: Text(
+  //               'បោះបង់',
+  //               style:
+  //                   TextStyle(color: ColorResources.blackColor, fontSize: 14),
+  //             ),
+  //           ),
+  //           ElevatedButton(
+  //             style: ElevatedButton.styleFrom(
+  //                 backgroundColor: ColorResources.redColor),
+  //             onPressed: () {
+  //               nextScreen(context, AppScreen());
+  //             },
+  //             child: Text(
+  //               'យល់ព្រម',
+  //               style:
+  //                   TextStyle(color: ColorResources.whiteColor, fontSize: 14),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }

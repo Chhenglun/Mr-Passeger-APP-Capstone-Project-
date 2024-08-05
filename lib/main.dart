@@ -75,12 +75,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     await FirebaseMessaging.instance.getAPNSToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print('onMessages: ${message.notification!.title!}');
-      if (message.notification!.title! == 'Trip Accepted') {
-        setState(() {
-          isWaiting = false;
-          driAccept = true;
+      setState(() {
+          if(isWaiting == true){
+            driAccept = true;
+          }
         });
-      }
     });
     if (token != null) {
       print('token $token');
@@ -108,9 +107,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               title: message.notification!.title!,
               content: message.notification!.body!,
               onTap: () {
+                FlutterAppBadger.removeBadge();
                 // nextScreen(context, BookingScreen());
                 nextScreen(context, DriverPick());
-                FlutterAppBadger.removeBadge();
               },
               btnText: 'Go To Trip'.tr,
             ); // ignore: unnecessary_statements

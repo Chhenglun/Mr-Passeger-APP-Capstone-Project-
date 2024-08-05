@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scholarar/util/color_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
@@ -71,14 +72,15 @@ class _DisplayScreenState extends State<DisplayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: ColorResources.primaryColor,
+        centerTitle: true,
         title: Text(
-                                  'Booking History',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
+         'ប្រវត្តិរបស់អ្នក',
+          style: TextStyle(
+          fontSize: 20,
+          color: ColorResources.whiteColor,
+          ),
+        ),
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
@@ -143,7 +145,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
                   ],
                 ),
               )
-              : Center(child: Text('No data available')),
+              : Center(child: Text('មិនមានប្រវត្តិ...')),
     );
   }
 

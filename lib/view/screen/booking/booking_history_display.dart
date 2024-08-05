@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scholarar/util/color_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
@@ -9,13 +10,9 @@ class DisplayScreen extends StatefulWidget {
 }
 
 class _DisplayScreenState extends State<DisplayScreen> {
-  Map<String, dynamic>? storedTripData;
+  List<Map<String, dynamic>>? storedTripsData;
   bool isLoading = true;
-  bool _showDetails = false;
-
-  String? startLocationAddress;
-  String? endLocationAddress;
-  String? driverLocationAddress;
+  int? _expandedIndex; // To keep track of which trip card is expanded
 
   @override
   void initState() {
@@ -25,35 +22,23 @@ class _DisplayScreenState extends State<DisplayScreen> {
 
   Future<void> _loadData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? storedData = prefs.getString('getDriverTrip');
+    String? storedData = prefs.getString('driverTrips'); // Updated key to 'driverTrips'
 
     if (storedData != null) {
+      List<dynamic> decodedData = json.decode(storedData);
       setState(() {
-        storedTripData = json.decode(storedData);
-      });
-      await _getAddresses();
-      setState(() {
+        storedTripsData = decodedData
+            .map((data) => data as Map<String, dynamic>)
+            .toList()
+            .reversed
+            .toList(); // Reverse the list
         isLoading = false;
       });
-      print('Stored Trip Data: $storedTripData');
+      print('Stored Trips Data: $storedTripsData');
     } else {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  Future<void> _getAddresses() async {
-    if (storedTripData != null) {
-      List<dynamic> startCoordinates = storedTripData!['start_location']['coordinates'];
-      List<dynamic> endCoordinates = storedTripData!['end_location']['coordinates'];
-      List<dynamic> driverCoordinates = storedTripData!['driver_location']['coordinates'];
-
-      startLocationAddress = await _getAddressFromCoordinates(startCoordinates[1], startCoordinates[0]);
-      endLocationAddress = await _getAddressFromCoordinates(endCoordinates[1], endCoordinates[0]);
-      driverLocationAddress = await _getAddressFromCoordinates(driverCoordinates[1], driverCoordinates[0]);
-
-      setState(() {});
     }
   }
 
@@ -66,172 +51,202 @@ class _DisplayScreenState extends State<DisplayScreen> {
     return 'Unknown location';
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-                                  'Booking History',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
+          '​ប្រវត្តិការបញ្ជាកក់', // Updated title to English for consistency
+          style: TextStyle(
+            fontSize: 21,
+            fontWeight: FontWeight.bold,
+            color: Colors.red,
+          ),
+        ),
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : storedTripData != null
+          : storedTripsData != null && storedTripsData!.isNotEmpty
               ? SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.info,
-                                      color: Colors.teal,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'Booking Info:',
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                _buildSummaryInfo(),
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _showDetails = !_showDetails;
-                                    });
-                                  },
-                                  child: Text(
-                                    _showDetails ? 'Hide Details' : 'See Details',
-                                    style: TextStyle(color: Colors.teal),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: _showDetails,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: _buildDetailInfo(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              )
-              : Center(child: Text('No data available')),
+                  child: Column(
+                    children: List.generate(
+                      storedTripsData!.length,
+                      (index) => _buildTripCard(storedTripsData![index], index),
+                    ),
+                  ),
+                )
+              : Center(child: Text('អ្នកមិនធ្លាប់បញ្ជាការកក់ទេ')),
     );
   }
 
-  Widget _buildSummaryInfo() {
+  Widget _buildTripCard(Map<String, dynamic> tripData, int index) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //SizedBox(height: 10),
+              Row(
+                children: [
+                  Container(
+                    // padding: EdgeInsets.all(5),
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/human.jpg'),
+                      radius: 21,
+                    )
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    'អំពីការធ្វើដំណើរ:',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+              _buildSummaryInfo(tripData),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _expandedIndex = _expandedIndex == index ? null : index; // Toggle details for the clicked card
+                  });
+                },
+                child: Text(
+                  _expandedIndex == index ? 'មើលខ្លី' : 'មើលលម្អិត',
+                  style: TextStyle(color: Colors.teal),
+                ),
+              ),
+              Visibility(
+                visible: _expandedIndex == index, // Show details only for the clicked card
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _buildDetailInfo(tripData),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryInfo(Map<String, dynamic> tripData) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildInfoRow('Booking ID', storedTripData!['_id']),
-            _buildInfoRow('Status', storedTripData!['status']),
-            
+            _buildInfoRow('លេខសម្គាល់ការកក់', tripData['_id']),
+            _buildInfoRow('Status', tripData['status']),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Booking Date:',
+              'កាលបរិច្ឆេទ:',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
             ),
             Text(
-              storedTripData!['createdAt'],
+              tripData['createdAt'],
               style: TextStyle(
                 color: Colors.black54,
               ),
             ),
           ],
         )
-        //_buildInfoRow('Updated At', storedTripData!['updatedAt']),
       ],
     );
   }
 
-  List<Widget> _buildDetailInfo() {
+  List<Widget> _buildDetailInfo(Map<String, dynamic> tripData) {
     return [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildInfoRow('Passenger Name', storedTripData!['passenger_name']),
-          _buildInfoRow('Passenger Phone', storedTripData!['passenger_phone_number']),
+          _buildInfoRow('ឈ្មោះអ្នកដំណើរ', tripData['passenger_name']),
+          _buildInfoRow('លេខទូរស័ព្ទអ្នកដំណើរ', tripData['passenger_phone_number']),
         ],
       ),
-      _buildInfoRow('Start Location', startLocationAddress),
-      _buildInfoRow('End Location', endLocationAddress),
-      //_buildInfoRow('Driver Location', driverLocationAddress),
+      FutureBuilder<String>(
+        future: _getAddressFromCoordinates(
+          tripData['start_location']['coordinates'][1],
+          tripData['start_location']['coordinates'][0],
+        ),
+        builder: (context, snapshot) {
+          return _buildInfoRow('ទីតាំងចាប់ផ្ដើម', snapshot.data ?? 'Loading...');
+        },
+      ),
+      FutureBuilder<String>(
+        future: _getAddressFromCoordinates(
+          tripData['end_location']['coordinates'][1],
+          tripData['end_location']['coordinates'][0],
+        ),
+        builder: (context, snapshot) {
+          return _buildInfoRow('ទីតាំងបញ្ចប់', snapshot.data ?? 'Loading...');
+        },
+      ),
+      // FutureBuilder<String>(
+      //   future: _getAddressFromCoordinates(
+      //     tripData['driver_location']['coordinates'][1],
+      //     tripData['driver_location']['coordinates'][0],
+      //   ),
+      //   builder: (context, snapshot) {
+      //     return _buildInfoRow('ទីតាំងអ្នកបើកបរ', snapshot.data ?? 'Loading...');
+      //   },
+      // ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildInfoRow('Driver Name', '${storedTripData!['driver_id']['first_name']} ${storedTripData!['driver_id']['last_name']}'),
+          _buildInfoRow('ឈ្មោះអ្នកបើកបរ', '${tripData['driver_id']['first_name']} ${tripData['driver_id']['last_name']}'),
           Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
-      child: Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.payments_outlined,
-                  color: Colors.teal,
-                ),
-                SizedBox(width: 10),
-                Text(
-                  'Paid',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.payments_outlined,
+                        color: Colors.teal,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'តម្លៃ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            Text(
-              '\$ ${ storedTripData!['cost']}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-                color: Colors.green,
+                  Text(
+                    '${tripData['cost']} រៀល',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    ),
+          ),
         ],
       ),
     ];

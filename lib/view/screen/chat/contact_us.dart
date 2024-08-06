@@ -114,11 +114,11 @@ class ContactButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: ColorResources.whiteColor),
-            SizedBox(width: 40),
+            SizedBox(width: 30),
             Expanded(
               child: Text(
                 text,
-                style: TextStyle(fontSize: 20, color: ColorResources.whiteColor),
+                style: TextStyle(fontSize: 16, color: ColorResources.whiteColor),
                 textAlign: TextAlign.start,
               ),
             ),

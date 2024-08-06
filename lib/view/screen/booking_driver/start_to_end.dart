@@ -576,6 +576,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
+import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:image/image.dart' as img;
@@ -590,9 +591,9 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
-import 'package:scholarar/view/screen/booking/booking_screen.dart';
-import 'package:scholarar/view/screen/booking/message.dart';
-import 'package:scholarar/view/screen/booking/profile_screen.dart';
+import 'package:scholarar/view/screen/booking_driver/start_to_end.dart';
+import 'package:scholarar/view/screen/booking_driver/message.dart';
+import 'package:scholarar/view/screen/booking_driver/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -934,6 +935,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                               ),
                                             ],
                                           ),
+                                           _buildPayPalButton(context)
                                         ],
                                       ),
                                     ),
@@ -1015,7 +1017,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                 horizontal: 16, vertical: 10),
                                           ),
                                           onPressed: () {
-                                            //_showAlertDialog();
+                                            _showAlertDialog();
                                           },
                                           child: Text(
                                             "រាយការណ៍សុវត្ថិភាព",
@@ -1081,5 +1083,92 @@ class _BookingScreenState extends State<BookingScreen> {
       },
     );
   }
-}
 
+    Widget _buildPayPalButton(BuildContext context) {
+    return Container(
+      alignment: Alignment.centerRight,
+      width: 80,
+      child: ElevatedButton(
+        onPressed: () {
+          _startPayPalPayment(context);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        ),
+        child: Icon(Icons.payment, color: Colors.white),
+      ),
+    );
+  }
+
+    void _startPayPalPayment(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => PaypalCheckoutView(
+          sandboxMode: true,
+          clientId:
+              "AapOPdf1LFi5JhFyhTUGqaa2jnaiqLV0F85Ekos2qWrn58vmrn0fqvzBJ7tAgEdB_SdxwiY5k8hYju4X",
+          secretKey:
+              "ECh47QMoxwLC7tFGEy8wH2L3bF6YUy4QBDCyBFWPXfjAZETt165rJ5uSWbvy3fqytb3Mso28BGbZAm5I",
+          transactions: [
+            {
+              "amount": {
+                "total": '2.00',
+                "currency": "USD",
+                "details": {
+                  "subtotal": '2.0',
+                  "shipping": '0',
+                  "shipping_discount": 0,
+                },
+              },
+              "description": "The payment transaction description.",
+              "item_list": {
+                "items": [
+                  {
+                    "name": "Item name",
+                    "quantity": 1,
+                    "price": '2.00',
+                    "currency": "USD",
+                  },
+                ],
+                "shipping_address": {
+                  "recipient_name": "Bou Taihor",
+                  "line1": "53BT Meanchey",
+                  "line2": "",
+                  "city": "Phnom Penh",
+                  "country_code": "US",
+                  "postal_code": "73301",
+                  "phone": "+00000000",
+                  "state": "Texas",
+                },
+              },
+            },
+          ],
+          note: "Contact us for any questions on your order.",
+          onSuccess: (Map params) async {
+            print("onSuccess: $params");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Payment Successful: $params')),
+            );
+          },
+          onError: (error) {
+            print("onError: $error");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Payment Error: $error')),
+            );
+          },
+          onCancel: (params) {
+            print('cancelled: $params');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Payment Cancelled')),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

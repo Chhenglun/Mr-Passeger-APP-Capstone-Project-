@@ -22,8 +22,9 @@ import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/messages.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/util/notification_service.dart';
-import 'package:scholarar/view/screen/booking/booking_screen.dart';
-import 'package:scholarar/view/screen/booking/driver_pick_passenger.dart';
+import 'package:scholarar/view/app/app_screen.dart';
+import 'package:scholarar/view/screen/booking_driver/start_to_end.dart';
+import 'package:scholarar/view/screen/booking_driver/dri_to_pas.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
 import 'helper/get_di.dart' as di;
 
@@ -108,8 +109,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               content: message.notification!.body!,
               onTap: () {
                 FlutterAppBadger.removeBadge();
-                // nextScreen(context, BookingScreen());
-                nextScreen(context, DriverPick());
+                if(message.notification!.title! == "ការកក់បានបញ្ជាក់"){
+                  nextScreen(context, DriverPick());
+                }
+                if(message.notification!.title! == "ចាប់ផ្តើម"){
+                  nextScreen(context, BookingScreen());
+                }
+                if(message.notification!.title! == "ការធ្វើដំណើរបានបញ្ចប់"){
+                  nextScreenReplace(Get.context, AppScreen());
+                }
               },
               btnText: 'Go To Trip'.tr,
             ); // ignore: unnecessary_statements

@@ -55,8 +55,8 @@ class _DisplayScreenState extends State<DisplayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: ColorResources.primaryColor,
-        centerTitle: true,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
         title: Text(
           '​ប្រវត្តិការបញ្ជាកក់', // Updated title to English for consistency
           style: TextStyle(
@@ -69,14 +69,12 @@ class _DisplayScreenState extends State<DisplayScreen> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : storedTripsData != null && storedTripsData!.isNotEmpty
-              ? SingleChildScrollView(
-                  child: Column(
-                    children: List.generate(
-                      storedTripsData!.length,
-                      (index) => _buildTripCard(storedTripsData![index], index),
-                    ),
-                  ),
-                )
+              ? ListView(
+                children: List.generate(
+                  storedTripsData!.length,
+                  (index) => _buildTripCard(storedTripsData![index], index),
+                ),
+              )
               : Center(child: Text('អ្នកមិនធ្លាប់បញ្ជាការកក់ទេ')),
     );
   }

@@ -8,7 +8,7 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/view/screen/account/login_screen.dart';
 import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
-import 'package:scholarar/view/screen/booking/booking_history_display.dart';
+import 'package:scholarar/view/screen/booking_driver/booking_history_display.dart';
 import 'package:scholarar/view/screen/new_home_screen/booking_screen.dart';
 import 'package:scholarar/view/screen/new_home_screen/home_screen.dart';
 import 'package:scholarar/view/screen/profile/settings_screen.dart';

@@ -17,9 +17,9 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
-import 'package:scholarar/view/screen/booking/booking_screen.dart';
-import 'package:scholarar/view/screen/booking/message.dart';
-import 'package:scholarar/view/screen/booking/profile_screen.dart';
+import 'package:scholarar/view/screen/booking_driver/start_to_end.dart';
+import 'package:scholarar/view/screen/booking_driver/message.dart';
+import 'package:scholarar/view/screen/booking_driver/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -155,6 +155,7 @@ class _DriverPickState extends State<DriverPick> {
           getDriverTrip['end_location']['coordinates'][1].toString());
       longitudePasDir = double.parse(
           getDriverTrip['end_location']['coordinates'][0].toString());
+      isLoading = false;
 
       // Load existing trips from local storage
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -365,7 +366,12 @@ class _DriverPickState extends State<DriverPick> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return isLoading == true
+    ? Container(
+                  color: Colors.white.withOpacity(0.8),
+                  child: Center(child: CircularProgressIndicator()),
+                )
+    : SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Stack(

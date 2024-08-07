@@ -56,14 +56,14 @@ class _DisplayScreenState extends State<DisplayScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: ColorResources.primaryColor,
         title: Text(
-          '​ប្រវត្តិការបញ្ជាកក់', // Updated title to English for consistency
+          'ប្រវត្តិបញ្ជាការកក់របស់អ្នក', // Updated title to English for consistency
           style: TextStyle(
             fontSize: 21,
-            fontWeight: FontWeight.bold,
-            color: Colors.red,
+            color: ColorResources.whiteColor
           ),
         ),
       ),

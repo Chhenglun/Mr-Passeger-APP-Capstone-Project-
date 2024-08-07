@@ -628,8 +628,8 @@ class _BookingScreenState extends State<BookingScreen> {
     return <Marker>[
       Marker(
         markerId: MarkerId('current_location'),
-        position: LatLng(
-            latitudePasDir, longitudePasDir), //currentPosition,//currentPosition,
+        position: LatLng(latitudePasDir,
+            longitudePasDir), //currentPosition,//currentPosition,
         icon: DestinationIcon!,
       ),
       Marker(
@@ -641,43 +641,51 @@ class _BookingScreenState extends State<BookingScreen> {
     ].toSet();
   }
 
-    Future<void> setCurrentIcon() async {
-    final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
+  Future<void> setCurrentIcon() async {
+    final ByteData byteData =
+        await rootBundle.load('assets/icons/user_icon.jpg');
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
-    final img.Image resizedImage = img.copyResize(image!, width: 120, height: 120);
+    final img.Image resizedImage =
+        img.copyResize(image!, width: 120, height: 120);
 
     final ui.Codec codec = await ui.instantiateImageCodec(
       img.encodePng(resizedImage).buffer.asUint8List(),
     );
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
 
-    final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? resizedByteData =
+        await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
 
-    final BitmapDescriptor Currenticon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    final BitmapDescriptor Currenticon =
+        await BitmapDescriptor.fromBytes(resizedUint8List!);
     setState(() {
       CurrentIcon = Currenticon;
     });
   }
 
   Future<void> setDestinationIcon() async {
-    final ByteData byteData = await rootBundle.load('assets/icons/driver_pin_map.jpg');
+    final ByteData byteData =
+        await rootBundle.load('assets/icons/driver_pin_map.jpg');
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
-    final img.Image resizedImage = img.copyResize(image!, width: 100, height: 150);
+    final img.Image resizedImage =
+        img.copyResize(image!, width: 100, height: 150);
 
     final ui.Codec codec = await ui.instantiateImageCodec(
       img.encodePng(resizedImage).buffer.asUint8List(),
     );
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
 
-    final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? resizedByteData =
+        await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
 
-    final BitmapDescriptor destinationIcon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    final BitmapDescriptor destinationIcon =
+        await BitmapDescriptor.fromBytes(resizedUint8List!);
     setState(() {
       DestinationIcon = destinationIcon;
     });
@@ -690,7 +698,6 @@ class _BookingScreenState extends State<BookingScreen> {
   Future<void> directCall() async {
     await FlutterPhoneDirectCaller.callNumber('012345678');
   }
-
 
   before() async {
     await _checkLocationPermissions();
@@ -820,225 +827,219 @@ class _BookingScreenState extends State<BookingScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body:  Stack(
-                children: [
-                  GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: currentPosition,
-                      zoom: 14.5,
-                    ),
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
+        body: Stack(
+          children: [
+            GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: currentPosition,
+                zoom: 14.5,
+              ),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              polylines: {
+                Polyline(
+                  polylineId: PolylineId("route"),
+                  points: polyLineCoordinates,
+                  color: Colors.green,
+                  width: 6,
+                ),
+              },
+              markers: _markers(),
+            ),
+            Positioned(
+              left: 10,
+              top: 10,
+              child: Container(
+                padding: EdgeInsets.only(left: 10),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back_ios),
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
-                    polylines: {
-                      Polyline(
-                        polylineId: PolylineId("route"),
-                        points: polyLineCoordinates,
-                        color: Colors.green,
-                        width: 6,
-                      ),
-                    },
-                    markers: _markers(),
                   ),
-                  Positioned(
-                    left: 10,
-                    top: 10,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: IconButton(
-                          icon: Icon(Icons.arrow_back_ios),
-                          color: Colors.white,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: currentPosition != destination,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 3 / 9,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
                     ),
                   ),
-                  Visibility(
-                    visible: currentPosition != destination,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 3 / 9,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    physics: BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          physics: BouncingScrollPhysics(),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Column(
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  nextScreen(context, DriverProfileScreen());
+                                },
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 5, 5, 5),
+                                      child: Container(
+                                        width: 70,
+                                        height: 70,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          image: DecorationImage(
+                                              image: NetworkImage(url)),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 20),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          getDriverTrip.isNotEmpty
+                                              ? '${getDriverTrip['driver_id']['first_name']} ${getDriverTrip['driver_id']['last_name']}'
+                                              : "Driver",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'កំពុងធ្វើដំណើរ . . .',
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                            Icon(Icons.location_on,
+                                                color: Colors.red, size: 16),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    _buildPayPalButton(context)
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 25, right: 10, top: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(height: 10,),
+                                Text(
+                                  'តម្លៃ ${(getDriverTrip['cost']).toInt()} រៀល',
+                                  style: TextStyle(fontSize: 17),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
                                 Row(
                                   children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        nextScreen(
-                                            context, DriverProfileScreen());
-                                      },
-                                      child: Row(
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Stack(
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                10, 5, 5, 5),
-                                            child: Container(
-                                              width: 70,
-                                              height: 70,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                                image: DecorationImage(
-                                                    image: NetworkImage(url)),
-                                              ),
-                                            ),
+                                          IconButton(
+                                            onPressed: () {
+                                              callNumber(
+                                                  "${getDriverTrip['driver_id']['phone_number']}");
+                                            },
+                                            icon: Icon(
+                                                CupertinoIcons.phone_fill,
+                                                color: Colors.white),
                                           ),
-                                          SizedBox(width: 20),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                getDriverTrip.isNotEmpty
-                                                    ? '${getDriverTrip['driver_id']['first_name']} ${getDriverTrip['driver_id']['last_name']}'
-                                                    : "Driver",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    'កំពុងធ្វើដំណើរ . . .',
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                  ),
-                                                  Icon(Icons.location_on,
-                                                      color: Colors.red,
-                                                      size: 16),
-                                                ],
-                                              ),
-                                            ],
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              nextScreen(
+                                                  context, MessageScreen());
+                                            },
+                                            icon: Icon(
+                                                CupertinoIcons.chat_bubble_fill,
+                                                color: Colors.white),
                                           ),
-                                           _buildPayPalButton(context)
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
-                                Divider(),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 25, right: 10, top: 5),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'តម្លៃ ${getDriverTrip['cost']} រៀល',
-                                        style: TextStyle(fontSize: 17),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Stack(
-                                              children: [
-                                                IconButton(
-                                                  onPressed: () {
-                                                    callNumber(
-                                                        "${getDriverTrip['driver_id']['phone_number']}");
-                                                  },
-                                                  icon: Icon(
-                                                      CupertinoIcons.phone_fill,
-                                                      color: Colors.white),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Stack(
-                                              children: [
-                                                IconButton(
-                                                  onPressed: () {
-                                                    nextScreen(context,
-                                                        MessageScreen());
-                                                  },
-                                                  icon: Icon(
-                                                      CupertinoIcons
-                                                          .chat_bubble_fill,
-                                                      color: Colors.white),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(width: 10),
-                                      Container(
-                                        width: Get.width / 2,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.red[400],
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 10),
-                                          ),
-                                          onPressed: () {
-                                            _showAlertDialog();
-                                          },
-                                          child: Text(
-                                            "រាយការណ៍សុវត្ថិភាព",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                SizedBox(width: 10),
+                                Container(
+                                  width: Get.width / 2,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red[400],
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 10),
+                                    ),
+                                    onPressed: () {
+                                      _showAlertDialog();
+                                    },
+                                    child: Text(
+                                      "រាយការណ៍សុវត្ថិភាព",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1084,7 +1085,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-    Widget _buildPayPalButton(BuildContext context) {
+  Widget _buildPayPalButton(BuildContext context) {
     return Container(
       alignment: Alignment.centerRight,
       width: 80,
@@ -1104,7 +1105,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-    void _startPayPalPayment(BuildContext context) {
+  void _startPayPalPayment(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(

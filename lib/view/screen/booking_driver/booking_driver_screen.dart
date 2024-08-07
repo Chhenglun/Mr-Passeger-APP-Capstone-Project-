@@ -12,7 +12,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/controller/auth_controller.dart';
@@ -22,11 +21,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
-import 'package:scholarar/view/screen/booking_driver/start_to_end.dart';
-import 'package:curved_drawer_fork/curved_drawer_fork.dart';
-import 'package:scholarar/view/screen/profile/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:scholarar/controller/auth_controller.dart';
+import 'dart:io';
 
 class BookingDriver extends StatefulWidget {
   const BookingDriver({super.key});
@@ -41,6 +37,8 @@ class _BookingDriverState extends State<BookingDriver> {
   bool fromSelected = false;
   bool toSelected = false;
   bool isLoading = false;
+
+  bool stopWaiting = false;
 
   late GoogleMapController googleMapController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -152,6 +150,7 @@ class _BookingDriverState extends State<BookingDriver> {
       //print('Error: $e');
     }
   }
+
   void setCustomerMarkerIcon() async {
     final ByteData byteData =
         await rootBundle.load('assets/icons/user_icon.jpg');
@@ -233,6 +232,9 @@ class _BookingDriverState extends State<BookingDriver> {
   late Timer _timer;
 
   Future<void> postData() async {
+    print(
+      authController.userPassengerMap?['userDetails']['_id'],
+    );
     setState(() {
       isLoading = true;
     });
@@ -264,42 +266,35 @@ class _BookingDriverState extends State<BookingDriver> {
       postBookingInfo = json.decode(response.body);
       print(postBookingInfo);
       print('Data posted successfully');
-      customShowSnackBar('ការកក់របស់អ្នកត្រូវបានបញ្ជូនទៅអ្នកបើកបរ សូមរង់ចាំការឆ្លើយតប', Get.context!, isError: false);
+      customShowSnackBar(
+          'ការកក់របស់អ្នកត្រូវបានបញ្ជូនទៅអ្នកបើកបរ សូមរង់ចាំការឆ្លើយតប',
+          Get.context!,
+          isError: false);
       if (isWaiting == true) {
         _timer = Timer.periodic(Duration(seconds: 1), (timer) {
           setState(() {
             if (_counter > 0) {
               _counter--;
             } else {
-              _timer.cancel();
               setState(() {
                 isWaiting = false;
-                //stopWaiting = true;
+                stopWaiting = true;
               });
+              _timer.cancel();
             }
           });
         });
-      } else {
-        setState(() {
-          // stopWaiting = true;
-          // driAccept = true;
-        });
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => BookingScreen()),
-        );
       }
     } else {
       setState(() {
         isLoading = false;
       });
-      customShowSnackBar('មិនមានអ្នកបើកបរនៅជិតទីតាំងរបស់អ្នកទេ', Get.context!, isError: true);
-      print('response.statusCode ${response.statusCode}');
+      customShowSnackBar('មិនមានអ្នកបើកបរនៅជិតទីតាំងរបស់អ្នកទេ', Get.context!,
+          isError: true);
+      print('postData() response.statusCode ${response.statusCode}');
       print('Failed to post data');
     }
   }
-
-  
 
   @override
   void dispose() {
@@ -329,6 +324,7 @@ class _BookingDriverState extends State<BookingDriver> {
     init();
     super.initState();
   }
+
   void _addCurrentLocationMarker() {
     if (CurrentLocationIcon != null && selectedLatLng != null) {
       setState(() {
@@ -741,25 +737,25 @@ class _BookingDriverState extends State<BookingDriver> {
                         height: MediaQuery.sizeOf(context).height * 1 / 15,
                       ),
                       ElevatedButton(
-                      style: const ButtonStyle(
-                        backgroundColor:
-                            MaterialStatePropertyAll(Colors.red),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          selectedFromAddress = '';
-                          selectedToAddress = '';
-                        });
-                        nextScreenReplace(
-                            Get.context, BookingDriver());
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          'លុបចោលការកក់',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )),
+                          style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(Colors.red),
+                          ),
+                          onPressed: () async {
+                            setState(() {
+                              selectedFromAddress = '';
+                              selectedToAddress = '';
+                            });
+                            //await cancelTrip();
+                            nextScreenReplace(Get.context, BookingDriver());
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              'លុបចោលការកក់',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )),
                     ]),
                   ),
                 ),
@@ -788,9 +784,9 @@ class _BookingDriverState extends State<BookingDriver> {
             //     ),
             //   ),
             // )
-            : isWaiting == true
-            //&& stopWaiting == false 
-            && driAccept == false
+            //: isWaiting == true && stopWaiting == false && driAccept == false
+            : isWaiting == true &&
+                    driAccept == false
                 ? null
                 : Container(
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
@@ -893,6 +889,10 @@ class _BookingDriverState extends State<BookingDriver> {
                                                 .validate()) {
                                               Navigator.of(context).pop();
                                               postData();
+                                              // if (stopWaiting == true) {
+                                              //   removeDeviceToken();
+                                              // }
+
                                               // Handle submission logic here
                                               //   name: _usernameController.text,
                                               //   phoneNumber:  _phoneNumberController.text,

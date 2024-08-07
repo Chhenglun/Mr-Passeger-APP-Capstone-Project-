@@ -110,10 +110,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               onTap: () {
                 FlutterAppBadger.removeBadge();
                 if(message.notification!.title! == "ការកក់បានបញ្ជាក់"){
-                  nextScreen(context, DriverPick());
+                  nextScreenReplace(Get.context, DriverPick());
                 }
                 if(message.notification!.title! == "ចាប់ផ្តើម"){
-                  nextScreen(context, BookingScreen());
+                  nextScreenReplace(Get.context, BookingScreen());
                 }
                 if(message.notification!.title! == "ការធ្វើដំណើរបានបញ្ចប់"){
                   nextScreenReplace(Get.context, AppScreen());

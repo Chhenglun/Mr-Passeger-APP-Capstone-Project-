@@ -54,6 +54,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
@@ -236,7 +237,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
                     ],
                   ),
                   Text(
-                    '${tripData['cost']} រៀល',
+                    '${(tripData['cost']).toInt()} រៀល',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,

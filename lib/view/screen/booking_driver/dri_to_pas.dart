@@ -511,7 +511,7 @@ class _DriverPickState extends State<DriverPick> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'តម្លៃ ${getDriverTrip['cost']} រៀល',
+                                  'តម្លៃ ${(getDriverTrip['cost']).toInt()} រៀល',
                                   style: TextStyle(fontSize: 17),
                                 ),
                               ],

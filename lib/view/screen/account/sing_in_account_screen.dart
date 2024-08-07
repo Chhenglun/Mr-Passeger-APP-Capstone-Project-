@@ -7,7 +7,7 @@ import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/account/singup_account_screen.dart';
-import 'package:scholarar/view/screen/home/booking_driver.dart';
+import 'package:scholarar/view/screen/booking_driver/booking_driver_screen.dart';
 
 class SignInAccountScreen extends StatefulWidget {
   const SignInAccountScreen({super.key});

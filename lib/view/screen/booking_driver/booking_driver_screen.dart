@@ -20,8 +20,9 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
-import 'package:scholarar/view/screen/booking/booking_screen.dart';
+import 'package:scholarar/view/screen/booking_driver/start_to_end.dart';
 import 'package:curved_drawer_fork/curved_drawer_fork.dart';
 import 'package:scholarar/view/screen/profile/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -228,7 +229,7 @@ class _BookingDriverState extends State<BookingDriver> {
 
   final PageController _pageController = PageController();
 
-  int _counter = 180;
+  int _counter = 120;
   late Timer _timer;
 
   Future<void> postData() async {
@@ -263,8 +264,7 @@ class _BookingDriverState extends State<BookingDriver> {
       postBookingInfo = json.decode(response.body);
       print(postBookingInfo);
       print('Data posted successfully');
-      
-      print('Data posted successfully');
+      customShowSnackBar('ការកក់របស់អ្នកត្រូវបានបញ្ជូនទៅអ្នកបើកបរ សូមរង់ចាំការឆ្លើយតប', Get.context!, isError: false);
       if (isWaiting == true) {
         _timer = Timer.periodic(Duration(seconds: 1), (timer) {
           setState(() {
@@ -293,6 +293,7 @@ class _BookingDriverState extends State<BookingDriver> {
       setState(() {
         isLoading = false;
       });
+      customShowSnackBar('មិនមានអ្នកបើកបរនៅជិតទីតាំងរបស់អ្នកទេ', Get.context!, isError: true);
       print('response.statusCode ${response.statusCode}');
       print('Failed to post data');
     }
@@ -739,24 +740,26 @@ class _BookingDriverState extends State<BookingDriver> {
                       SizedBox(
                         height: MediaQuery.sizeOf(context).height * 1 / 15,
                       ),
-                      // ElevatedButton(
-                      //                     style: const ButtonStyle(
-                      //                       backgroundColor:
-                      //                           MaterialStatePropertyAll(Colors.red),
-                      //                     ),
-                      //                     onPressed: () {
-                      //                       setState(() {
-                      //                         stopWaiting = true;
-                      //                       });
-                      //                       //Navigator.pop(context);
-                      //                     },
-                      //                     child: Padding(
-                      //                       padding: const EdgeInsets.all(15.0),
-                      //                       child: Text(
-                      //                         'លុបចោលការកក់',
-                      //                         style: TextStyle(color: Colors.white),
-                      //                       ),
-                      //                     )),
+                      ElevatedButton(
+                      style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Colors.red),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          selectedFromAddress = '';
+                          selectedToAddress = '';
+                        });
+                        nextScreenReplace(
+                            Get.context, BookingDriver());
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          'លុបចោលការកក់',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )),
                     ]),
                   ),
                 ),
@@ -785,7 +788,9 @@ class _BookingDriverState extends State<BookingDriver> {
             //     ),
             //   ),
             // )
-            : isWaiting == true && stopWaiting == false && driAccept == false
+            : isWaiting == true
+            //&& stopWaiting == false 
+            && driAccept == false
                 ? null
                 : Container(
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 5),

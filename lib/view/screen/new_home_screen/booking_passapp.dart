@@ -19,7 +19,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/screen/account/sing_in_account_screen.dart';
-import 'package:scholarar/view/screen/booking/booking_screen.dart';
+import 'package:scholarar/view/screen/booking_driver/start_to_end.dart';
 import 'package:curved_drawer_fork/curved_drawer_fork.dart';
 import 'package:scholarar/view/screen/profile/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';

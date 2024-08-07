@@ -9,9 +9,9 @@ import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
-import 'package:scholarar/view/screen/booking/driver_pick_passenger.dart';
-import 'package:scholarar/view/screen/home/booking_driver.dart';
-import 'package:scholarar/view/screen/home/slide.dart';
+import 'package:scholarar/view/screen/booking_driver/dri_to_pas.dart';
+import 'package:scholarar/view/screen/booking_driver/booking_driver_screen.dart';
+import 'package:scholarar/view/screen/new_home_screen/slide.dart';
 import 'package:scholarar/view/screen/new_home_screen/booking_passapp.dart';
 import '../../../controller/splash_controller.dart';
 
@@ -44,7 +44,6 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   }
 
   @override
-
   Widget build(BuildContext context) {
     return DefaultTabController(
       initialIndex: 0,
@@ -93,35 +92,27 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   }
   //Todo: _buildBody
   Widget _buildBody(){
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SliderHome(),
-                SizedBox(height: 20,),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [Text('សូមជ្រេីសរេីសការកក់របស់អ្នក', style: TextStyle(color: ColorResources.blackColor,fontSize: 19,fontWeight: FontWeight.w500),)]),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Expanded(child: _buildHumanButton()),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Expanded(child: _buildPassAppButton()),
-                ),
-                //PremiumPlanPage()
-              ],
-            ),
+    return Expanded(
+      child: ListView(
+        children: [
+          SliderHome(),
+          SizedBox(height: 20,),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [Text('សូមជ្រេីសរេីសការកក់របស់អ្នក', style: TextStyle(color: ColorResources.blackColor,fontSize: 19,fontWeight: FontWeight.w500),)]),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Expanded(child: _buildHumanButton()),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Expanded(child: _buildPassAppButton()),
+          ),
+        ],
+      ),
     );
   }
 

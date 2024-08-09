@@ -1,4 +1,4 @@
-package com.example.mr_driver_app_capstone_project;
+package com.example.mr_pcam;
 
 import io.flutter.embedding.android.FlutterActivity;
 
